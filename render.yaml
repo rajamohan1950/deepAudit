@@ -1,0 +1,85 @@
+databases:
+  - name: deepaudit-db
+    plan: free
+    databaseName: deepaudit
+    user: deepaudit
+
+services:
+  - type: redis
+    name: deepaudit-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
+
+  - type: web
+    name: deepaudit-api
+    plan: free
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: deepaudit-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: deepaudit-redis
+          type: redis
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: DEFAULT_LLM_PROVIDER
+        value: openai
+      - key: DEFAULT_LLM_MODEL
+        value: gpt-4o
+      - key: LOG_LEVEL
+        value: INFO
+      - key: REPO_STORAGE_PATH
+        value: /tmp/deepaudit/repos
+      - key: MAX_REPO_SIZE_MB
+        value: 500
+      - key: RATE_LIMIT_REQUESTS_PER_MINUTE
+        value: 60
+      - key: LLM_MAX_RETRIES
+        value: 3
+      - key: LLM_TIMEOUT_SECONDS
+        value: 120
+
+  - type: worker
+    name: deepaudit-worker
+    plan: free
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerCommand: arq app.workers.audit_worker.WorkerSettings
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: deepaudit-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: deepaudit-redis
+          type: redis
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: DEFAULT_LLM_PROVIDER
+        value: openai
+      - key: DEFAULT_LLM_MODEL
+        value: gpt-4o
+      - key: LOG_LEVEL
+        value: INFO
+      - key: REPO_STORAGE_PATH
+        value: /tmp/deepaudit/repos
+      - key: MAX_REPO_SIZE_MB
+        value: 500
+      - key: LLM_MAX_RETRIES
+        value: 3
+      - key: LLM_TIMEOUT_SECONDS
+        value: 120

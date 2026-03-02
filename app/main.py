@@ -22,6 +22,35 @@ async def lifespan(app: FastAPI):
         format="%(asctime)s %(levelname)s %(name)s %(message)s",
     )
     logger.info("DeepAudit API starting up")
+
+    from app.database import engine
+    from app.models import audit, tenant, signal, report, artifact, category
+    from sqlalchemy import text
+
+    async with engine.begin() as conn:
+        await conn.run_sync(
+            tenant.Base.metadata.create_all
+        )
+        logger.info("Database tables ensured")
+
+    from app.database import async_session_factory
+    async with async_session_factory() as session:
+        result = await session.execute(text("SELECT count(*) FROM categories"))
+        count = result.scalar()
+        if count == 0:
+            logger.info("Seeding audit categories...")
+            from scripts.seed_categories import CATEGORIES
+            from app.models.category import Category
+            for cat_id, name, part, part_name, min_signals in CATEGORIES:
+                session.add(Category(
+                    id=cat_id, name=name, part=part,
+                    part_name=part_name,
+                    description=f"Category {cat_id}: {name}",
+                    min_signals=min_signals, checklist=[],
+                ))
+            await session.commit()
+            logger.info(f"Seeded {len(CATEGORIES)} categories")
+
     yield
     logger.info("DeepAudit API shutting down")
 
