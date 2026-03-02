@@ -2,7 +2,23 @@
 
 A total system audit API that produces **750+ structured signals** across **40 categories** covering security, performance, reliability, AI/ML, cost, compliance, and everything in between.
 
-## Quick Start
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/rajamohan1950/deepAudit)
+
+## Cloud Deploy (Render.com)
+
+Click the button above or visit:
+
+```
+https://render.com/deploy?repo=https://github.com/rajamohan1950/deepAudit
+```
+
+You'll be asked to provide two secret values:
+- `OPENAI_API_KEY` — your OpenAI API key
+- `ANTHROPIC_API_KEY` — your Anthropic API key
+
+Render will automatically provision PostgreSQL, Redis, the API service, and the background worker.
+
+## Quick Start (Local)
 
 ```bash
 # 1. Copy environment config
