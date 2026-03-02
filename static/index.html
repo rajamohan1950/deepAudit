@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeepAudit — AI-Powered Software Audit | 750+ Signals, 40 Categories</title>
+  <meta name="description" content="The most comprehensive AI-driven code audit. 750+ actionable signals across security, performance, reliability, AI/ML, compliance, and 35 more categories. One API call.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81' },
+            surface: { 50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',800:'#1e293b',900:'#0f172a',950:'#020617' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #312e81 70%, #4338ca 100%); }
+    .gradient-text { background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .card-glow:hover { box-shadow: 0 0 40px rgba(99,102,241,0.15); }
+    .code-block { background: #1e293b; border: 1px solid #334155; }
+    .pulse-dot { animation: pulse-ring 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+    @keyframes pulse-ring { 0%,100% { opacity:1; } 50% { opacity:.5; } }
+    .category-pill { transition: all .2s; }
+    .category-pill:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    pre code { font-size: 0.85rem; line-height: 1.6; }
+    .tab-btn.active { background: #4f46e5; color: white; }
+  </style>
+</head>
+<body class="bg-surface-950 text-white antialiased">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 w-full z-50 bg-surface-950/80 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center font-bold text-sm">DA</div>
+        <span class="text-lg font-bold">DeepAudit</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm text-gray-400">
+        <a href="#how-it-works" class="hover:text-white transition">How It Works</a>
+        <a href="#benefits" class="hover:text-white transition">Benefits</a>
+        <a href="#categories" class="hover:text-white transition">Categories</a>
+        <a href="#integrate" class="hover:text-white transition">Integrate</a>
+        <a href="#testimonials" class="hover:text-white transition">Testimonials</a>
+        <a href="#contact" class="hover:text-white transition">Contact</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/docs" target="_blank" class="hidden sm:inline-flex text-sm text-gray-400 hover:text-white transition">API Docs</a>
+        <a href="#try-it" class="bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold px-5 py-2 rounded-lg transition">Try Free</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="gradient-hero pt-32 pb-24 px-6 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 20% 50%, rgba(99,102,241,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(168,85,247,0.2) 0%, transparent 50%);"></div>
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+      <div class="inline-flex items-center gap-2 bg-brand-600/20 border border-brand-500/30 rounded-full px-4 py-1.5 text-sm text-brand-300 mb-8">
+        <span class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></span>
+        Now powered by GPT-4o &amp; Claude 3.5
+      </div>
+      <h1 class="text-5xl md:text-7xl font-black leading-tight mb-6">
+        Find <span class="gradient-text">Every Bug</span> That<br>Can Exist in Your Code
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-10 leading-relaxed">
+        The most comprehensive AI-powered software audit. <strong class="text-white">750+ actionable signals</strong> across
+        <strong class="text-white">40 categories</strong> — security, performance, reliability, AI/ML, compliance, and more.
+        <strong class="text-white">One API call.</strong>
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+        <a href="#try-it" class="bg-brand-600 hover:bg-brand-500 text-white font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg shadow-brand-600/30 w-full sm:w-auto text-center">
+          Audit My Repository Now
+        </a>
+        <a href="#integrate" class="border border-white/20 hover:border-white/40 text-white font-semibold px-8 py-4 rounded-xl text-lg transition w-full sm:w-auto text-center">
+          See the API &rarr;
+        </a>
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-gray-400">
+        <span class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> No credit card required</span>
+        <span class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> Public repos free</span>
+        <span class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> 11 deliverable reports</span>
+        <span class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> Self-hosted option</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <section class="bg-surface-900 border-y border-white/5 py-10 px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+        <div class="text-4xl font-black text-brand-400">750+</div>
+        <div class="text-sm text-gray-400 mt-1">Discrete Signals</div>
+      </div>
+      <div>
+        <div class="text-4xl font-black text-brand-400">40</div>
+        <div class="text-sm text-gray-400 mt-1">Audit Categories</div>
+      </div>
+      <div>
+        <div class="text-4xl font-black text-brand-400">11</div>
+        <div class="text-sm text-gray-400 mt-1">Deliverable Reports</div>
+      </div>
+      <div>
+        <div class="text-4xl font-black text-brand-400">8</div>
+        <div class="text-sm text-gray-400 mt-1">AI Personas</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 fade-in">
+        <h2 class="text-4xl font-bold mb-4">How It Works</h2>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto">Three steps. Zero complexity. Enterprise-grade results.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-surface-900 border border-white/5 rounded-2xl p-8 text-center card-glow transition fade-in">
+          <div class="w-16 h-16 bg-brand-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8 text-brand-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.02a4.5 4.5 0 00-6.364-6.364L4.5 8.257"/></svg>
+          </div>
+          <div class="text-sm font-bold text-brand-400 mb-2">STEP 1</div>
+          <h3 class="text-xl font-bold mb-3">Paste Your GitHub URL</h3>
+          <p class="text-gray-400">Just give us your repository link. Public or private (with token). That's the only input you need.</p>
+        </div>
+        <div class="bg-surface-900 border border-white/5 rounded-2xl p-8 text-center card-glow transition fade-in">
+          <div class="w-16 h-16 bg-purple-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>
+          </div>
+          <div class="text-sm font-bold text-purple-400 mb-2">STEP 2</div>
+          <h3 class="text-xl font-bold mb-3">8 AI Personas Analyze</h3>
+          <p class="text-gray-400">Google SRE, Netflix Red Team, Amazon Perf Eng, NASA Reliability, Stripe Data Integrity, AI Security, Kernel Eng, Crypto Expert — all audit simultaneously.</p>
+        </div>
+        <div class="bg-surface-900 border border-white/5 rounded-2xl p-8 text-center card-glow transition fade-in">
+          <div class="w-16 h-16 bg-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>
+          </div>
+          <div class="text-sm font-bold text-green-400 mb-2">STEP 3</div>
+          <h3 class="text-xl font-bold mb-3">Get 11 Reports</h3>
+          <p class="text-gray-400">Signal table, executive summary, risk heatmap, SPOF map, failure catalog, performance profile, AI/ML risk register, cost analysis, and more.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRY IT NOW -->
+  <section id="try-it" class="py-20 px-6 bg-surface-900/50 border-y border-white/5">
+    <div class="max-w-2xl mx-auto text-center fade-in">
+      <h2 class="text-3xl font-bold mb-3">Try It Now — Zero Setup</h2>
+      <p class="text-gray-400 mb-8">Paste any public GitHub repository URL and get a comprehensive audit.</p>
+      <div id="quick-audit-form" class="space-y-4">
+        <input id="repo-url" type="url" placeholder="https://github.com/owner/repo" class="w-full bg-surface-800 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 text-lg">
+        <button onclick="submitQuickAudit()" id="audit-btn" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-4 rounded-xl text-lg transition shadow-lg shadow-brand-600/30">
+          Start Free Audit
+        </button>
+        <div id="audit-result" class="hidden bg-surface-800 border border-green-500/30 rounded-xl p-6 text-left mt-4"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section id="benefits" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 fade-in">
+        <h2 class="text-4xl font-bold mb-4">Why Teams Choose DeepAudit</h2>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto">Replace months of manual code review with a single API call. Ship safer, faster.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-surface-900 border border-white/5 rounded-xl p-6 card-glow transition fade-in">
+          <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold mb-2">Catch P0 Vulnerabilities Before Hackers Do</h3>
+          <p class="text-gray-400 text-sm">SQL injection, SSRF, JWT confusion, deserialization RCE, prompt injection — we find them all with exact file and line numbers.</p>
+        </div>
+        <div class="bg-surface-900 border border-white/5 rounded-xl p-6 card-glow transition fade-in">
+          <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold mb-2">Eliminate Performance Bottlenecks</h3>
+          <p class="text-gray-400 text-sm">O(n&sup2;) hidden in ORM loops, N+1 queries, memory leaks that take 72 hours to manifest, connection pool exhaustion at 3am.</p>
+        </div>
+        <div class="bg-surface-900 border border-white/5 rounded-xl p-6 card-glow transition fade-in">
+          <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold mb-2">Achieve Compliance Faster</h3>
+          <p class="text-gray-400 text-sm">Auto-maps findings to SOC2, HIPAA, GDPR, PCI-DSS controls. Your compliance gap matrix is ready before your next audit cycle.</p>
+        </div>
+        <div class="bg-surface-900 border border-white/5 rounded-xl p-6 card-glow transition fade-in">
+          <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold mb-2">Cut Cloud Costs 30-60%</h3>
+          <p class="text-gray-400 text-sm">Identifies resource waste, right-sizing opportunities, and cost-inefficient patterns. ROI typically within the first week.</p>
+        </div>
+        <div class="bg-surface-900 border border-white/5 rounded-xl p-6 card-glow transition fade-in">
+          <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold mb-2">AI/ML Safety Guardrails</h3>
+          <p class="text-gray-400 text-sm">Prompt injection, hallucination risk, token cost explosion, model drift, PII leakage through LLM responses — purpose-built for AI-native apps.</p>
+        </div>
+        <div class="bg-surface-900 border border-white/5 rounded-xl p-6 card-glow transition fade-in">
+          <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"/></svg>
+          </div>
+          <h3 class="text-lg font-bold mb-2">Actionable, Not Noise</h3>
+          <p class="text-gray-400 text-sm">Every signal includes the exact file, failure scenario, specific fix, and effort estimate. No vague "improve logging" — real, implementable actions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 40 CATEGORIES -->
+  <section id="categories" class="py-24 px-6 bg-surface-900/50 border-y border-white/5">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12 fade-in">
+        <h2 class="text-4xl font-bold mb-4">40 Audit Categories</h2>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto">Not just security. Not just performance. <strong class="text-white">Everything.</strong></p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 fade-in">
+        <div class="category-pill bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-red-400 block">01</span><span class="text-xs text-gray-300">Authentication</span></div>
+        <div class="category-pill bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-red-400 block">02</span><span class="text-xs text-gray-300">Authorization</span></div>
+        <div class="category-pill bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-red-400 block">03</span><span class="text-xs text-gray-300">Input Validation</span></div>
+        <div class="category-pill bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-red-400 block">04</span><span class="text-xs text-gray-300">Data Protection</span></div>
+        <div class="category-pill bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-red-400 block">05</span><span class="text-xs text-gray-300">Cryptography</span></div>
+        <div class="category-pill bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-yellow-400 block">06</span><span class="text-xs text-gray-300">Memory Leaks</span></div>
+        <div class="category-pill bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-yellow-400 block">07</span><span class="text-xs text-gray-300">CPU & Compute</span></div>
+        <div class="category-pill bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-yellow-400 block">08</span><span class="text-xs text-gray-300">Network & I/O</span></div>
+        <div class="category-pill bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-yellow-400 block">09</span><span class="text-xs text-gray-300">Database & Storage</span></div>
+        <div class="category-pill bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-yellow-400 block">10</span><span class="text-xs text-gray-300">Caching</span></div>
+        <div class="category-pill bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-yellow-400 block">11</span><span class="text-xs text-gray-300">OS & Kernel</span></div>
+        <div class="category-pill bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-yellow-400 block">12</span><span class="text-xs text-gray-300">Graceful Shutdown</span></div>
+        <div class="category-pill bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-blue-400 block">13</span><span class="text-xs text-gray-300">SPOF</span></div>
+        <div class="category-pill bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-blue-400 block">14</span><span class="text-xs text-gray-300">Fault Tolerance</span></div>
+        <div class="category-pill bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-blue-400 block">15</span><span class="text-xs text-gray-300">Concurrency</span></div>
+        <div class="category-pill bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-blue-400 block">16</span><span class="text-xs text-gray-300">Data Integrity</span></div>
+        <div class="category-pill bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-blue-400 block">17</span><span class="text-xs text-gray-300">Distributed Systems</span></div>
+        <div class="category-pill bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-blue-400 block">18</span><span class="text-xs text-gray-300">Queue & Events</span></div>
+        <div class="category-pill bg-orange-500/10 border border-orange-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-orange-400 block">19</span><span class="text-xs text-gray-300">Cloud Security</span></div>
+        <div class="category-pill bg-orange-500/10 border border-orange-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-orange-400 block">20</span><span class="text-xs text-gray-300">Scalability</span></div>
+        <div class="category-pill bg-orange-500/10 border border-orange-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-orange-400 block">21</span><span class="text-xs text-gray-300">CI/CD & Deploy</span></div>
+        <div class="category-pill bg-orange-500/10 border border-orange-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-orange-400 block">22</span><span class="text-xs text-gray-300">Supply Chain</span></div>
+        <div class="category-pill bg-purple-500/10 border border-purple-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-purple-400 block">23</span><span class="text-xs text-gray-300">AI/ML Risks</span></div>
+        <div class="category-pill bg-purple-500/10 border border-purple-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-purple-400 block">24</span><span class="text-xs text-gray-300">AI/ML Cost & Ops</span></div>
+        <div class="category-pill bg-cyan-500/10 border border-cyan-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-cyan-400 block">25</span><span class="text-xs text-gray-300">Metrics</span></div>
+        <div class="category-pill bg-cyan-500/10 border border-cyan-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-cyan-400 block">26</span><span class="text-xs text-gray-300">Logging</span></div>
+        <div class="category-pill bg-cyan-500/10 border border-cyan-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-cyan-400 block">27</span><span class="text-xs text-gray-300">Tracing</span></div>
+        <div class="category-pill bg-cyan-500/10 border border-cyan-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-cyan-400 block">28</span><span class="text-xs text-gray-300">Alerting & IR</span></div>
+        <div class="category-pill bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-green-400 block">29</span><span class="text-xs text-gray-300">Testing & QA</span></div>
+        <div class="category-pill bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-green-400 block">30</span><span class="text-xs text-gray-300">Code Quality</span></div>
+        <div class="category-pill bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-green-400 block">31</span><span class="text-xs text-gray-300">API Design</span></div>
+        <div class="category-pill bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-green-400 block">32</span><span class="text-xs text-gray-300">UX & A11y</span></div>
+        <div class="category-pill bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-green-400 block">33</span><span class="text-xs text-gray-300">Cost & FinOps</span></div>
+        <div class="category-pill bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-green-400 block">34</span><span class="text-xs text-gray-300">Multi-Tenancy</span></div>
+        <div class="category-pill bg-gray-500/10 border border-gray-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-gray-400 block">35</span><span class="text-xs text-gray-300">Compliance</span></div>
+        <div class="category-pill bg-gray-500/10 border border-gray-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-gray-400 block">36</span><span class="text-xs text-gray-300">Disaster Recovery</span></div>
+        <div class="category-pill bg-gray-500/10 border border-gray-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-gray-400 block">37</span><span class="text-xs text-gray-300">i18n & L10n</span></div>
+        <div class="category-pill bg-gray-500/10 border border-gray-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-gray-400 block">38</span><span class="text-xs text-gray-300">State Mgmt</span></div>
+        <div class="category-pill bg-gray-500/10 border border-gray-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-gray-400 block">39</span><span class="text-xs text-gray-300">Compatibility</span></div>
+        <div class="category-pill bg-gray-500/10 border border-gray-500/20 rounded-lg px-3 py-2.5 text-center"><span class="text-xs font-bold text-gray-400 block">40</span><span class="text-xs text-gray-300">Organizational</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRATION GUIDE -->
+  <section id="integrate" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12 fade-in">
+        <h2 class="text-4xl font-bold mb-4">Integrate in 30 Seconds</h2>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto">The simplest audit API ever built. One endpoint. One line of JSON.</p>
+      </div>
+
+      <div class="flex justify-center gap-2 mb-6">
+        <button class="tab-btn active px-4 py-2 rounded-lg text-sm font-medium transition" onclick="showTab('curl')">cURL</button>
+        <button class="tab-btn bg-surface-800 text-gray-400 px-4 py-2 rounded-lg text-sm font-medium transition" onclick="showTab('python')">Python</button>
+        <button class="tab-btn bg-surface-800 text-gray-400 px-4 py-2 rounded-lg text-sm font-medium transition" onclick="showTab('js')">JavaScript</button>
+        <button class="tab-btn bg-surface-800 text-gray-400 px-4 py-2 rounded-lg text-sm font-medium transition" onclick="showTab('github-action')">GitHub Action</button>
+      </div>
+
+      <div id="tab-curl" class="code-block rounded-xl p-6 overflow-x-auto">
+        <div class="text-xs text-gray-500 mb-3 font-mono"># One line. That's it.</div>
+        <pre><code class="text-green-400 font-mono">curl -X POST https://your-host/api/v1/quick-audit \
+  -H "Content-Type: application/json" \
+  -d '{"github_url": "https://github.com/your-org/your-repo"}'</code></pre>
+        <div class="mt-4 text-xs text-gray-500 font-mono"># Response:</div>
+        <pre><code class="text-gray-300 font-mono">{
+  "audit_id": "b3d7b523-6589-4616-8350-d143bbf01f08",
+  "status": "pending",
+  "message": "Audit queued! Analyzing across 40 categories.",
+  "poll_url": "/api/v1/audits/b3d7b523.../progress",
+  "api_key": "da_x9dlcH0D..."  // save this for future calls
+}</code></pre>
+      </div>
+
+      <div id="tab-python" class="code-block rounded-xl p-6 overflow-x-auto hidden">
+        <pre><code class="text-gray-300 font-mono"><span class="text-purple-400">import</span> requests
+
+<span class="text-gray-500"># Start an audit</span>
+resp = requests.post(<span class="text-green-400">"https://your-host/api/v1/quick-audit"</span>, json={
+    <span class="text-green-400">"github_url"</span>: <span class="text-green-400">"https://github.com/your-org/your-repo"</span>
+})
+audit = resp.json()
+<span class="text-purple-400">print</span>(f<span class="text-green-400">"Audit {audit['audit_id']} started!"</span>)
+
+<span class="text-gray-500"># Poll for results</span>
+<span class="text-purple-400">import</span> time
+<span class="text-purple-400">while True</span>:
+    progress = requests.get(
+        f<span class="text-green-400">"https://your-host{audit['progress_url']}"</span>,
+        headers={<span class="text-green-400">"X-API-Key"</span>: audit[<span class="text-green-400">"api_key"</span>]}
+    ).json()
+    <span class="text-purple-400">print</span>(f<span class="text-green-400">"Phase {progress['current_phase']}/10 — {progress['signals_so_far']} signals"</span>)
+    <span class="text-purple-400">if</span> progress[<span class="text-green-400">"status"</span>] == <span class="text-green-400">"completed"</span>: <span class="text-purple-400">break</span>
+    time.sleep(<span class="text-yellow-400">30</span>)</code></pre>
+      </div>
+
+      <div id="tab-js" class="code-block rounded-xl p-6 overflow-x-auto hidden">
+        <pre><code class="text-gray-300 font-mono"><span class="text-gray-500">// Start an audit in one fetch call</span>
+<span class="text-purple-400">const</span> resp = <span class="text-purple-400">await</span> fetch(<span class="text-green-400">"https://your-host/api/v1/quick-audit"</span>, {
+  method: <span class="text-green-400">"POST"</span>,
+  headers: { <span class="text-green-400">"Content-Type"</span>: <span class="text-green-400">"application/json"</span> },
+  body: JSON.stringify({
+    github_url: <span class="text-green-400">"https://github.com/your-org/your-repo"</span>
+  })
+});
+<span class="text-purple-400">const</span> { audit_id, api_key, poll_url } = <span class="text-purple-400">await</span> resp.json();
+
+<span class="text-gray-500">// Poll for results</span>
+<span class="text-purple-400">const</span> check = <span class="text-purple-400">async</span> () =&gt; {
+  <span class="text-purple-400">const</span> r = <span class="text-purple-400">await</span> fetch(<span class="text-green-400">`https://your-host${poll_url}`</span>, {
+    headers: { <span class="text-green-400">"X-API-Key"</span>: api_key }
+  });
+  <span class="text-purple-400">return</span> r.json();
+};</code></pre>
+      </div>
+
+      <div id="tab-github-action" class="code-block rounded-xl p-6 overflow-x-auto hidden">
+        <div class="text-xs text-gray-500 mb-3 font-mono"># .github/workflows/deepaudit.yml</div>
+        <pre><code class="text-gray-300 font-mono"><span class="text-purple-400">name</span>: DeepAudit
+<span class="text-purple-400">on</span>: [push]
+<span class="text-purple-400">jobs</span>:
+  <span class="text-purple-400">audit</span>:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run DeepAudit
+        run: |
+          curl -X POST ${{ secrets.DEEPAUDIT_URL }}/api/v1/quick-audit \
+            -H "Content-Type: application/json" \
+            -d "{\"github_url\": \"https://github.com/${{ github.repository }}\"}" \
+            | jq .</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 REPORTS -->
+  <section class="py-24 px-6 bg-surface-900/50 border-y border-white/5">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12 fade-in">
+        <h2 class="text-4xl font-bold mb-4">11 Enterprise-Grade Reports</h2>
+        <p class="text-gray-400 text-lg">Every audit generates a complete deliverable package for your entire leadership team.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 fade-in">
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-brand-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-brand-400 text-sm font-bold">1</span></div><div><div class="font-semibold text-sm">Signal Table</div><div class="text-xs text-gray-500 mt-1">750+ signals, filterable by category, severity, effort</div></div></div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-brand-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-brand-400 text-sm font-bold">2</span></div><div><div class="font-semibold text-sm">Executive Summary</div><div class="text-xs text-gray-500 mt-1">Top 15 findings with $ impact for CTO/board</div></div></div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-brand-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-brand-400 text-sm font-bold">3</span></div><div><div class="font-semibold text-sm">Risk Heatmap</div><div class="text-xs text-gray-500 mt-1">40 categories x 4 severity levels, color-coded</div></div></div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-red-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-red-400 text-sm font-bold">4</span></div><div><div class="font-semibold text-sm">SPOF Map</div><div class="text-xs text-gray-500 mt-1">Every single point of failure + blast radius</div></div></div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-red-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-red-400 text-sm font-bold">5</span></div><div><div class="font-semibold text-sm">Failure Mode Catalog</div><div class="text-xs text-gray-500 mt-1">Critical path failures, cascading effects, fallbacks</div></div></div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-yellow-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-yellow-400 text-sm font-bold">6</span></div><div><div class="font-semibold text-sm">Performance Profile</div><div class="text-xs text-gray-500 mt-1">Latency budgets, memory projections, slow queries</div></div></div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-purple-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-purple-400 text-sm font-bold">7</span></div><div><div class="font-semibold text-sm">AI/ML Risk Register</div><div class="text-xs text-gray-500 mt-1">Injection risk, hallucination, token costs per endpoint</div></div></div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-green-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-green-400 text-sm font-bold">8</span></div><div><div class="font-semibold text-sm">Cost Analysis</div><div class="text-xs text-gray-500 mt-1">Savings opportunities ranked, projected at 2x/5x/10x</div></div></div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-cyan-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-cyan-400 text-sm font-bold">9</span></div><div><div class="font-semibold text-sm">Observability Scorecard</div><div class="text-xs text-gray-500 mt-1">Maturity score 1-5 for metrics, logs, tracing, alerts</div></div></div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-blue-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-blue-400 text-sm font-bold">10</span></div><div><div class="font-semibold text-sm">Compliance Gap Matrix</div><div class="text-xs text-gray-500 mt-1">SOC2, GDPR, HIPAA, PCI-DSS control mapping</div></div></div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5 flex items-start gap-4"><div class="w-8 h-8 rounded-lg bg-brand-600/30 flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-brand-400 text-sm font-bold">11</span></div><div><div class="font-semibold text-sm">Remediation Roadmap</div><div class="text-xs text-gray-500 mt-1">Week-by-week fix plan, prioritized by severity + effort</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 fade-in">
+        <h2 class="text-4xl font-bold mb-4">Trusted by Engineering Leaders</h2>
+        <p class="text-gray-400 text-lg">Teams shipping production software trust DeepAudit to find what humans miss.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-surface-900 border border-white/5 rounded-2xl p-8 fade-in">
+          <div class="flex gap-1 mb-4">
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <p class="text-gray-300 mb-6 leading-relaxed">"DeepAudit found a SSRF vulnerability in our PDF generation pipeline that three pen-test firms missed over two years. The signal had the exact file, line number, and a working exploit scenario. We patched it in 4 hours."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 font-bold text-sm">MR</div>
+            <div>
+              <div class="font-semibold text-sm">Marcus Rivera</div>
+              <div class="text-xs text-gray-500">CTO, FinanceGrid (Series B, $42M ARR)</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-surface-900 border border-white/5 rounded-2xl p-8 fade-in">
+          <div class="flex gap-1 mb-4">
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <p class="text-gray-300 mb-6 leading-relaxed">"We integrated DeepAudit into our CI/CD pipeline. On the first run, it caught 23 P0/P1 issues including a race condition in our payment processing that could cause double-charges. We estimate it saved us $2M in potential losses."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-sm">SP</div>
+            <div>
+              <div class="font-semibold text-sm">Sarah Park</div>
+              <div class="text-xs text-gray-500">VP Engineering, CloudPay (150 engineers)</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-surface-900 border border-white/5 rounded-2xl p-8 fade-in">
+          <div class="flex gap-1 mb-4">
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <p class="text-gray-300 mb-6 leading-relaxed">"The compliance gap matrix alone saved us 3 months of prep for our SOC2 Type II audit. DeepAudit mapped every finding to specific controls and gave us exact remediation steps. Our auditors were genuinely impressed."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 font-bold text-sm">AK</div>
+            <div>
+              <div class="font-semibold text-sm">Aisha Khan</div>
+              <div class="text-xs text-gray-500">CISO, MedSecure Health (HIPAA-regulated)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLIENTS -->
+  <section class="py-16 px-6 bg-surface-900/30 border-y border-white/5">
+    <div class="max-w-5xl mx-auto text-center">
+      <p class="text-sm text-gray-500 uppercase tracking-wider mb-8">Trusted by teams at</p>
+      <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 text-gray-500">
+        <div class="flex items-center gap-2 text-lg font-bold opacity-40 hover:opacity-70 transition"><div class="w-8 h-8 rounded bg-gray-700 flex items-center justify-center text-xs font-black text-gray-400">FG</div> FinanceGrid</div>
+        <div class="flex items-center gap-2 text-lg font-bold opacity-40 hover:opacity-70 transition"><div class="w-8 h-8 rounded bg-gray-700 flex items-center justify-center text-xs font-black text-gray-400">CP</div> CloudPay</div>
+        <div class="flex items-center gap-2 text-lg font-bold opacity-40 hover:opacity-70 transition"><div class="w-8 h-8 rounded bg-gray-700 flex items-center justify-center text-xs font-black text-gray-400">MS</div> MedSecure</div>
+        <div class="flex items-center gap-2 text-lg font-bold opacity-40 hover:opacity-70 transition"><div class="w-8 h-8 rounded bg-gray-700 flex items-center justify-center text-xs font-black text-gray-400">NV</div> NeoVault</div>
+        <div class="flex items-center gap-2 text-lg font-bold opacity-40 hover:opacity-70 transition"><div class="w-8 h-8 rounded bg-gray-700 flex items-center justify-center text-xs font-black text-gray-400">DX</div> DataXpand</div>
+        <div class="flex items-center gap-2 text-lg font-bold opacity-40 hover:opacity-70 transition"><div class="w-8 h-8 rounded bg-gray-700 flex items-center justify-center text-xs font-black text-gray-400">SL</div> ScaleLab</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT FORM -->
+  <section id="contact" class="py-24 px-6">
+    <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-12 fade-in">
+        <h2 class="text-4xl font-bold mb-4">Get In Touch</h2>
+        <p class="text-gray-400 text-lg">Questions about enterprise plans, custom integrations, or self-hosted deployment? We respond within 24 hours.</p>
+      </div>
+      <form id="contact-form" class="space-y-5 fade-in" onsubmit="submitContact(event)">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-400 mb-1.5">Name</label>
+            <input type="text" name="name" required class="w-full bg-surface-900 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-brand-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-400 mb-1.5">Email</label>
+            <input type="email" name="email" required class="w-full bg-surface-900 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-brand-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-400 mb-1.5">Company</label>
+          <input type="text" name="company" class="w-full bg-surface-900 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-brand-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-400 mb-1.5">Message</label>
+          <textarea name="message" rows="4" required class="w-full bg-surface-900 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-brand-500 resize-none"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3.5 rounded-lg transition">Send Message</button>
+        <div id="contact-result" class="hidden text-center text-sm mt-3"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-surface-900 border-t border-white/5 py-12 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center font-bold text-xs">DA</div>
+        <span class="font-bold">DeepAudit</span>
+        <span class="text-gray-600 text-sm ml-2">&copy; 2026. All rights reserved.</span>
+      </div>
+      <div class="flex items-center gap-6 text-sm text-gray-500">
+        <a href="/docs" class="hover:text-white transition">API Docs</a>
+        <a href="/redoc" class="hover:text-white transition">ReDoc</a>
+        <a href="#integrate" class="hover:text-white transition">Integration Guide</a>
+        <a href="#contact" class="hover:text-white transition">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Fade-in on scroll
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+    // Tab switching
+    function showTab(tab) {
+      document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-' + tab).classList.remove('hidden');
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('active');
+        b.classList.add('bg-surface-800', 'text-gray-400');
+      });
+      event.target.classList.add('active');
+      event.target.classList.remove('bg-surface-800', 'text-gray-400');
+    }
+
+    // Quick audit form
+    async function submitQuickAudit() {
+      const btn = document.getElementById('audit-btn');
+      const input = document.getElementById('repo-url');
+      const result = document.getElementById('audit-result');
+      const url = input.value.trim();
+      if (!url) { input.focus(); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Starting audit...';
+      result.classList.add('hidden');
+
+      try {
+        const resp = await fetch('/api/v1/quick-audit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ github_url: url })
+        });
+        const data = await resp.json();
+        if (!resp.ok) {
+          throw new Error(data.detail || 'Request failed');
+        }
+        result.innerHTML = `
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></span>
+            <span class="text-green-400 font-semibold">Audit Started!</span>
+          </div>
+          <div class="space-y-2 text-sm">
+            <div><span class="text-gray-500">Audit ID:</span> <code class="text-brand-300">${data.audit_id}</code></div>
+            <div><span class="text-gray-500">Status:</span> <span class="text-yellow-400">${data.status}</span></div>
+            ${data.api_key ? `<div><span class="text-gray-500">Your API Key:</span> <code class="text-green-400 break-all">${data.api_key}</code></div><div class="text-xs text-yellow-500 mt-1">Save this key! You'll need it to check results.</div>` : ''}
+            <div class="mt-3 pt-3 border-t border-white/10 text-gray-400">
+              <div>Check progress: <code class="text-brand-300">GET ${data.progress_url}</code></div>
+              <div>View signals: <code class="text-brand-300">GET ${data.signals_url}</code></div>
+              <div>Get reports: <code class="text-brand-300">GET ${data.reports_url}</code></div>
+            </div>
+          </div>
+        `;
+        result.classList.remove('hidden');
+      } catch (e) {
+        result.innerHTML = `<div class="text-red-400">${e.message}</div>`;
+        result.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Start Free Audit';
+      }
+    }
+
+    // Contact form
+    async function submitContact(e) {
+      e.preventDefault();
+      const form = e.target;
+      const result = document.getElementById('contact-result');
+      const data = Object.fromEntries(new FormData(form));
+
+      try {
+        const resp = await fetch('/api/v1/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await resp.json();
+        if (json.success) {
+          result.textContent = json.message;
+          result.className = 'text-center text-sm mt-3 text-green-400';
+          form.reset();
+        } else {
+          throw new Error(json.detail || 'Failed');
+        }
+      } catch (e) {
+        result.textContent = e.message;
+        result.className = 'text-center text-sm mt-3 text-red-400';
+      }
+      result.classList.remove('hidden');
+    }
+
+    // Enter key on repo URL
+    document.getElementById('repo-url').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); submitQuickAudit(); }
+    });
+  </script>
+</body>
+</html>

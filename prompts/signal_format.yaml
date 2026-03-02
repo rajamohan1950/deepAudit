@@ -1,0 +1,39 @@
+content: |
+  Return a JSON object with a "signals" array. Each signal MUST contain ALL of these fields:
+
+  {
+    "signals": [
+      {
+        "signal_text": "Specific finding with technical detail — minimum 20 characters",
+        "severity": "P0 | P1 | P2 | P3",
+        "score": 0.0-10.0,
+        "score_type": "cvss | risk",
+        "evidence": "File path, line number, config name, service name — SPECIFIC",
+        "failure_scenario": "Exactly HOW this breaks or gets exploited — be precise",
+        "remediation": "Specific implementation fix — NOT vague words like 'improve' or 'consider'",
+        "effort": "S | M | L | XL",
+        "confidence": 0.0-1.0,
+        "references": ["OWASP-A01", "CIS-5.1", "NIST-AC-6"]
+      }
+    ]
+  }
+
+  SEVERITY GUIDE:
+  - P0: Fix in 24hr. Active exploit, data breach, total outage, data corruption.
+  - P1: Fix in 1 sprint. Exploitable with effort, significant risk, perf degradation.
+  - P2: Fix in 1 quarter. Defense-in-depth, operational risk, testing gap.
+  - P3: Backlog. Best practice, tech debt, documentation, process.
+
+  EFFORT GUIDE:
+  - S: Hours (config change, one-liner fix)
+  - M: Days (moderate code change, new middleware)
+  - L: Weeks (architectural change, new component)
+  - XL: Months (major rewrite, infrastructure overhaul)
+
+  HARD RULES — signals that violate these are REJECTED:
+  1. Every signal MUST name a specific file, service, config, or component in evidence
+  2. Every signal MUST describe the failure/attack scenario
+  3. Every signal MUST include a specific fix (not "improve" or "consider")
+  4. Every signal MUST include effort estimate
+  5. NO duplicate signals
+  6. NO vague signals

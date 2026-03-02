@@ -1,0 +1,111 @@
+preamble: |
+  You are executing Phase 6 of a comprehensive software audit.
+  Focus: Infrastructure, Capacity, Deployment & Supply Chain
+  Target: 80+ signals across categories 19-22.
+
+  Analyze the provided code, configuration, and infrastructure files.
+  For each category, audit EVERY item in the checklist.
+  Reference specific files, line numbers, and configurations in your evidence.
+
+categories:
+  "19": |
+    ### CATEGORY 19: Infrastructure & Cloud Security (min 25 signals)
+    Audit every aspect:
+    - IAM over-permissioned
+    - Service account key exposure
+    - Network segmentation missing
+    - K8s RBAC too permissive
+    - K8s pod security
+    - K8s network policies missing
+    - K8s secrets unencrypted
+    - Container vulnerabilities
+    - Container running as root
+    - Container writable root filesystem
+    - Storage bucket public access
+    - Database with public IP
+    - Database SSL not enforced
+    - WAF rules incomplete
+    - DNS zone transfer
+    - Subdomain takeover
+    - Cloud metadata exposure
+    - IaC drift
+    - CI/CD pipeline secrets leak
+    - Supply chain attack surface
+    - Container registry without scanning
+    - SSH keys shared
+    - Egress unrestricted
+    - Managed identity not used
+    - Public management ports
+
+  "20": |
+    ### CATEGORY 20: Capacity Planning & Scalability (min 20 signals)
+    Audit every aspect:
+    - No load testing
+    - Load test not realistic
+    - Auto-scaling not configured
+    - Auto-scaling too slow
+    - Auto-scaling ceiling too low
+    - Auto-scaling wrong metric
+    - Resource requests/limits not set
+    - Vertical scaling ceiling
+    - Storage growth untracked
+    - Database connection limit approaching
+    - Queue depth unmonitored
+    - Memory growth trend
+    - Non-linear cost scaling
+    - No capacity planning process
+    - Peak load never measured
+    - No performance budget per endpoint
+    - Horizontal scaling blocked by stateful component
+    - Database bottleneck no sharding
+    - External API rate limits not in capacity plan
+    - Spot instances not used
+
+  "21": |
+    ### CATEGORY 21: Deployment, CI/CD & Release (min 20 signals)
+    Audit every aspect:
+    - Manual deployment
+    - No rollback capability
+    - No canary/blue-green/rolling
+    - DB migration not backward compatible
+    - DDL migration locks table
+    - No smoke test post-deploy
+    - No health check validation after deploy
+    - Environment drift
+    - Secrets in deployment manifests
+    - No artifact signing
+    - CI/CD overprivileged credentials
+    - No branch protection
+    - No code review enforcement
+    - Build not reproducible
+    - Dependencies not pinned
+    - No SBOM generated
+    - Stale feature flags
+    - Deployment metrics not tracked (DORA)
+    - Config change not versioned
+
+  "22": |
+    ### CATEGORY 22: Third-Party & Supply Chain (min 15 signals)
+    Audit every aspect:
+    - Dependency with known CVE
+    - Transitive dependency vulnerability
+    - Diamond dependency conflict
+    - Abandoned dependency
+    - Dependency license non-compliance
+    - Lockfile not committed
+    - Dependency confusion attack
+    - Third-party SDK auto-updates
+    - Vendor SLA not monitored
+    - Vendor API deprecation untracked
+    - Vendor data handling unaudited
+    - No fallback for critical vendor
+    - External JS without SRI
+    - Third-party cookie compliance
+    - Vendor uptime not in SLA
+
+closing: |
+  REMEMBER:
+  - Minimum 80 signals across all categories in this phase
+  - Every signal must reference specific files/configs from the provided code
+  - No vague signals — specific evidence, specific fix, specific effort
+  - Return JSON with "signals" array following the signal format specification

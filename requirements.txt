@@ -1,0 +1,50 @@
+# FastAPI + server
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.18
+
+# Database
+sqlalchemy[asyncio]>=2.0.36
+asyncpg>=0.30.0
+alembic>=1.14.0
+
+# Redis + background jobs
+redis>=5.2.0
+arq>=0.26.1
+
+# LLM clients
+openai>=1.58.0
+anthropic>=0.40.0
+tiktoken>=0.8.0
+
+# Pydantic + validation
+pydantic[email]>=2.10.0
+pydantic-settings>=2.7.0
+
+# Git operations
+gitpython>=3.1.43
+
+# Templating
+jinja2>=3.1.5
+pyyaml>=6.0.2
+
+# Security
+passlib[bcrypt]>=1.7.4
+
+# HTTP client
+httpx>=0.28.0
+
+# Utilities
+python-dateutil>=2.9.0
+orjson>=3.10.0
+
+# Testing
+pytest>=8.3.0
+pytest-asyncio>=0.24.0
+pytest-cov>=6.0.0
+httpx>=0.28.0
+
+# Dev
+black>=24.10.0
+ruff>=0.8.0
+mypy>=1.13.0

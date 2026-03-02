@@ -1,0 +1,138 @@
+preamble: |
+  You are executing Phase 9 of a comprehensive software audit.
+  Focus: Quality, Code, API, UX, Cost & Tenancy
+  Target: 100+ signals across categories 29-34.
+
+  Analyze the provided code, configuration, and infrastructure files.
+  For each category, audit EVERY item in the checklist.
+  Reference specific files, line numbers, and configurations in your evidence.
+
+categories:
+  "29": |
+    ### CATEGORY 29: Testing & QA (min 25 signals)
+    Audit every aspect:
+    - Unit test coverage unknown
+    - Integration tests missing
+    - E2E tests missing
+    - Contract testing not implemented
+    - Performance testing not automated
+    - Security testing not in pipeline
+    - Fuzz testing missing
+    - Mutation testing not run
+    - Test data management (real PII)
+    - Test environment instability
+    - Test execution too slow
+    - Regression suite incomplete
+    - Edge case coverage
+    - Negative testing
+    - Chaos/fault injection missing
+    - Accessibility testing
+    - API contract versioning not tested
+    - DB migration rollback tested
+    - Config testing
+    - Concurrency testing
+    - Data consistency testing
+    - Visual regression testing
+    - Test env doesn't match prod
+
+  "30": |
+    ### CATEGORY 30: Code Quality & Technical Debt (min 20 signals)
+    Audit every aspect:
+    - No static analysis
+    - High cyclomatic complexity
+    - Dead code and unused deps
+    - Duplicated code
+    - Missing documentation
+    - Missing comments for complex logic
+    - Inconsistent coding standards
+    - Error handling inconsistency
+    - Generic exception catch
+    - Resource cleanup missing
+    - Magic numbers/strings
+    - God classes/functions
+    - Circular dependencies
+    - Deprecated API usage
+    - Framework version inconsistency
+    - Dependency version not pinned
+    - Build not reproducible
+    - Git hygiene
+    - No pre-commit hooks
+    - TODO/FIXME growing
+    - No ADRs
+
+  "31": |
+    ### CATEGORY 31: API Design & Contracts (min 15 signals)
+    Audit every aspect:
+    - No versioning strategy
+    - Inconsistent response format
+    - Missing pagination on list endpoints
+    - Rate limiting missing/bypassable
+    - No OpenAPI/Swagger documentation
+    - Missing error codes (generic 500)
+    - Idempotency keys not supported
+    - No deprecation strategy
+    - GraphQL query depth/complexity not limited
+    - WebSocket message validation missing
+    - Missing correlation ID in headers
+    - No request timeout on client side
+    - Missing Retry-After on 429
+    - No API changelog
+    - Breaking change detection not automated
+
+  "32": |
+    ### CATEGORY 32: UX, Accessibility & Client-Side (min 15 signals)
+    Audit every aspect:
+    - Client-side error handling (white screen, spinner forever)
+    - No client-side input validation
+    - Sensitive data in browser (localStorage, console.log)
+    - CSRF protection missing
+    - Clickjacking (X-Frame-Options, CSP)
+    - CSP missing/permissive
+    - Subresource Integrity missing for CDN
+    - Mixed content
+    - WCAG 2.1 AA violations
+    - JavaScript bundle too large
+    - Third-party script risk
+    - Session timeout UX (no warning, data loss)
+    - Error messages not helpful
+    - Loading states missing (double submit)
+    - Offline/poor network handling
+
+  "33": |
+    ### CATEGORY 33: Cost & FinOps (min 15 signals)
+    Audit every aspect:
+    - No cost monitoring dashboards
+    - No cost alerting
+    - No cost allocation per team/service/tenant
+    - Unused resources (VMs, EIPs, LBs)
+    - Over-provisioned instances
+    - No reserved instances/savings plan
+    - Storage tier misuse
+    - Egress cost unmonitored
+    - Log storage cost growing
+    - Orphaned snapshots/AMIs/volumes
+    - Dev/staging running 24/7
+    - No spot/preemptible usage
+    - LLM token spend unmonitored
+    - No cost optimization review cadence
+
+  "34": |
+    ### CATEGORY 34: Multi-Tenancy & Isolation (min 10 signals)
+    Audit every aspect:
+    - Data isolation not enforced
+    - Noisy neighbor
+    - No per-tenant rate limiting
+    - Tenant ID not validated in every query
+    - Cross-tenant cache pollution
+    - Tenant-specific config not isolated
+    - No per-tenant usage tracking
+    - Tenant deletion incomplete
+    - No tenant-specific SLA
+    - Background jobs shared queue
+
+closing: |
+  REMEMBER:
+  - Minimum 100 signals across all categories in this phase
+  - Every signal must reference specific files/configs from the provided code
+  - No vague signals — specific evidence, specific fix, specific effort
+  - Return JSON with "signals" array following the signal format specification

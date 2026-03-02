@@ -1,0 +1,61 @@
+preamble: |
+  You are executing Phase 7 of a comprehensive software audit.
+  Focus: AI/ML Risks & Operations
+  Target: 40+ signals across categories 23-24.
+
+  Analyze the provided code, configuration, and infrastructure files.
+  For each category, audit EVERY item in the checklist.
+  Reference specific files, line numbers, and configurations in your evidence.
+
+categories:
+  "23": |
+    ### CATEGORY 23: AI/ML Model Risks (min 20 signals)
+    Audit every aspect:
+    - Direct prompt injection
+    - Indirect prompt injection
+    - Hallucination in high-stakes decisions
+    - Model drift
+    - Training data poisoning
+    - Training data PII leakage
+    - Embedding adversarial attack
+    - Token cost explosion
+    - Guardrail bypass
+    - PII in LLM responses
+    - LLM output not validated before action
+    - No human-in-the-loop
+    - Explainability gap
+    - Model version not pinned
+    - No A/B testing for models
+    - Embedding model change breaks similarity
+    - RAG retrieval poisoning
+    - LLM rate limit hit no fallback
+    - LLM response parsing failure
+    - Sensitive data sent to LLM API
+    - Model evaluation not tracked
+    - Feedback loop missing
+
+  "24": |
+    ### CATEGORY 24: AI/ML Cost & Operational (min 15 signals)
+    Audit every aspect:
+    - No token usage monitoring
+    - No cost alerting
+    - Prompt not optimized
+    - No prompt caching
+    - No model tiering
+    - No batch processing for non-real-time
+    - Fine-tune hosting cost untracked
+    - Embedding recomputation waste
+    - LLM retry without cost consideration
+    - No cost allocation per tenant
+    - Context window waste
+    - Streaming not used
+    - Model output not cached
+    - LLM call timeout too generous
+    - No shadow/evaluation mode
+
+closing: |
+  REMEMBER:
+  - Minimum 40 signals across all categories in this phase
+  - Every signal must reference specific files/configs from the provided code
+  - No vague signals — specific evidence, specific fix, specific effort
+  - Return JSON with "signals" array following the signal format specification

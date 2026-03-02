@@ -1,0 +1,80 @@
+preamble: |
+  You are executing Phase 2 of a comprehensive software audit.
+  Focus: Memory, CPU & Network Performance
+  Target: 65+ signals across categories 6-8.
+
+  Analyze the provided code, configuration, and infrastructure files.
+  For each category, audit EVERY item in the checklist.
+  Reference specific files, line numbers, and configurations in your evidence.
+
+categories:
+  "6": |
+    ### CATEGORY 6: Memory Leaks & Management (min 25 signals)
+    Audit every aspect:
+    - Heap memory leaks: objects not released, growing collections
+    - Native/off-heap leaks: C extensions, JNI, FFI allocations
+    - Event listener leaks: addEventListener without removeEventListener
+    - Closure/callback leaks: closures holding large references
+    - Cache unbounded growth: LRU, TTL, or size limits
+    - Connection object leaks: connections not closed in finally/with
+    - Stream/file handle leaks: streams closed in context managers
+    - Buffer pool exhaustion: buffers returned to pool
+    - Thread/goroutine leaks: exit conditions, proper cleanup
+    - Static collection growth: module-level lists/maps without bounds
+    - Circular references preventing GC
+    - OOM killer behavior: graceful degradation, circuit breakers
+    - Container memory limit mismatch
+    - K8s OOMKilled masking: identify root cause
+    - Session object bloat: size limits, stale cleanup
+    - WebSocket connection accumulation: idle timeout, max connections
+    - Metrics cardinality explosion
+    - gRPC channel leak: proper close, connection pooling
+
+  "7": |
+    ### CATEGORY 7: CPU & Compute Performance (min 20 signals)
+    Audit every aspect:
+    - O(n²) in business logic: nested loops, optimize or index
+    - O(n²) in ORM: N+1, Cartesian products, eager loading
+    - Unnecessary serialization in loops
+    - Regex catastrophic backtracking
+    - Sync blocking in async context: run_in_executor for CPU-bound
+    - Thread pool exhaustion: pool sizing, timeout, bounded queues
+    - Event loop blocking: no long CPU work on main loop
+    - Excessive logging in hot paths
+    - Reflection overhead: cache reflected metadata
+    - Unoptimized DB queries: missing indexes, full scans
+    - Missing EXPLAIN ANALYZE for production queries
+    - Wrong data structure: list vs set vs dict for lookup
+    - Missing connection pooling
+    - DNS resolution per request: cache DNS, connection reuse
+    - TLS handshake per request: session resumption
+    - Inefficient pagination: keyset vs OFFSET
+    - Missing response compression: gzip/brotli
+    - Cold start latency: lazy init, keep-warm
+
+  "8": |
+    ### CATEGORY 8: Network & I/O Performance (min 20 signals)
+    Audit every aspect:
+    - Connection pool sizing: match concurrency, avoid exhaustion
+    - Connection pool leak: connections returned, timeout on checkout
+    - TCP tuning: keepalive, buffer sizes, Nagle for latency-sensitive
+    - DNS resolution latency: caching, prefetch, connection reuse
+    - TLS overhead: session resumption, OCSP stapling
+    - HTTP keep-alive: persistent connections
+    - Chatty protocols: batch requests, reduce round-trips
+    - Head-of-line blocking: HTTP/2, multiplexing
+    - Timeout misconfiguration: connect, read, write timeouts
+    - Socket exhaustion: connection limits, reuse, proper close
+    - Retry amplification: exponential backoff, jitter, max retries
+    - Circuit breaker missing: failure threshold, half-open, recovery
+    - LB health check misconfiguration
+    - gRPC keepalive: keepalive time, permit without stream
+    - WebSocket ping/pong: heartbeat for dead connections
+    - Connection draining: graceful shutdown, in-flight completion
+
+closing: |
+  REMEMBER:
+  - Minimum 65 signals across all categories in this phase
+  - Every signal must reference specific files/configs from the provided code
+  - No vague signals — specific evidence, specific fix, specific effort
+  - Return JSON with "signals" array following the signal format specification

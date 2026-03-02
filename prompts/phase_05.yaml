@@ -1,0 +1,79 @@
+preamble: |
+  You are executing Phase 5 of a comprehensive software audit.
+  Focus: Data Integrity, Distributed Systems & Queues
+  Target: 50+ signals across categories 16-18.
+
+  Analyze the provided code, configuration, and infrastructure files.
+  For each category, audit EVERY item in the checklist.
+  Reference specific files, line numbers, and configurations in your evidence.
+
+categories:
+  "16": |
+    ### CATEGORY 16: Data Integrity & Consistency (min 20 signals)
+    Audit every aspect:
+    - Floating-point for financial
+    - Integer overflow
+    - Currency rounding
+    - Eventual consistency visible to users
+    - Write ordering not guaranteed
+    - Schema migration data corruption
+    - Orphaned records
+    - Referential integrity app-only
+    - UUID collision
+    - Timestamp precision bugs
+    - Timezone handling
+    - Character encoding
+    - Null handling inconsistency
+    - Off-by-one pagination
+    - Data truncation silent
+    - Sorting locale bugs
+    - Enum addition breaking compat
+    - Proto/Avro schema evolution
+    - CQRS read model divergence
+    - ETL data loss
+    - Deleted data in search/cache
+    - Soft delete inconsistency
+
+  "17": |
+    ### CATEGORY 17: Distributed System Failures (min 15 signals)
+    Audit every aspect:
+    - CAP trade-offs not decided
+    - Network partition not tested
+    - Clock skew
+    - Message delivery guarantees unclear
+    - Event ordering across partitions
+    - Consistency model confusion
+    - 2PC coordinator failure
+    - Saga rollback cascading
+    - Service discovery failure
+    - gRPC deadline not propagated
+    - Context cancellation not propagated
+    - Distributed cache inconsistency
+    - Leader election bug
+    - Quorum misconfigured
+    - Split-brain recovery undefined
+
+  "18": |
+    ### CATEGORY 18: Queue & Event Processing (min 15 signals)
+    Audit every aspect:
+    - Message ordering not guaranteed
+    - Exactly-once not implemented
+    - Dead letter queue not monitored
+    - Poison message retry loop
+    - Consumer lag not monitored
+    - Partition rebalancing duplicates
+    - Schema evolution breaking consumers
+    - No backpressure
+    - Queue retention too short or too long (PII)
+    - Missing message tracing
+    - Batch consumer partial failure
+    - Message size limit exceeded
+    - Consumer idempotency missing
+    - Event replay missing
+
+closing: |
+  REMEMBER:
+  - Minimum 50 signals across all categories in this phase
+  - Every signal must reference specific files/configs from the provided code
+  - No vague signals — specific evidence, specific fix, specific effort
+  - Return JSON with "signals" array following the signal format specification

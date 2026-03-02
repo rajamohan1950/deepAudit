@@ -1,0 +1,116 @@
+preamble: |
+  You are executing Phase 10 of a comprehensive software audit.
+  Focus: Compliance, DR, i18n, State, Compatibility & Org
+  Target: 75+ signals across categories 35-40.
+
+  Analyze the provided code, configuration, and infrastructure files.
+  For each category, audit EVERY item in the checklist.
+  Reference specific files, line numbers, and configurations in your evidence.
+
+categories:
+  "35": |
+    ### CATEGORY 35: Compliance & Regulatory (min 15 signals)
+    Audit every aspect:
+    - Audit trail not immutable
+    - Non-repudiation not implemented
+    - Regulatory reporting not automated
+    - Data retention not enforced by automation
+    - Right to erasure not fully implemented
+    - Consent management incomplete
+    - Third-party vendor compliance unverified
+    - Penetration test not performed
+    - SOC2 evidence manual
+    - No compliance-as-code
+    - Access review not regular
+    - Segregation of duties violated
+    - Change management not documented
+    - Business continuity plan not tested
+    - Data classification not enforced
+
+  "36": |
+    ### CATEGORY 36: Disaster Recovery (min 15 signals)
+    Audit every aspect:
+    - No DR plan
+    - DR plan never tested
+    - RTO not defined/achievable
+    - RPO not defined/measured
+    - Backup corruption undetected
+    - Backup restoration never tested
+    - Geo-failover not configured
+    - Geo-failover not tested
+    - DNS failover TTL too high
+    - Data sync lag to DR not monitored
+    - DR site capacity insufficient
+    - DR runbook incomplete
+    - No DR communication plan
+    - Application state not in DR
+    - Third-party deps not in DR plan
+
+  "37": |
+    ### CATEGORY 37: Internationalization & Localization (min 10 signals)
+    Audit every aspect:
+    - Date format not locale-aware
+    - Currency handling incorrect
+    - Number formatting locale-dependent
+    - Character encoding issues
+    - Email/SMS templates not localized
+    - Error messages hardcoded in English
+    - RTL text layout not supported
+    - Sorting locale-unaware (Turkish İ)
+    - Address format assumptions
+    - Phone number format assumptions
+    - Timezone display not user-configurable
+
+  "38": |
+    ### CATEGORY 38: State Management (min 10 signals)
+    Audit every aspect:
+    - Session state in-process
+    - Sticky sessions without fallback
+    - Session state too large
+    - State replication lag
+    - Stateful service blocking scaling
+    - State not cleaned after workflow
+    - State recovery after crash undefined
+    - Idempotency state cleanup
+    - Feature flag state cached too long
+    - WebSocket state on pod restart
+
+  "39": |
+    ### CATEGORY 39: Backward Compatibility & Migration (min 10 signals)
+    Audit every aspect:
+    - API breaking change without versioning
+    - DB schema migration without backward compat
+    - Message format change breaks consumers
+    - Config format change breaks deployments
+    - Library upgrade breaks dependent services
+    - Proto/Avro field renumbering
+    - Feature removal without deprecation
+    - Data migration only forward tested
+    - Mobile app forced update
+    - Webhook payload change breaks consumers
+
+  "40": |
+    ### CATEGORY 40: Organizational & Knowledge (min 15 signals)
+    Audit every aspect:
+    - No change management process
+    - No RFC/design review
+    - No security champion per team
+    - No security training for developers
+    - No onboarding security checklist
+    - No offboarding process
+    - Knowledge silos (bus factor=1)
+    - No runbook for every alert
+    - No architecture decision records
+    - Post-incident items not tracked
+    - Technical roadmap doesn't include reliability/security
+    - Security deprioritized for features
+    - No game days/DR drills
+    - No cross-training
+    - On-call handbook missing
+
+closing: |
+  REMEMBER:
+  - Minimum 75 signals across all categories in this phase
+  - Every signal must reference specific files/configs from the provided code
+  - No vague signals — specific evidence, specific fix, specific effort
+  - Return JSON with "signals" array following the signal format specification

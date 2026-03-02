@@ -1,0 +1,97 @@
+preamble: |
+  You are executing Phase 3 of a comprehensive software audit.
+  Focus: Database, Cache, OS & Graceful Shutdown
+  Target: 70+ signals across categories 9-12.
+
+  Analyze the provided code, configuration, and infrastructure files.
+  For each category, audit EVERY item in the checklist.
+  Reference specific files, line numbers, and configurations in your evidence.
+
+categories:
+  "9": |
+    ### CATEGORY 9: Database & Storage Performance (min 25 signals)
+    Audit every aspect:
+    - Missing indexes: columns in WHERE, JOIN, ORDER BY
+    - Unused indexes: remove never-used indexes
+    - N+1 query pattern: batch loads, eager loading, JOIN FETCH
+    - Full table scan: use indexes, avoid SELECT * on large tables
+    - Missing query parameterization: prepared statements
+    - Lock contention: row-level locks, avoid long-held locks
+    - Long-running transactions: shorten scope
+    - Connection pool exhaustion: pool size, max wait, validation
+    - No slow query monitoring: log queries > threshold
+    - Missing statement timeout: prevent runaway queries
+    - Table bloat: VACUUM, partitioning
+    - Missing partition strategy for large tables
+    - Replication lag: read-after-write consistency, lag monitoring
+    - No read replica routing
+    - Missing query caching for hot queries
+    - WAL growth: checkpoint tuning, archive, retention
+    - Backup never tested: restore drills
+    - Schema migration locks: online migrations, lock timeout
+    - Unencrypted DB connections: TLS for client-to-DB
+    - Cursor leak: cursors closed, context managers
+    - Inefficient JSONB queries: GIN indexes
+
+  "10": |
+    ### CATEGORY 10: Caching Performance (min 15 signals)
+    Audit every aspect:
+    - Missing caching for expensive ops: DB queries, external APIs
+    - Cache stampede: single-flight, coalescing, probabilistic early expiry
+    - Cache invalidation bugs: correct invalidation on write
+    - Cache key collision: namespace, hash, version in key
+    - Cache warming missing: preload hot data on startup
+    - TTL misconfiguration: match data freshness requirements
+    - Cache size unbounded: maxmemory, eviction policy, limits
+    - Hot key problem: sharding, local cache, replication
+    - Cache serialization overhead
+    - Distributed cache consistency: invalidation strategy
+    - Cache penetration: bloom filter or null cache for non-existent
+    - Cache avalanche: staggered TTL, circuit breaker
+    - Dog-pile/lock contention: distributed lock, single-flight
+    - Redis/Memcached memory limit: maxmemory-policy, eviction
+
+  "11": |
+    ### CATEGORY 11: OS & Kernel Level (min 20 signals)
+    Audit every aspect:
+    - File descriptor limit
+    - Inode exhaustion
+    - Disk I/O saturation
+    - Swap thrashing
+    - TCP kernel params: somaxconn, TIME_WAIT, ephemeral port range
+    - Conntrack table
+    - OOM killer scoring
+    - Core dump handling
+    - System clock sync (NTP)
+    - cgroup limits
+    - PID limit
+    - Filesystem mount options
+    - Transparent Huge Pages
+    - NUMA topology
+    - Kernel security modules (AppArmor/SELinux)
+    - Container cgroup driver mismatch
+    - Journal rotation
+    - /tmp partition separation
+
+  "12": |
+    ### CATEGORY 12: Graceful Shutdown & Lifecycle (min 10 signals)
+    Audit every aspect:
+    - No SIGTERM handler
+    - No connection draining
+    - In-flight requests dropped
+    - DB transactions uncommitted on shutdown
+    - Message ack lost
+    - Background job interruption
+    - K8s preStop hook missing
+    - terminationGracePeriodSeconds too short
+    - LB deregistration delay
+    - Health endpoint 200 during shutdown
+    - Persistent connections not closed
+    - File locks not released
+
+closing: |
+  REMEMBER:
+  - Minimum 70 signals across all categories in this phase
+  - Every signal must reference specific files/configs from the provided code
+  - No vague signals — specific evidence, specific fix, specific effort
+  - Return JSON with "signals" array following the signal format specification

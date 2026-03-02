@@ -1,0 +1,94 @@
+preamble: |
+  You are executing Phase 4 of a comprehensive software audit.
+  Focus: SPOF, Fault Tolerance & Concurrency
+  Target: 70+ signals across categories 13-15.
+
+  Analyze the provided code, configuration, and infrastructure files.
+  For each category, audit EVERY item in the checklist.
+  Reference specific files, line numbers, and configurations in your evidence.
+
+categories:
+  "13": |
+    ### CATEGORY 13: Single Points of Failure (min 25 signals)
+    Audit every aspect:
+    - Single DB instance
+    - Single AZ
+    - Single region
+    - Single LB
+    - Single DNS provider
+    - Single CA
+    - Single secrets vault
+    - Single message broker
+    - Single cache instance
+    - Single CI/CD pipeline
+    - Single monitoring system
+    - Single log aggregator
+    - Single external API provider
+    - Single auth/IdP provider
+    - Single container registry
+    - Single API gateway
+    - Single config source
+    - Shared database across services
+    - Shared K8s cluster
+    - Shared library bug blast radius
+    - Single LLM provider
+    - Single notification provider
+    - Hero engineer
+
+  "14": |
+    ### CATEGORY 14: Fault Tolerance & Resilience (min 25 signals)
+    Audit every aspect:
+    - Circuit breaker missing or misconfigured
+    - Retry without backoff
+    - Retry without jitter
+    - Retry without max
+    - Multi-layer retry amplification
+    - Timeout not configured
+    - Timeout chain bug
+    - Bulkhead missing
+    - Fallback undefined
+    - Graceful degradation not designed
+    - Health check too simple or too aggressive
+    - Liveness vs readiness confusion
+    - Cascading failure chain
+    - Back-pressure missing
+    - Dead letter queue missing
+    - Poison message handling
+    - Split-brain scenarios
+    - Failover never tested
+    - RTO/RPO not measured
+    - Dependency isolation missing
+    - Load shedding not implemented
+    - Admission control missing
+    - Self-DDOS via retries
+    - Chaos testing never performed
+
+  "15": |
+    ### CATEGORY 15: Concurrency & Race Conditions (min 20 signals)
+    Audit every aspect:
+    - Read-modify-write without atomicity
+    - Double-spend
+    - Lost update
+    - Dirty read, phantom read
+    - Deadlock
+    - Lock ordering inconsistency
+    - Optimistic locking missing
+    - Pessimistic locking too broad
+    - Shared mutable state
+    - Non-atomic composite operation
+    - Event ordering issues
+    - Idempotency not implemented
+    - Idempotency key predictable
+    - Distributed lock without TTL
+    - Distributed lock not released
+    - Counter via read+write
+    - K8s scaling race
+    - Message deduplication missing
+    - Saga compensation incomplete
+
+closing: |
+  REMEMBER:
+  - Minimum 70 signals across all categories in this phase
+  - Every signal must reference specific files/configs from the provided code
+  - No vague signals — specific evidence, specific fix, specific effort
+  - Return JSON with "signals" array following the signal format specification

@@ -1,0 +1,97 @@
+preamble: |
+  You are executing Phase 8 of a comprehensive software audit.
+  Focus: Observability Stack
+  Target: 65+ signals across categories 25-28.
+
+  Analyze the provided code, configuration, and infrastructure files.
+  For each category, audit EVERY item in the checklist.
+  Reference specific files, line numbers, and configurations in your evidence.
+
+categories:
+  "25": |
+    ### CATEGORY 25: Metrics & Monitoring (min 20 signals)
+    Audit every aspect:
+    - RED metrics missing (Rate, Errors, Duration)
+    - USE metrics missing (Utilization, Saturation, Errors)
+    - SLO/SLI not defined
+    - Error budget not tracked
+    - Business metrics not in monitoring
+    - Dependency health metrics missing
+    - Metric cardinality explosion
+    - Histogram buckets wrong
+    - No baseline established
+    - Metric resolution too low
+    - Metric retention too short
+    - Counter reset not handled
+    - Custom app metrics missing
+    - Infra not correlated with app metrics
+    - No cost metrics
+    - Metric pipeline SPOF
+    - No synthetic monitoring
+    - Health check doesn't test functionality
+    - Metrics scrape interval too long
+    - No per-tenant metrics
+
+  "26": |
+    ### CATEGORY 26: Logging (min 15 signals)
+    Audit every aspect:
+    - Unstructured logs
+    - No correlation/trace ID
+    - Log levels misused
+    - Security events not logged
+    - Audit trail incomplete
+    - Log retention too short
+    - No log sampling
+    - PII in logs
+    - Log injection possible
+    - Request/response body not logged for external calls
+    - Error logs missing request context
+    - Log aggregation SPOF
+    - Structured log fields inconsistent
+    - Log volume not monitored
+    - No log-based alerting
+
+  "27": |
+    ### CATEGORY 27: Distributed Tracing (min 10 signals)
+    Audit every aspect:
+    - No distributed tracing
+    - Trace ID not propagated across boundaries
+    - Trace ID not in logs
+    - DB queries not traced
+    - External API calls not traced
+    - Message queue not traced
+    - Trace sampling drops important spans
+    - Trace storage retention too short
+    - No trace-based alerting
+    - Trace UI not accessible to on-call
+
+  "28": |
+    ### CATEGORY 28: Alerting & Incident Response (min 20 signals)
+    Audit every aspect:
+    - Alert coverage gaps
+    - Alert fatigue
+    - Static thresholds only
+    - No SLO burn-rate alerts
+    - No anomaly detection
+    - No dead man's switch
+    - Runbooks missing/outdated
+    - Escalation policy not tested
+    - No PagerDuty/OpsGenie
+    - On-call imbalanced
+    - Incident severity classification missing
+    - No incident commander role
+    - No communication plan
+    - No status page
+    - Postmortem process missing
+    - Postmortem items not tracked
+    - MTTD not measured
+    - MTTR not measured
+    - No incident trends analysis
+    - No chaos engineering/GameDays
+
+closing: |
+  REMEMBER:
+  - Minimum 65 signals across all categories in this phase
+  - Every signal must reference specific files/configs from the provided code
+  - No vague signals — specific evidence, specific fix, specific effort
+  - Return JSON with "signals" array following the signal format specification

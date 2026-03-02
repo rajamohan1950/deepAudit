@@ -1,0 +1,109 @@
+preamble: |
+  You are executing Phase 1 of a comprehensive software audit.
+  Focus: Security & Access Control
+  Target: 120+ signals across categories 1-5.
+
+  Analyze the provided code, configuration, and infrastructure files.
+  For each category, audit EVERY item in the checklist.
+  Reference specific files, line numbers, and configurations in your evidence.
+
+categories:
+  "1": |
+    ### CATEGORY 1: Authentication & Identity (min 25 signals)
+    Audit every aspect:
+    - Login flow: credential verification, rate limiting, error handling
+    - Signup flow: email verification, CAPTCHA, duplicate prevention
+    - Password reset: token entropy, expiry, single-use, secure delivery
+    - MFA: TOTP/HOTP, backup codes, fallback paths
+    - SSO/SAML: assertion signing, audience restriction, replay protection
+    - OAuth2/OIDC: PKCE, redirect URI validation, ID token verification
+    - Session lifecycle: creation, renewal, invalidation, timeout
+    - JWT security: algorithm enforcement, signature verification, expiry
+    - API key lifecycle: creation, rotation, revocation, scope binding
+    - Service-to-service auth: mTLS, JWT, OAuth2 client credentials
+    - Credential storage: bcrypt/argon2id, no plaintext
+    - Brute force protection: lockout, CAPTCHA, progressive delays
+    - Session fixation/hijacking: HttpOnly, Secure, SameSite cookies
+    - Token leakage: Referer, logs, error messages, client storage
+    - Default credentials: no hardcoded admin/test passwords
+
+  "2": |
+    ### CATEGORY 2: Authorization & Access Control (min 20 signals)
+    Audit every aspect:
+    - RBAC/ABAC/ReBAC: all resources have explicit policy coverage
+    - Authorization at every layer: API, service, database, UI
+    - IDOR on ALL endpoints: resource ownership before access
+    - Horizontal/vertical escalation prevention
+    - Missing function-level access control on endpoints
+    - Mass assignment/overposting: whitelist allowed fields
+    - GraphQL field-level auth in resolvers
+    - File/blob access: signed URLs, ownership checks, path validation
+    - Admin panel isolation: separate auth, network segmentation
+    - Cross-tenant data access: tenant ID in every query
+    - TOCTOU in auth checks: validate at use time
+    - Database row-level security for multi-tenant tables
+    - Webhook signature verification: HMAC or signature validation
+    - OAuth scope validation
+
+  "3": |
+    ### CATEGORY 3: Input Validation & Injection (min 30 signals)
+    Audit every aspect:
+    - SQL injection: parameterization for all dialects
+    - NoSQL injection: safe query builders
+    - Command injection: shell exec, subprocess sanitization
+    - XSS stored/reflected/DOM-based: encoding, CSP, sanitization
+    - SSRF: scheme validation, host allowlist, block internal IPs
+    - XXE: disable external entities in XML parsers
+    - SSTI: template engines not evaluating user input as code
+    - Deserialization: safe parsers, no pickle/yaml.load of untrusted
+    - ReDoS: regex patterns avoid catastrophic backtracking
+    - GraphQL abuse: depth limits, complexity analysis
+    - CORS: origin validation, credentials handling
+    - Prototype pollution: sanitize __proto__ and constructor
+    - File upload: type validation, extension, magic bytes, path traversal
+    - JSON/XML bomb: size limits, depth limits
+    - Open redirect: URL allowlist validation
+    - HTTP request smuggling, parameter pollution
+
+  "4": |
+    ### CATEGORY 4: Data Protection & Privacy (min 20 signals)
+    Audit every aspect:
+    - Encryption at rest: AES-256 for DB, volumes, backups
+    - Encryption in transit: TLS 1.2+ for all traffic
+    - Key management: HSM/KMS, rotation, separation of duties
+    - PII inventory: catalog, retention, purpose
+    - Data masking in non-prod: PII redacted or tokenized
+    - PII in logs/errors: no SSN, credit card, passwords
+    - Sensitive data in URLs: use POST or headers
+    - Secrets management: Vault, no env vars for prod secrets
+    - Secrets in git history: no credentials committed
+    - API response over-fetching: return only needed fields
+    - Cache headers for sensitive data: no-store, no-cache
+    - Audit trail for data access
+    - Cross-border data transfer: GDPR, adequacy decisions
+    - Right to portability: machine-readable export
+
+  "5": |
+    ### CATEGORY 5: Cryptography & Key Management (min 15 signals)
+    Audit every aspect:
+    - Weak hash algorithms: no MD5/SHA1; use SHA-256+ or Argon2
+    - Weak encryption: no DES, 3DES, RC4; use AES-256-GCM
+    - Insufficient key length: RSA 2048+, ECDH P-256+
+    - Bad RNG: use os.urandom, secrets module
+    - Hardcoded keys/IVs: keys from KMS, env, secure config
+    - IV/nonce reuse: unique IV per encryption
+    - Missing AEAD: use GCM, ChaCha20-Poly1305
+    - TLS configuration: 1.2+ only, strong ciphers
+    - Certificate chain validation: full verification, no skip
+    - Certificate expiry monitoring and renewal
+    - HSTS: Strict-Transport-Security header
+    - Timing side-channel: constant-time comparison
+    - Key derivation: PBKDF2/Argon2 with sufficient iterations
+    - Downgrade attack protection
+
+closing: |
+  REMEMBER:
+  - Minimum 120 signals across all categories in this phase
+  - Every signal must reference specific files/configs from the provided code
+  - No vague signals — specific evidence, specific fix, specific effort
+  - Return JSON with "signals" array following the signal format specification
