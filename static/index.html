@@ -42,6 +42,7 @@
         <a href="/compliance" class="hover:text-white transition">Compliance</a>
         <a href="/sample-report" class="hover:text-white transition">Sample Report</a>
         <a href="/methodology" class="hover:text-white transition">Methodology</a>
+        <a href="#quick-assessment" class="hover:text-white transition">Try It</a>
         <a href="#contact" class="hover:text-white transition">Contact</a>
       </div>
       <a href="#contact" class="hidden md:block text-sm bg-gold-500 hover:bg-gold-600 text-surface-950 px-5 py-2 rounded-lg font-semibold transition">Request Assessment</a>
@@ -65,6 +66,7 @@
       </p>
       <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
         <a href="#contact" class="px-8 py-4 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-lg font-bold text-lg transition">Request Assessment</a>
+        <a href="#quick-assessment" class="px-8 py-4 border border-gold-500/40 hover:border-gold-500 rounded-lg font-semibold text-lg transition text-gold-400 hover:text-gold-300">Try Quick Scan</a>
         <a href="/sample-report" class="px-8 py-4 border border-white/10 hover:border-white/25 rounded-lg font-semibold text-lg transition text-gray-300 hover:text-white">View Sample Report</a>
       </div>
       <div class="mt-14 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-gray-500 text-sm">
@@ -458,19 +460,40 @@ document.getElementById('audit-form').addEventListener('submit', async (e) => {
   errEl.classList.add('hidden');
 
   btn.disabled = true;
-  btn.innerHTML = '<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full spinner"></div> Analyzing...';
+  btn.innerHTML = '<div class="w-5 h-5 border-2 border-surface-950 border-t-transparent rounded-full spinner"></div> Starting Assessment...';
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
 
   try {
     const res = await fetch('/api/v1/quick-audit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ github_url: url, email: email || undefined })
+      body: JSON.stringify({ github_url: url, email: email || undefined }),
+      signal: controller.signal
     });
+    clearTimeout(timeout);
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Failed to start assessment');
-    window.location.href = `/audit?id=${data.audit_id}&key=${data.api_key}`;
+
+    const auditId = data.audit_id;
+    const apiKey = data.api_key;
+
+    if (auditId && apiKey) {
+      btn.innerHTML = 'Redirecting to dashboard...';
+      window.location.href = `/audit?id=${auditId}&key=${apiKey}`;
+    } else if (auditId) {
+      btn.innerHTML = 'Redirecting to dashboard...';
+      window.location.href = `/audit?id=${auditId}&key=`;
+    } else {
+      throw new Error('No audit ID returned. Please try again.');
+    }
   } catch (err) {
-    errEl.textContent = err.message;
+    clearTimeout(timeout);
+    const msg = err.name === 'AbortError'
+      ? 'Request timed out. The server may be waking up — please try again in 30 seconds.'
+      : err.message;
+    errEl.textContent = msg;
     errEl.classList.remove('hidden');
     btn.disabled = false;
     btn.innerHTML = 'Run Assessment';

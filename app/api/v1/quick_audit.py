@@ -62,13 +62,12 @@ async def quick_audit(
         )
 
     email = body.email or f"guest-{url.split('/')[-1]}@quickaudit.deepaudit.io"
-    raw_key = None
+    raw_key = generate_api_key()
 
     result = await db.execute(select(Tenant).where(Tenant.email == email))
     tenant = result.scalar_one_or_none()
 
     if not tenant:
-        raw_key = generate_api_key()
         tenant = Tenant(
             name=email.split("@")[0],
             email=email,
@@ -77,6 +76,9 @@ async def quick_audit(
         db.add(tenant)
         await db.flush()
         await db.refresh(tenant)
+    else:
+        tenant.api_key_hash = hash_api_key(raw_key)
+        await db.flush()
 
     source_config = {
         "type": "github",
