@@ -304,6 +304,8 @@ function usd(n) {
   return "$" + Number(n || 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 
+const POLL_INTERVAL_MS = 5000;
+
 async function loadReport() {
   const { id, key } = getParams();
   if (!id || !key) { showError("Missing required parameters. URL must include ?id=AUDIT_ID&key=API_KEY"); return; }
@@ -315,6 +317,17 @@ async function loadReport() {
     if (!res.ok) { showError(`Server error (${res.status}). Please try again later.`); return; }
 
     reportData = await res.json();
+    const status = reportData.audit_status || "unknown";
+    if (["pending", "running", "ingesting", "generating_reports"].includes(status)) {
+      const p = document.querySelector("#loading-state p");
+      if (p) p.textContent = "Assessment in progress. Generating PE report… This may take up to 3 minutes.";
+      setTimeout(loadReport, POLL_INTERVAL_MS);
+      return;
+    }
+    if (status === "failed") {
+      showError(reportData.error_message || "Assessment failed. Please try again or request a full assessment.");
+      return;
+    }
     renderReport();
   } catch (err) {
     showError("Network error — unable to reach the DeepAudit API. Check your connection.");

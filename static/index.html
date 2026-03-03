@@ -399,13 +399,38 @@
         </div>
       </div>
 
-      <!-- CTA -->
-      <div class="text-center">
+      <!-- CTA + Start Assessment -->
+      <div class="text-center mb-16">
         <a href="/sample-report" class="inline-flex items-center gap-2 px-10 py-4 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-xl font-bold text-lg transition">
           View Full Sample Report
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
         </a>
-        <p class="text-sm text-gray-500 mt-6">Sample e-commerce SaaS assessment. For your target, <a href="#contact" class="text-gold-400 hover:text-gold-500 transition">request an assessment</a>.</p>
+        <p class="text-sm text-gray-500 mt-6">Sample e-commerce SaaS assessment.</p>
+      </div>
+
+      <!-- Start Real Assessment (bounded) -->
+      <div class="max-w-xl mx-auto border-t border-white/10 pt-16">
+        <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-2">Start Assessment</p>
+        <h3 class="text-xl font-bold text-center mb-2">Run a PE-Grade Scan on Your Repo</h3>
+        <p class="text-gray-500 text-center text-sm mb-6">Bounded scan: max 25K LOC, ~3 min. Generates full PE report — executive summary, heatmap, SPOF map, compliance, roadmap.</p>
+        <div class="flex flex-wrap justify-center gap-2 mb-6 text-xs text-gray-500">
+          <span class="px-2.5 py-1 rounded-full bg-surface-800 border border-white/5">25K LOC max</span>
+          <span class="px-2.5 py-1 rounded-full bg-surface-800 border border-white/5">3 min limit</span>
+          <span class="px-2.5 py-1 rounded-full bg-surface-800 border border-white/5">9 key categories</span>
+          <span class="px-2.5 py-1 rounded-full bg-surface-800 border border-white/5">PE report output</span>
+        </div>
+        <form id="start-assessment-form" class="space-y-4">
+          <input type="url" id="repo-url" placeholder="https://github.com/owner/repo" required
+            class="w-full px-4 py-3 bg-surface-900 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500">
+          <input type="email" id="repo-email" placeholder="Email (for report delivery)"
+            class="w-full px-4 py-3 bg-surface-900 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500">
+          <button type="submit" id="start-btn"
+            class="w-full py-3.5 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-xl font-bold transition flex items-center justify-center gap-2">
+            Start Assessment
+          </button>
+        </form>
+        <div id="start-error" class="hidden mt-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg"></div>
+        <p class="text-xs text-gray-500 mt-4 text-center">Public repos only. Results delivered as PE report. Larger repos: <a href="#contact" class="text-gold-400 hover:text-gold-500">request full assessment</a>.</p>
       </div>
     </div>
   </section>
@@ -478,6 +503,37 @@
   </footer>
 
 <script>
+// Start Assessment form (bounded scan → PE report)
+document.getElementById('start-assessment-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const url = document.getElementById('repo-url').value.trim();
+  const email = document.getElementById('repo-email').value.trim();
+  const btn = document.getElementById('start-btn');
+  const errEl = document.getElementById('start-error');
+  errEl.classList.add('hidden');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="w-5 h-5 border-2 border-surface-950 border-t-transparent rounded-full spinner"></div> Starting...';
+  try {
+    const res = await fetch('/api/v1/quick-audit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ github_url: url, email: email || undefined })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Failed to start assessment');
+    if (data.audit_id && data.api_key) {
+      window.location.href = `/pe-report?id=${data.audit_id}&key=${data.api_key}`;
+    } else {
+      throw new Error('Invalid response. Please try again.');
+    }
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.classList.remove('hidden');
+    btn.disabled = false;
+    btn.innerHTML = 'Start Assessment';
+  }
+});
+
 // Contact form
 document.getElementById('contact-form').addEventListener('submit', async (e) => {
   e.preventDefault();

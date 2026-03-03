@@ -85,7 +85,11 @@ async def get_full_pe_report(
     if not audit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Audit not found.")
 
-    return await _generator.generate_full_pe_report(audit_id, db)
+    report = await _generator.generate_full_pe_report(audit_id, db)
+    report["audit_status"] = audit.status
+    if audit.error_message:
+        report["error_message"] = audit.error_message
+    return report
 
 
 @router.get("/{audit_id}/executive-summary")

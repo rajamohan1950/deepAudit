@@ -52,5 +52,12 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     log_format: Literal["json", "text"] = "json"
 
+    # Contact / notifications
+    contact_notification_email: str = "jrajamohan1975@gmail.com"
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+
 
 settings = Settings()

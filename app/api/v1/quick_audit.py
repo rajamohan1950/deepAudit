@@ -22,7 +22,7 @@ GITHUB_URL_RE = re.compile(
     r"^https?://github\.com/[\w.\-]+/[\w.\-]+/?$"
 )
 
-MAX_LOC_QUICK = 50_000
+MAX_LOC_QUICK = 25_000
 
 QUICK_CATEGORIES = [1, 2, 3, 4, 13, 14, 29, 30, 35]
 
