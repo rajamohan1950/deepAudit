@@ -283,6 +283,8 @@ class AuditOrchestrator:
             local_path=repo_path if source_type != "upload" else None,
         )
         db.add(snapshot)
+        await db.flush()
+        await db.refresh(snapshot)
 
         for f in classified_files[:500]:
             try:
@@ -297,7 +299,7 @@ class AuditOrchestrator:
                 language=f.get("language"),
                 size_bytes=f["size_bytes"],
                 content=content,
-                metadata={"extension": f["extension"]},
+                file_metadata={"extension": f["extension"]},
             )
             db.add(artifact)
 
