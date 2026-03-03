@@ -219,7 +219,7 @@ def _estimate_revenue_impact(signals: list[Signal]) -> dict[str, Any]:
 
 
 def _classify_spof(signal: Signal) -> str:
-    text = (signal.signal_text + " " + signal.evidence + " " + signal.failure_scenario).lower()
+    text = ((signal.signal_text or "") + " " + (signal.evidence or "") + " " + (signal.failure_scenario or "")).lower()
     scores = {}
     for spof_type, keywords in SPOF_KEYWORDS.items():
         scores[spof_type] = sum(1 for kw in keywords if kw in text)
@@ -264,12 +264,12 @@ class PEReportGenerator:
             "top_5_critical_findings": [
                 {
                     "rank": i + 1,
-                    "signal": s.signal_text[:300],
+                    "signal": (s.signal_text or "")[:300],
                     "severity": s.severity,
                     "score": s.score,
                     "category": s.category.name if s.category else CATEGORY_NAMES.get(s.category_id, ""),
-                    "evidence": s.evidence[:200],
-                    "remediation": s.remediation[:250],
+                    "evidence": (s.evidence or "")[:200],
+                    "remediation": (s.remediation or "")[:250],
                     "effort": s.effort,
                 }
                 for i, s in enumerate(top_critical)
@@ -369,12 +369,12 @@ class PEReportGenerator:
             seen_ids.add(s.id)
             spof_type = _classify_spof(s)
             classified[spof_type].append({
-                "signal": s.signal_text[:350],
+                "signal": (s.signal_text or "")[:350],
                 "severity": s.severity,
                 "score": s.score,
-                "evidence": s.evidence[:250],
-                "blast_radius": s.failure_scenario[:350],
-                "remediation": s.remediation[:300],
+                "evidence": (s.evidence or "")[:250],
+                "blast_radius": (s.failure_scenario or "")[:350],
+                "remediation": (s.remediation or "")[:300],
                 "effort": s.effort,
                 "estimated_hours": EFFORT_HOURS.get(s.effort, 8),
                 "category": s.category.name if s.category else CATEGORY_NAMES.get(s.category_id, ""),
@@ -387,9 +387,9 @@ class PEReportGenerator:
         for s in spof_signals:
             if s.severity == "P0":
                 dependency_chain.append({
-                    "component": s.signal_text[:150],
-                    "depends_on": s.evidence[:150],
-                    "failure_impact": s.failure_scenario[:200],
+                    "component": (s.signal_text or "")[:150],
+                    "depends_on": (s.evidence or "")[:150],
+                    "failure_impact": (s.failure_scenario or "")[:200],
                 })
 
         total = sum(len(v) for v in classified.values())
@@ -459,11 +459,11 @@ class PEReportGenerator:
                         gap_hours = EFFORT_HOURS.get(s.effort, 8)
                         gaps.append({
                             "control": control_name,
-                            "signal": s.signal_text[:250],
+                            "signal": (s.signal_text or "")[:250],
                             "severity": s.severity,
                             "score": s.score,
-                            "evidence": s.evidence[:200],
-                            "remediation": s.remediation[:250],
+                            "evidence": (s.evidence or "")[:200],
+                            "remediation": (s.remediation or "")[:250],
                             "effort": s.effort,
                             "remediation_hours": gap_hours,
                             "remediation_cost_usd": gap_hours * ASSUMED_HOURLY_RATE,
@@ -528,11 +528,11 @@ class PEReportGenerator:
                 if s.category_id in cat_ids:
                     hours = EFFORT_HOURS.get(s.effort, 8)
                     ledger[debt_type].append({
-                        "signal": s.signal_text[:300],
+                        "signal": (s.signal_text or "")[:300],
                         "severity": s.severity,
                         "score": s.score,
-                        "evidence": s.evidence[:200],
-                        "remediation": s.remediation[:250],
+                        "evidence": (s.evidence or "")[:200],
+                        "remediation": (s.remediation or "")[:250],
                         "effort": s.effort,
                         "estimated_hours": hours,
                         "estimated_cost_usd": hours * ASSUMED_HOURLY_RATE,
@@ -597,8 +597,8 @@ class PEReportGenerator:
                     "signal": s.signal_text[:250],
                     "category": s.category.name if s.category else CATEGORY_NAMES.get(s.category_id, ""),
                     "score": s.score,
-                    "evidence": s.evidence[:150],
-                    "remediation": s.remediation[:250],
+                    "evidence": (s.evidence or "")[:150],
+                    "remediation": (s.remediation or "")[:250],
                     "effort": s.effort,
                     "estimated_hours": hours,
                 })
@@ -649,8 +649,8 @@ class PEReportGenerator:
                     "signal": s.signal_text[:300],
                     "severity": s.severity,
                     "score": s.score,
-                    "evidence": s.evidence[:200],
-                    "remediation": s.remediation[:250],
+                    "evidence": (s.evidence or "")[:200],
+                    "remediation": (s.remediation or "")[:250],
                     "effort": s.effort,
                 }
                 for s in sorted(area_signals, key=lambda x: x.score, reverse=True)[:5]

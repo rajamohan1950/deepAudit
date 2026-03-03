@@ -64,35 +64,13 @@
   </nav>
 
   <!-- LOADING STATE -->
-  <div id="loading-state" class="pt-24 pb-20">
-    <div class="max-w-5xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <div class="skeleton h-4 w-40 mx-auto mb-4"></div>
-        <div class="skeleton h-10 w-80 mx-auto mb-3"></div>
-        <div class="skeleton h-px w-24 mx-auto mb-6"></div>
-        <div class="skeleton h-5 w-64 mx-auto"></div>
-      </div>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-        <div class="border border-white/5 bg-dark-800/50 p-5"><div class="skeleton h-3 w-16 mb-2"></div><div class="skeleton h-6 w-24"></div></div>
-        <div class="border border-white/5 bg-dark-800/50 p-5"><div class="skeleton h-3 w-16 mb-2"></div><div class="skeleton h-6 w-24"></div></div>
-        <div class="border border-white/5 bg-dark-800/50 p-5"><div class="skeleton h-3 w-16 mb-2"></div><div class="skeleton h-6 w-24"></div></div>
-        <div class="border border-white/5 bg-dark-800/50 p-5"><div class="skeleton h-3 w-16 mb-2"></div><div class="skeleton h-6 w-24"></div></div>
-      </div>
-      <div class="grid md:grid-cols-3 gap-6 mb-12">
-        <div class="border border-white/5 bg-dark-800/50 p-8"><div class="skeleton h-36 w-36 mx-auto rounded-full mb-4"></div><div class="skeleton h-6 w-20 mx-auto"></div></div>
-        <div class="border border-white/5 bg-dark-800/50 p-8"><div class="skeleton h-8 w-48 mb-4"></div><div class="skeleton h-4 w-full mb-2"></div><div class="skeleton h-4 w-3/4"></div></div>
-        <div class="border border-white/5 bg-dark-800/50 p-8"><div class="skeleton h-8 w-32 mb-4"></div><div class="skeleton h-4 w-full mb-2"></div><div class="skeleton h-4 w-2/3"></div></div>
-      </div>
-      <p id="loading-msg" class="text-center text-white/30 text-sm">Loading report data&hellip;</p>
-      <div id="countdown-container" class="hidden mt-8 flex flex-col items-center">
-        <p class="text-xs text-white/40 uppercase tracking-wider mb-2">Estimated time remaining</p>
-        <div id="countdown-display" class="text-4xl font-bold text-gold-400 font-mono tabular-nums">2:00</div>
-      </div>
-      <div class="mt-8 flex justify-center">
-        <button id="refresh-check-btn" type="button" class="hidden px-6 py-2.5 border border-gold-400/30 text-gold-400 hover:bg-gold-400/10 transition-all text-sm tracking-wider"
-          onclick="location.reload()">
-          Refresh to check status
-        </button>
+  <div id="loading-state" class="pt-24 pb-20 min-h-[70vh] flex flex-col items-center justify-center">
+    <div class="text-center">
+      <p id="loading-msg" class="text-white/50 text-sm mb-8">Starting assessment&hellip;</p>
+      <div id="countdown-container" class="flex flex-col items-center">
+        <p class="text-xs text-white/40 uppercase tracking-wider mb-4">Generating PE report</p>
+        <div id="countdown-display" class="text-8xl md:text-9xl font-bold text-gold-400 font-mono tabular-nums leading-none">2:00</div>
+        <p class="text-white/30 text-sm mt-4">Report will appear automatically when ready</p>
       </div>
     </div>
   </div>
@@ -315,12 +293,10 @@ function usd(n) {
   return "$" + Number(n || 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 
-const POLL_INTERVAL_MS = 4000;
+const POLL_INTERVAL_MS = 3000;
 const COUNTDOWN_SECONDS = 120;
-const MAX_POLLS = 45;
 let countdownStartTime = null;
 let countdownInterval = null;
-let pollCount = 0;
 
 function formatCountdown(seconds) {
   const m = Math.floor(seconds / 60);
@@ -334,26 +310,18 @@ function updateCountdown() {
   const remaining = Math.max(0, COUNTDOWN_SECONDS - elapsed);
   const el = document.getElementById("countdown-display");
   if (el) el.textContent = formatCountdown(remaining);
-  if (remaining <= 0) {
-    const msg = document.getElementById("loading-msg");
-    if (msg && !msg.textContent.includes("Still processing")) {
-      msg.textContent = "Still processing… Click Refresh below to check again.";
-      const refreshBtn = document.getElementById("refresh-check-btn");
-      if (refreshBtn) refreshBtn.classList.remove("hidden");
-    }
-    if (countdownInterval) {
-      clearInterval(countdownInterval);
-      countdownInterval = null;
-    }
+  if (remaining <= 0 && countdownInterval) {
+    const el2 = document.getElementById("countdown-display");
+    if (el2) el2.textContent = "0:00";
+    clearInterval(countdownInterval);
+    countdownInterval = null;
   }
 }
 
 function startCountdown() {
   if (countdownStartTime) return;
   countdownStartTime = Date.now();
-  document.getElementById("countdown-container")?.classList.remove("hidden");
   document.getElementById("loading-msg").textContent = "Assessment in progress. Generating PE report…";
-  document.getElementById("refresh-check-btn")?.classList.add("hidden");
   updateCountdown();
   countdownInterval = setInterval(updateCountdown, 1000);
 }
@@ -364,18 +332,6 @@ function stopCountdown() {
     countdownInterval = null;
   }
   countdownStartTime = null;
-  document.getElementById("countdown-container")?.classList.add("hidden");
-}
-
-function showTakingLonger() {
-  stopCountdown();
-  document.getElementById("loading-msg").textContent = "Assessment is taking longer than expected.";
-  document.getElementById("countdown-container")?.classList.add("hidden");
-  const btn = document.getElementById("refresh-check-btn");
-  if (btn) {
-    btn.classList.remove("hidden");
-    btn.textContent = "Refresh to check status";
-  }
 }
 
 async function loadReport() {
@@ -384,38 +340,32 @@ async function loadReport() {
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
+    const timeout = setTimeout(() => controller.abort(), 60000);
     const res = await fetch(`/api/v1/pe-reports/${id}?key=${encodeURIComponent(key)}`, { signal: controller.signal });
     clearTimeout(timeout);
     if (res.status === 401) { showError("Authentication failed. Check your API key."); return; }
-    if (res.status === 404) { showError("Audit not found. Verify the audit ID and ensure the assessment is complete."); return; }
+    if (res.status === 404) { document.getElementById("loading-msg").textContent = "Assessment queued. Checking again…"; setTimeout(loadReport, POLL_INTERVAL_MS); return; }
     if (!res.ok) { showError(`Server error (${res.status}). Please try again later.`); return; }
 
     reportData = await res.json();
     const status = reportData.audit_status || "unknown";
     if (["pending", "running", "ingesting", "generating_reports"].includes(status)) {
-      pollCount++;
-      if (pollCount > MAX_POLLS) {
-        showTakingLonger();
-        return;
-      }
       startCountdown();
       setTimeout(loadReport, POLL_INTERVAL_MS);
       return;
     }
     stopCountdown();
-    pollCount = 0;
     if (status === "failed") {
       showError(reportData.error_message || "Assessment failed. Please try again or request a full assessment.");
       return;
     }
     renderReport();
   } catch (err) {
-    stopCountdown();
     if (err.name === "AbortError") {
-      document.getElementById("loading-msg").textContent = "Request timed out. Click Refresh to try again.";
-      document.getElementById("refresh-check-btn")?.classList.remove("hidden");
+      document.getElementById("loading-msg").textContent = "Request timed out. Retrying…";
+      setTimeout(loadReport, 2000);
     } else {
+      stopCountdown();
       showError("Network error — unable to reach the DeepAudit API. Check your connection.");
     }
   }
