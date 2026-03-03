@@ -352,9 +352,29 @@
     <div class="max-w-2xl mx-auto px-6">
       <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Quick Assessment</p>
       <h2 class="text-3xl font-bold text-center mb-4">Quick Technical Assessment</h2>
-      <p class="text-gray-400 text-center max-w-lg mx-auto mb-10">Run a preliminary scan on any public GitHub repository. For full PE-grade assessments, <a href="#contact" class="text-gold-400 hover:text-gold-500 transition">contact our team</a>.</p>
+      <p class="text-gray-400 text-center max-w-lg mx-auto mb-10">Run a free quick scan on any public GitHub repository. For full PE-grade assessments, <a href="#contact" class="text-gold-400 hover:text-gold-500 transition">contact our team</a>.</p>
 
       <div class="bg-surface-800 border border-white/5 rounded-2xl p-8">
+        <!-- Limits badge -->
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-6 text-xs">
+          <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/20">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            ~2 min
+          </span>
+          <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/20">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Max 50K LOC
+          </span>
+          <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/20">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            9 Key Categories
+          </span>
+          <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
+            Public Repos
+          </span>
+        </div>
+
         <form id="audit-form" class="space-y-4">
           <div class="relative">
             <div class="absolute left-4 top-1/2 -translate-y-1/2">
@@ -373,11 +393,14 @@
           </div>
           <button type="submit" id="submit-btn"
             class="w-full py-4 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-xl font-bold text-lg transition flex items-center justify-center gap-2">
-            Run Assessment
+            Run Quick Scan
           </button>
         </form>
         <div id="form-error" class="hidden mt-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg"></div>
-        <p class="text-xs text-gray-500 mt-4 text-center">Public repositories only. Results delivered in-browser.</p>
+        <p class="text-xs text-gray-500 mt-4 text-center">
+          Quick scan covers Security, SPOF, Code Quality, Compliance &amp; more.
+          <a href="#contact" class="text-gold-400 hover:text-gold-500 transition">Request full 40-category PE assessment →</a>
+        </p>
       </div>
     </div>
   </section>

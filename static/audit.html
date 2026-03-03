@@ -141,8 +141,10 @@
         <div class="w-full h-3 bg-surface-900 rounded-full overflow-hidden">
           <div id="progress-fill" class="h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full progress-bar" style="width:0%"></div>
         </div>
-        <!-- Phase Timeline -->
-        <div id="phase-timeline" class="mt-6 grid grid-cols-5 md:grid-cols-10 gap-2"></div>
+        <div id="quick-mode-badge" class="hidden mt-3">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/15 text-amber-400 border border-amber-500/30">Quick Scan — 9 key categories, ~2 min</span>
+        </div>
+        <div id="phase-timeline" class="mt-4 grid grid-cols-5 md:grid-cols-10 gap-2"></div>
       </div>
 
       <!-- Tabs -->
@@ -281,7 +283,7 @@ function timeAgo(iso) {
   return Math.floor(diff/86400) + 'd ago';
 }
 
-const BATCH_PHASES = { 2:[1,2,3], 3:[4,5,6], 4:[7,8,9], 5:[10] };
+const BATCH_PHASES_FULL = { 2:[1,2,3], 3:[4,5,6], 4:[7,8,9], 5:[10] };
 const BATCH_LABELS = {
   0: { title:'Instant Scan Complete', sub:'Static analysis found initial issues in <100ms' },
   1: { title:'Batch 1: Instant Scan', sub:'Pattern matching, config analysis, dependency check — <100ms' },
@@ -290,38 +292,52 @@ const BATCH_LABELS = {
   4: { title:'Batch 4: AI/ML, Observability & Quality', sub:'AI/ML risks, metrics, logging, tracing, testing, code quality' },
   5: { title:'Batch 5: Compliance & Organization', sub:'Compliance, DR, i18n, state management, backward compat' },
 };
+const BATCH_LABELS_QUICK = {
+  0: { title:'Instant Scan Complete', sub:'Static analysis in <100ms' },
+  1: { title:'Instant Scan', sub:'Pattern matching, config analysis — <100ms' },
+  2: { title:'AI Analysis', sub:'Security, SPOF, Code Quality, Compliance — 9 key categories' },
+};
 
 function updateBatchBanner(data) {
+  const totalPhases = data.phases.length;
+  const isQuick = totalPhases <= 4;
   const donePhases = data.phases.filter(p => p.status === 'completed').length;
   const runningPhases = data.phases.filter(p => p.status === 'running').length;
 
-  let currentBatch = 0;
-  if (data.total_signals > 0 && donePhases === 0 && runningPhases === 0) currentBatch = 1;
-  for (const [bn, pnums] of Object.entries(BATCH_PHASES)) {
-    const b = parseInt(bn);
-    if (pnums.some(pn => data.phases.find(p => p.phase_number === pn && p.status === 'running'))) currentBatch = b;
-    if (pnums.every(pn => data.phases.find(p => p.phase_number === pn && p.status === 'completed'))) currentBatch = Math.max(currentBatch, b);
-  }
-
   $('batch-signal-count').textContent = data.total_signals;
 
-  for (let b = 1; b <= 5; b++) {
-    const bar = $(`b${b}`).querySelector('div');
-    if (b === 1) {
-      bar.style.width = data.total_signals > 0 ? '100%' : '0%';
-    } else {
-      const pnums = BATCH_PHASES[b];
-      const done = pnums.filter(pn => data.phases.find(p => p.phase_number === pn && p.status === 'completed')).length;
-      const running = pnums.filter(pn => data.phases.find(p => p.phase_number === pn && p.status === 'running')).length;
-      if (done === pnums.length) bar.style.width = '100%';
-      else if (running > 0) bar.style.width = '50%';
-      else bar.style.width = '0%';
+  if (isQuick) {
+    for (let b = 3; b <= 5; b++) { const el = $(`b${b}`); if (el) el.style.display = 'none'; }
+
+    const bar1 = $('b1')?.querySelector('div');
+    const bar2 = $('b2')?.querySelector('div');
+    if (bar1) bar1.style.width = data.total_signals > 0 ? '100%' : '0%';
+    if (bar2) bar2.style.width = donePhases === totalPhases ? '100%' : (runningPhases > 0 ? '50%' : '0%');
+  } else {
+    for (let b = 1; b <= 5; b++) {
+      const bar = $(`b${b}`)?.querySelector('div');
+      if (!bar) continue;
+      if (b === 1) {
+        bar.style.width = data.total_signals > 0 ? '100%' : '0%';
+      } else {
+        const pnums = BATCH_PHASES_FULL[b];
+        if (!pnums) continue;
+        const done = pnums.filter(pn => data.phases.find(p => p.phase_number === pn && p.status === 'completed')).length;
+        const running = pnums.filter(pn => data.phases.find(p => p.phase_number === pn && p.status === 'running')).length;
+        if (done === pnums.length) bar.style.width = '100%';
+        else if (running > 0) bar.style.width = '50%';
+        else bar.style.width = '0%';
+      }
     }
   }
 
   if (data.status === 'completed') {
-    $('batch-title').textContent = 'Audit Complete!';
-    $('batch-subtitle').textContent = `${data.total_signals} signals across 40 categories`;
+    const catLabel = isQuick ? '9 key categories' : '40 categories';
+    $('batch-title').textContent = isQuick ? 'Quick Scan Complete!' : 'Audit Complete!';
+    $('batch-subtitle').textContent = `${data.total_signals} signals across ${catLabel}`;
+    if (data.error_message && data.error_message.includes('limit')) {
+      $('batch-subtitle').textContent = data.error_message;
+    }
     $('batch-icon').innerHTML = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
     $('batch-banner').className = 'bg-gradient-to-r from-emerald-600/20 to-emerald-400/10 border border-emerald-500/30 rounded-xl p-5';
   } else if (data.status === 'failed') {
@@ -330,7 +346,11 @@ function updateBatchBanner(data) {
     $('batch-icon').innerHTML = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`;
     $('batch-banner').className = 'bg-gradient-to-r from-red-600/20 to-red-400/10 border border-red-500/30 rounded-xl p-5';
   } else {
-    const label = BATCH_LABELS[currentBatch] || BATCH_LABELS[1];
+    const labels = isQuick ? BATCH_LABELS_QUICK : BATCH_LABELS;
+    let currentBatch = data.total_signals > 0 ? 1 : 0;
+    if (runningPhases > 0 || donePhases > 0) currentBatch = 2;
+    if (donePhases === totalPhases) currentBatch = 2;
+    const label = labels[currentBatch] || labels[1];
     $('batch-title').textContent = label.title;
     $('batch-subtitle').textContent = label.sub;
   }
@@ -354,12 +374,18 @@ async function loadAudit() {
     $('audit-time').textContent = `Started ${timeAgo(data.created_at)}`;
 
     $('stat-signals').textContent = data.total_signals;
+    const totalPhases = data.phases.length;
     const donePhases = data.phases.filter(p => p.status === 'completed').length;
-    $('stat-phase').textContent = `${donePhases}/10`;
+    $('stat-phase').textContent = `${donePhases}/${totalPhases}`;
 
-    const pct = Math.round((donePhases / 10) * 100);
+    const pct = totalPhases > 0 ? Math.round((donePhases / totalPhases) * 100) : 0;
     $('progress-pct').textContent = pct + '%';
     $('progress-fill').style.width = pct + '%';
+
+    if (totalPhases <= 4) {
+      $('quick-mode-badge').classList.remove('hidden');
+      $('phase-timeline').className = 'mt-4 grid grid-cols-' + Math.min(totalPhases, 5) + ' gap-2';
+    }
 
     updateBatchBanner(data);
 

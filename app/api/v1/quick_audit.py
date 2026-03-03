@@ -1,4 +1,4 @@
-"""World's simplest audit API -- just send a GitHub URL."""
+"""Quick scan API — fast, limited free assessment via GitHub URL."""
 
 import logging
 import re
@@ -22,6 +22,16 @@ GITHUB_URL_RE = re.compile(
     r"^https?://github\.com/[\w.\-]+/[\w.\-]+/?$"
 )
 
+MAX_LOC_QUICK = 50_000
+
+QUICK_CATEGORIES = [1, 2, 3, 4, 13, 14, 29, 30, 35]
+
+QUICK_PHASE_MAP = {
+    1: [1, 2, 3, 4],
+    2: [13, 14],
+    3: [29, 30, 35],
+}
+
 
 class QuickAuditRequest(BaseModel):
     github_url: str = Field(
@@ -41,14 +51,15 @@ class QuickAuditResponse(BaseModel):
     progress_url: str
     signals_url: str
     reports_url: str
-    api_key: str | None = Field(None, description="API key for subsequent requests (only on first call)")
+    api_key: str | None = Field(None, description="API key for subsequent requests")
+    limits: dict = Field(default_factory=dict)
 
 
 @router.post(
     "",
     response_model=QuickAuditResponse,
     status_code=status.HTTP_202_ACCEPTED,
-    summary="One-click audit — just paste a GitHub URL",
+    summary="Quick scan — paste a GitHub URL, get results in ~2 minutes",
 )
 async def quick_audit(
     body: QuickAuditRequest,
@@ -91,14 +102,17 @@ async def quick_audit(
     system_context = {
         "tech_stack": ["Auto-detected"],
         "architecture": "Auto-detected from repository",
-        "description": f"Quick audit of {url}",
+        "description": f"Quick scan of {url}",
     }
     audit_config = {
-        "categories": "all",
-        "max_signals_per_category": 20,
+        "categories": QUICK_CATEGORIES,
+        "max_signals_per_category": 10,
         "llm_provider": None,
         "llm_model": None,
         "severity_filter": None,
+        "quick_mode": True,
+        "quick_timeout_seconds": 180,
+        "max_loc": MAX_LOC_QUICK,
     }
 
     audit = Audit(
@@ -111,24 +125,12 @@ async def quick_audit(
     db.add(audit)
     await db.flush()
 
-    phase_map = {
-        1: list(range(1, 6)),
-        2: list(range(6, 9)),
-        3: list(range(9, 13)),
-        4: list(range(13, 16)),
-        5: list(range(16, 19)),
-        6: list(range(19, 23)),
-        7: list(range(23, 25)),
-        8: list(range(25, 29)),
-        9: list(range(29, 35)),
-        10: list(range(35, 41)),
-    }
-    for phase_num in range(1, 11):
+    for phase_num, cat_ids in QUICK_PHASE_MAP.items():
         phase = AuditPhase(
             audit_id=audit.id,
             phase_number=phase_num,
             status="pending",
-            categories_included=phase_map[phase_num],
+            categories_included=cat_ids,
         )
         db.add(phase)
 
@@ -140,10 +142,15 @@ async def quick_audit(
     return QuickAuditResponse(
         audit_id=aid,
         status="pending",
-        message="Audit queued! Your repository is being cloned and analyzed across 40 categories.",
+        message="Quick scan queued! Instant static analysis + 9 key categories. Results in ~2 minutes.",
         poll_url=f"/api/v1/audits/{aid}",
         progress_url=f"/api/v1/audits/{aid}/progress",
         signals_url=f"/api/v1/audits/{aid}/signals",
         reports_url=f"/api/v1/audits/{aid}/reports",
         api_key=raw_key,
+        limits={
+            "max_loc": MAX_LOC_QUICK,
+            "categories": len(QUICK_CATEGORIES),
+            "timeout_seconds": 180,
+        },
     )
