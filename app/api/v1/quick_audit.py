@@ -1,5 +1,6 @@
 """Quick scan API — fast, limited free assessment via GitHub URL."""
 
+import asyncio
 import logging
 import re
 
@@ -13,9 +14,14 @@ from app.middleware.auth import generate_api_key, hash_api_key
 from app.models.audit import Audit, AuditPhase
 from app.models.tenant import Tenant
 from app.schemas.audit import AuditResponse
+from app.database import async_session_factory
+from app.engine.orchestrator import AuditOrchestrator
+from app.models.audit import Audit
 from app.workers.audit_worker import enqueue_audit_job
 
 logger = logging.getLogger(__name__)
+
+WORKER_FALLBACK_DELAY_SEC = 25  # Run in-process if worker hasn't picked up by then
 router = APIRouter()
 
 GITHUB_URL_RE = re.compile(
@@ -137,6 +143,24 @@ async def quick_audit(
     await db.flush()
     await db.refresh(audit)
     await enqueue_audit_job(str(audit.id))
+
+    aid_for_fallback = audit.id
+
+    async def _fallback_run_if_still_pending():
+        await asyncio.sleep(WORKER_FALLBACK_DELAY_SEC)
+        async with async_session_factory() as sess:
+            from sqlalchemy import select
+            r = await sess.execute(select(Audit).where(Audit.id == aid_for_fallback))
+            a = r.scalar_one_or_none()
+            if a and a.status == "pending":
+                logger.info(f"Worker fallback: running quick audit {aid_for_fallback} in-process")
+                try:
+                    orch = AuditOrchestrator()
+                    await orch.run_audit(str(aid_for_fallback))
+                except Exception as e:
+                    logger.exception(f"Fallback audit {aid_for_fallback} failed: {e}")
+
+    asyncio.create_task(_fallback_run_if_still_pending())
 
     aid = str(audit.id)
     return QuickAuditResponse(

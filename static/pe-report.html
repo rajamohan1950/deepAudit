@@ -297,6 +297,7 @@ const POLL_INTERVAL_MS = 3000;
 const COUNTDOWN_SECONDS = 120;
 let countdownStartTime = null;
 let countdownInterval = null;
+let countdownReachedZero = false;
 
 function formatCountdown(seconds) {
   const m = Math.floor(seconds / 60);
@@ -310,11 +311,14 @@ function updateCountdown() {
   const remaining = Math.max(0, COUNTDOWN_SECONDS - elapsed);
   const el = document.getElementById("countdown-display");
   if (el) el.textContent = formatCountdown(remaining);
-  if (remaining <= 0 && countdownInterval) {
+  if (remaining <= 0) {
+    countdownReachedZero = true;
     const el2 = document.getElementById("countdown-display");
     if (el2) el2.textContent = "0:00";
-    clearInterval(countdownInterval);
-    countdownInterval = null;
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+      countdownInterval = null;
+    }
   }
 }
 
@@ -351,6 +355,13 @@ async function loadReport() {
     const status = reportData.audit_status || "unknown";
     if (["pending", "running", "ingesting", "generating_reports"].includes(status)) {
       startCountdown();
+      // After countdown reaches 0, show report anyway (worker may be slow on free tier)
+      if (countdownReachedZero && reportData.deliverables) {
+        stopCountdown();
+        reportData._partial = true;
+        renderReport();
+        return;
+      }
       setTimeout(loadReport, POLL_INTERVAL_MS);
       return;
     }
@@ -375,14 +386,27 @@ function renderReport() {
   document.getElementById("loading-state").classList.add("hidden");
   document.getElementById("report-content").classList.remove("hidden");
 
-  const d = reportData.deliverables;
+  if (reportData._partial) {
+    const main = document.getElementById("report-content");
+    const banner = document.createElement("div");
+    banner.className = "bg-amber-500/10 border-b border-amber-500/20 py-3 px-6 text-center text-sm text-amber-200/90 no-print";
+    const scope = reportData.audit_scope || {};
+    const totalSignals = scope.total_signals || 0;
+    const msg = totalSignals > 0
+      ? "Assessment may still be in progress. Showing partial results — this page updates automatically."
+      : "Assessment is queued. The analysis server may be starting (1–2 min on first request). Results will appear when ready.";
+    banner.innerHTML = msg;
+    main.insertBefore(banner, main.firstChild);
+  }
+
+  const d = reportData.deliverables || {};
   renderCover();
-  renderExecSummary(d.executive_summary);
-  renderHeatmap(d.risk_heatmap);
-  renderSpofMap(d.spof_map);
-  renderCompliance(d.compliance_gap_matrix);
-  renderTechDebt(d.tech_debt_ledger);
-  renderRoadmap(d.remediation_roadmap);
+  renderExecSummary(d.executive_summary || {});
+  renderHeatmap(d.risk_heatmap || {});
+  renderSpofMap(d.spof_map || {});
+  renderCompliance(d.compliance_gap_matrix || {});
+  renderTechDebt(d.tech_debt_ledger || {});
+  renderRoadmap(d.remediation_roadmap || {});
   collectAndRenderSignals(d);
   setupPdfButton();
 }
