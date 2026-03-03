@@ -53,6 +53,7 @@
         <a href="#benefits" class="hover:text-white transition">Benefits</a>
         <a href="#categories" class="hover:text-white transition">40 Categories</a>
         <a href="#api" class="hover:text-white transition">API</a>
+        <a href="#pricing" class="hover:text-white transition">Pricing</a>
         <a href="#contact" class="hover:text-white transition">Contact</a>
       </div>
       <div class="flex items-center gap-4">
@@ -273,6 +274,83 @@ jobs:
           curl -X POST https://deepaudit-api.onrender.com/api/v1/quick-audit \
             -H "Content-Type: application/json" \
             -d '{"github_url": "${{ github.server_url }}/${{ github.repository }}"}'</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= PRICING ======= -->
+  <section id="pricing" class="py-24 border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Simple, Transparent Pricing</h2>
+      <p class="text-gray-400 text-center max-w-xl mx-auto mb-4">The average data breach costs <strong class="text-white">$10.2 million</strong>. A DeepAudit costs <strong class="text-white">$99</strong>. That's a 100,000x ROI.</p>
+      <p class="text-center mb-12">
+        <span class="text-sm bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full">Save 20% with annual billing</span>
+      </p>
+      <div class="grid md:grid-cols-4 gap-5">
+        <!-- Free -->
+        <div class="bg-surface-800 border border-white/5 rounded-2xl p-6 flex flex-col">
+          <h3 class="text-lg font-bold mb-1">Free</h3>
+          <p class="text-3xl font-black mb-1">$0</p>
+          <p class="text-xs text-gray-500 mb-5">forever</p>
+          <ul class="text-sm text-gray-400 space-y-2 flex-1 mb-6">
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 1 audit/month</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Public repos, up to 50K LOC</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 10 categories (security)</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 3 reports</li>
+          </ul>
+          <a href="#audit" class="w-full py-2.5 text-center bg-surface-700 hover:bg-surface-600 rounded-xl font-semibold text-sm transition block">Start Free</a>
+        </div>
+        <!-- Starter -->
+        <div class="bg-surface-800 border border-white/5 rounded-2xl p-6 flex flex-col">
+          <h3 class="text-lg font-bold mb-1">Starter</h3>
+          <p class="text-3xl font-black mb-1">$99<span class="text-base font-normal text-gray-400">/mo</span></p>
+          <p class="text-xs text-gray-500 mb-5">$79/mo billed annually</p>
+          <ul class="text-sm text-gray-400 space-y-2 flex-1 mb-6">
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 5 audits/month</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Private repos, up to 200K LOC</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> All 40 categories</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> All 11 reports</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Email support</li>
+          </ul>
+          <a href="#audit" class="w-full py-2.5 text-center bg-brand-600 hover:bg-brand-700 rounded-xl font-semibold text-sm transition block">Get Started</a>
+        </div>
+        <!-- Pro (highlighted) -->
+        <div class="bg-gradient-to-b from-brand-600/20 to-surface-800 border-2 border-brand-500/40 rounded-2xl p-6 flex flex-col relative">
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-xs font-bold px-3 py-1 rounded-full">MOST POPULAR</span>
+          <h3 class="text-lg font-bold mb-1">Pro</h3>
+          <p class="text-3xl font-black mb-1">$499<span class="text-base font-normal text-gray-400">/mo</span></p>
+          <p class="text-xs text-gray-500 mb-5">$399/mo billed annually</p>
+          <ul class="text-sm text-gray-400 space-y-2 flex-1 mb-6">
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 20 audits/month</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Unlimited LOC</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Custom rules</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> CSV/PDF export</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Priority queue (2x faster)</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> CI/CD + Slack integration</li>
+          </ul>
+          <a href="#audit" class="w-full py-2.5 text-center bg-brand-600 hover:bg-brand-700 rounded-xl font-semibold text-sm transition block">Start Pro Trial</a>
+        </div>
+        <!-- Enterprise -->
+        <div class="bg-surface-800 border border-white/5 rounded-2xl p-6 flex flex-col">
+          <h3 class="text-lg font-bold mb-1">Enterprise</h3>
+          <p class="text-3xl font-black mb-1">$2,499<span class="text-base font-normal text-gray-400">/mo</span></p>
+          <p class="text-xs text-gray-500 mb-5">Custom pricing available</p>
+          <ul class="text-sm text-gray-400 space-y-2 flex-1 mb-6">
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Unlimited everything</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> White-label reports</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 1-hour SLA</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> SSO/SAML</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> SOC2/HIPAA package</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Dedicated account manager</li>
+          </ul>
+          <a href="#contact" class="w-full py-2.5 text-center bg-surface-700 hover:bg-surface-600 rounded-xl font-semibold text-sm transition block">Contact Sales</a>
+        </div>
+      </div>
+      <!-- Emergency banner -->
+      <div class="mt-8 bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center">
+        <p class="text-lg font-bold text-red-400">Got breached? Need answers NOW?</p>
+        <p class="text-sm text-gray-400 mt-1">Emergency audit: full 750-signal scan with 30-minute SLA. <strong class="text-white">$5,000-$25,000</strong> based on repo size.</p>
+        <a href="#contact" class="inline-block mt-3 bg-red-500 hover:bg-red-600 px-6 py-2 rounded-lg font-semibold text-sm transition">Request Emergency Audit</a>
       </div>
     </div>
   </section>

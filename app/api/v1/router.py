@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.v1 import audits, contact, health, quick_audit, reports, signals, stats, tenants, web, webhooks
+from app.api.v1 import audits, contact, health, pricing, quick_audit, reports, signals, stats, tenants, web, webhooks
 
 api_router = APIRouter()
 
@@ -18,3 +18,4 @@ api_router.include_router(quick_audit.router, prefix="/quick-audit", tags=["quic
 api_router.include_router(contact.router, prefix="/contact", tags=["contact"])
 api_router.include_router(stats.router, prefix="/stats", tags=["stats"])
 api_router.include_router(web.router, prefix="/web", tags=["web"])
+api_router.include_router(pricing.router, prefix="/pricing", tags=["pricing"])
