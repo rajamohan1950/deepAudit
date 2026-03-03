@@ -117,6 +117,23 @@ COMPLIANCE_CONTROL_MAP: dict[str, dict[str, set[int]]] = {
     },
 }
 
+SCALABILITY_CATEGORIES = {6, 7, 8, 9, 10, 11, 12}
+
+INFRA_COST_MULTIPLIERS = {
+    "2x": {"database": 2.5, "compute": 2.0, "network": 1.8, "cache": 1.5},
+    "5x": {"database": 6.0, "compute": 4.5, "network": 4.0, "cache": 3.0},
+    "10x": {"database": 12.0, "compute": 9.0, "network": 8.0, "cache": 5.0},
+}
+
+BOTTLENECK_CATEGORY_MAP = {
+    "database": {9},
+    "api_and_network": {8, 31},
+    "compute": {6, 7, 11},
+    "caching": {10},
+    "infrastructure": {19, 20},
+    "concurrency": {15, 17},
+}
+
 TECH_DEBT_CATEGORY_MAP = {
     "code_quality": {30, 31, 32},
     "architecture": {13, 14, 15, 17, 38},
@@ -616,6 +633,153 @@ class PEReportGenerator:
             },
         }
 
+    def generate_scalability_assessment(self, signals: list[Signal]) -> dict:
+        """Model 2x / 5x / 10x growth scenarios and identify scaling bottlenecks."""
+        scalability_signals = [s for s in signals if s.category_id in SCALABILITY_CATEGORIES]
+
+        bottleneck_signals: dict[str, list[Signal]] = {k: [] for k in BOTTLENECK_CATEGORY_MAP}
+        for s in signals:
+            for area, cat_ids in BOTTLENECK_CATEGORY_MAP.items():
+                if s.category_id in cat_ids and s.severity in ("P0", "P1", "P2"):
+                    bottleneck_signals[area].append(s)
+
+        def _bottleneck_summary(area_signals: list[Signal]) -> list[dict]:
+            return [
+                {
+                    "signal": s.signal_text[:300],
+                    "severity": s.severity,
+                    "score": s.score,
+                    "evidence": s.evidence[:200],
+                    "remediation": s.remediation[:250],
+                    "effort": s.effort,
+                }
+                for s in sorted(area_signals, key=lambda x: x.score, reverse=True)[:5]
+            ]
+
+        def _time_to_failure(area_signals: list[Signal]) -> str:
+            p0_count = sum(1 for s in area_signals if s.severity == "P0")
+            p1_count = sum(1 for s in area_signals if s.severity == "P1")
+            if p0_count >= 2:
+                return "Immediate — likely fails under current load spikes"
+            if p0_count >= 1 or p1_count >= 3:
+                return "1-3 months under increased load"
+            if p1_count >= 1:
+                return "3-6 months with gradual growth"
+            return "6-12+ months — architecture can absorb moderate growth"
+
+        def _remediation_cost(area_signals: list[Signal], multiplier: float) -> int:
+            base_hours = sum(EFFORT_HOURS.get(s.effort, 8) for s in area_signals)
+            scaled_hours = int(base_hours * (1 + (multiplier - 1) * 0.3))
+            return scaled_hours * ASSUMED_HOURLY_RATE
+
+        scenarios: dict[str, dict] = {}
+        scale_configs = [
+            ("2x", 2, "Current user/load doubled — organic growth or small acquisition"),
+            ("5x", 5, "5x growth — typical Series B trajectory"),
+            ("10x", 10, "10x growth — Series C / enterprise expansion"),
+        ]
+
+        for label, factor, description in scale_configs:
+            scenario_bottlenecks: dict[str, dict] = {}
+            total_remediation_cost = 0
+            total_infra_cost_increase = 0
+
+            for area, area_signals in bottleneck_signals.items():
+                eng_cost = _remediation_cost(area_signals, factor)
+                total_remediation_cost += eng_cost
+
+                infra_mult = INFRA_COST_MULTIPLIERS[label].get(
+                    area if area in INFRA_COST_MULTIPLIERS[label] else "compute", 2.0
+                )
+                total_infra_cost_increase += int(infra_mult * 1000)
+
+                scenario_bottlenecks[area] = {
+                    "signal_count": len(area_signals),
+                    "critical_signals": sum(1 for s in area_signals if s.severity == "P0"),
+                    "time_to_failure": _time_to_failure(area_signals) if area_signals else "Low risk at this scale",
+                    "top_issues": _bottleneck_summary(area_signals),
+                    "remediation_cost_usd": eng_cost,
+                }
+
+            critical_areas = sorted(
+                scenario_bottlenecks.items(),
+                key=lambda x: x[1]["signal_count"],
+                reverse=True,
+            )
+            primary_bottleneck = critical_areas[0][0] if critical_areas and critical_areas[0][1]["signal_count"] > 0 else "none"
+
+            scenarios[label] = {
+                "description": description,
+                "scale_factor": factor,
+                "primary_bottleneck": primary_bottleneck,
+                "bottlenecks": scenario_bottlenecks,
+                "estimated_engineering_cost_usd": total_remediation_cost,
+                "estimated_monthly_infra_increase_usd": total_infra_cost_increase,
+                "readiness": _scale_readiness(scalability_signals, factor),
+            }
+
+        total_scalability_risk = sum(
+            SEVERITY_WEIGHTS.get(s.severity, 1) * s.score
+            for s in scalability_signals
+        )
+        max_possible = len(scalability_signals) * 25 * 10 if scalability_signals else 1
+        scalability_score = round(100 - min((total_scalability_risk / max_possible) * 100, 100), 1)
+
+        return {
+            "report_section": "scalability_assessment",
+            "scalability_score": scalability_score,
+            "scalability_rating": "Strong" if scalability_score >= 70 else "Moderate" if scalability_score >= 40 else "Weak",
+            "total_scalability_signals": len(scalability_signals),
+            "scenarios": scenarios,
+            "summary": {
+                "can_handle_2x": scenarios["2x"]["readiness"] in ("Ready", "Minor work needed"),
+                "can_handle_5x": scenarios["5x"]["readiness"] == "Ready",
+                "can_handle_10x": scenarios["10x"]["readiness"] == "Ready",
+                "biggest_risk_area": scenarios["10x"]["primary_bottleneck"],
+                "total_cost_to_10x_usd": scenarios["10x"]["estimated_engineering_cost_usd"],
+            },
+        }
+
+    def generate_full_pe_report_sync(
+        self,
+        signals: list[Signal],
+        audit_id: str,
+        audit_metadata: dict | None = None,
+        frameworks: list[str] | None = None,
+    ) -> dict:
+        """Synchronous variant that works with pre-loaded signals (no DB session)."""
+        if audit_metadata is None:
+            audit_metadata = {"audit_id": audit_id, "system_context": {}, "total_tokens": 0, "total_cost": 0}
+        if frameworks is None:
+            frameworks = ["soc2", "gdpr", "hipaa"]
+
+        exec_summary = self.generate_executive_summary(audit_id, signals, audit_metadata)
+        risk_heatmap = self.generate_risk_heatmap(signals)
+        spof_map = self.generate_spof_map(signals)
+        compliance_matrix = self.generate_compliance_gap_matrix(signals, frameworks)
+        tech_debt = self.generate_tech_debt_ledger(signals)
+        roadmap = self.generate_remediation_roadmap(signals)
+
+        return {
+            "report_version": self.VERSION,
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "audit_id": audit_id,
+            "audit_scope": {
+                "system_context": audit_metadata.get("system_context", {}),
+                "total_signals": len(signals),
+                "phases_completed": None,
+                "audit_cost_usd": audit_metadata.get("total_cost", 0),
+            },
+            "deliverables": {
+                "executive_summary": exec_summary,
+                "risk_heatmap": risk_heatmap,
+                "spof_map": spof_map,
+                "compliance_gap_matrix": compliance_matrix,
+                "tech_debt_ledger": tech_debt,
+                "remediation_roadmap": roadmap,
+            },
+        }
+
     async def generate_full_pe_report(
         self,
         audit_id: uuid.UUID,
@@ -649,6 +813,7 @@ class PEReportGenerator:
         compliance_matrix = self.generate_compliance_gap_matrix(signals, frameworks)
         tech_debt = self.generate_tech_debt_ledger(signals)
         roadmap = self.generate_remediation_roadmap(signals)
+        scalability = self.generate_scalability_assessment(signals)
 
         return {
             "report_version": self.VERSION,
@@ -668,6 +833,7 @@ class PEReportGenerator:
                 "compliance_gap_matrix": compliance_matrix,
                 "tech_debt_ledger": tech_debt,
                 "remediation_roadmap": roadmap,
+                "scalability_assessment": scalability,
             },
         }
 
@@ -680,3 +846,29 @@ def _business_impact_label(signal: Signal) -> str:
     if signal.severity == "P2":
         return "Medium — degrades operational quality"
     return "Low — long-term maintenance burden"
+
+
+def _scale_readiness(scalability_signals: list[Signal], factor: int) -> str:
+    p0 = sum(1 for s in scalability_signals if s.severity == "P0")
+    p1 = sum(1 for s in scalability_signals if s.severity == "P1")
+
+    if factor <= 2:
+        if p0 == 0 and p1 <= 2:
+            return "Ready"
+        if p0 <= 1 and p1 <= 5:
+            return "Minor work needed"
+        return "Significant rework required"
+    if factor <= 5:
+        if p0 == 0 and p1 == 0:
+            return "Ready"
+        if p0 <= 1 and p1 <= 3:
+            return "Minor work needed"
+        if p0 <= 3:
+            return "Significant rework required"
+        return "Major re-architecture needed"
+    # 10x
+    if p0 == 0 and p1 <= 1:
+        return "Ready"
+    if p0 <= 2 and p1 <= 4:
+        return "Significant rework required"
+    return "Major re-architecture needed"

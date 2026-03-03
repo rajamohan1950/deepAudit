@@ -102,6 +102,14 @@ async def pe_landing():
     return {"message": "DeepAudit Due Diligence", "docs": "/docs"}
 
 
+@app.get("/compliance", include_in_schema=False)
+async def compliance_page():
+    page = STATIC_DIR / "compliance.html"
+    if page.exists():
+        return FileResponse(str(page))
+    return {"message": "Compliance Readiness"}
+
+
 @app.get("/methodology", include_in_schema=False)
 async def methodology_page():
     page = STATIC_DIR / "methodology.html"
@@ -132,6 +140,22 @@ async def nda_page():
     if page.exists():
         return FileResponse(str(page))
     return {"message": "NDA Framework"}
+
+
+@app.get("/sample-report", include_in_schema=False)
+async def sample_report_page():
+    page = STATIC_DIR / "sample-report.html"
+    if page.exists():
+        return FileResponse(str(page))
+    return {"message": "Sample Report"}
+
+
+@app.get("/pe-report", include_in_schema=False)
+async def pe_report_page():
+    page = STATIC_DIR / "pe-report.html"
+    if page.exists():
+        return FileResponse(str(page))
+    return {"message": "PE Report Viewer"}
 
 
 @app.get("/health", tags=["health"])

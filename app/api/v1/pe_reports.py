@@ -4,6 +4,7 @@ import hashlib
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -153,3 +154,48 @@ async def get_remediation_roadmap(
     """Phased remediation roadmap with resource requirements."""
     audit, signals = await _load_audit_signals(db, audit_id, tenant.id)
     return _generator.generate_remediation_roadmap(signals)
+
+
+@router.get("/{audit_id}/pdf")
+async def download_pdf(
+    audit_id: uuid.UUID,
+    company: str = Query("Target Company", description="Company name for report cover"),
+    tenant: Tenant = Depends(_authenticate_by_key),
+    db: AsyncSession = Depends(get_db),
+):
+    """Download the full PE-grade report as a PDF."""
+    audit, signals = await _load_audit_signals(db, audit_id, tenant.id)
+    audit_meta = _audit_metadata(audit)
+
+    compliance_reqs = (audit.system_context or {}).get("compliance_requirements", [])
+    frameworks = compliance_reqs if compliance_reqs else ["soc2", "gdpr", "hipaa"]
+
+    report_data = _generator.generate_full_pe_report_sync(
+        signals, str(audit_id), audit_metadata=audit_meta, frameworks=frameworks,
+    )
+    report_data["audit_status"] = audit.status
+    report_data["audit_scope"]["phases_completed"] = audit.current_phase
+
+    from app.reports.pdf_generator import PEPDFReport
+
+    pdf_gen = PEPDFReport()
+    pdf_bytes = pdf_gen.generate_pdf(report_data, company_name=company)
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="DeepAudit_DD_Report_{audit_id}.pdf"',
+        },
+    )
+
+
+@router.get("/{audit_id}/scalability")
+async def get_scalability_assessment(
+    audit_id: uuid.UUID,
+    tenant: Tenant = Depends(_authenticate_by_key),
+    db: AsyncSession = Depends(get_db),
+):
+    """Scalability assessment with 2x/5x/10x growth scenarios."""
+    audit, signals = await _load_audit_signals(db, audit_id, tenant.id)
+    return _generator.generate_scalability_assessment(signals)

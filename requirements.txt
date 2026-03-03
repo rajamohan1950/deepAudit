@@ -36,6 +36,9 @@ cryptography>=44.0.0
 # HTTP client
 httpx>=0.28.0
 
+# PDF generation
+fpdf2>=2.8.0
+
 # Utilities
 python-dateutil>=2.9.0
 orjson>=3.10.0
