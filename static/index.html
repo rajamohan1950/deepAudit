@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DeepAudit — AI-Powered Software Audit | 750+ Signals, 40 Categories</title>
-  <meta name="description" content="The most comprehensive AI-driven code audit. 750+ actionable signals across security, performance, reliability, AI/ML, compliance, and 35 more categories. One API call.">
+  <title>DeepAudit Intelligence Platform — Automated Technical Due Diligence & Compliance</title>
+  <meta name="description" content="The world's first automated technical due diligence engine. AI-powered assessment across 750+ signals, 40 categories. Replaces 3-5 consultants in 24 hours. Built for PE firms, M&A teams, CTOs, and CISOs.">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            brand: { 50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81' },
-            surface: { 50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',700:'#334155',800:'#1e293b',900:'#0f172a',950:'#020617' }
+            gold: { 400:'#d4a853', 500:'#c9952c', 600:'#b8862a', 700:'#a07424' },
+            surface: { 50:'#f8fafc', 100:'#f1f5f9', 200:'#e2e8f0', 700:'#1a1a24', 800:'#12121a', 900:'#0d0d14', 950:'#0a0a0f' }
           }
         }
       }
@@ -21,228 +21,352 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; }
-    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 30%, #312e81 60%, #4338ca 100%); }
-    .gradient-text { background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    @keyframes pulse-ring { 0%,100%{opacity:1} 50%{opacity:.5} }
-    .pulse { animation: pulse-ring 2s ease-in-out infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .spinner { animation: spin 1s linear infinite; }
-    @keyframes float { 0%,100%{ transform:translateY(0)} 50%{ transform:translateY(-8px)} }
-    .float { animation: float 4s ease-in-out infinite; }
-    .card-glow:hover { box-shadow: 0 0 40px rgba(99,102,241,0.15); transform: translateY(-2px); }
-    .card-glow { transition: all 0.3s; }
-    .fade-in { opacity:0; transform:translateY(20px); transition:all 0.6s ease-out; }
+    .fade-in { opacity:0; transform:translateY(16px); transition:all 0.7s ease-out; }
     .fade-in.visible { opacity:1; transform:translateY(0); }
-    .tab-btn.active { background:#4f46e5; color:white; }
+    .code-tab-btn.active { background:#c9952c; color:#0a0a0f; }
     pre code { font-size:0.85rem; line-height:1.6; }
-    .category-pill { transition: all .2s; }
-    .category-pill:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
   </style>
 </head>
 <body class="bg-surface-950 text-white antialiased">
 
-  <!-- ======= FIXED NAV ======= -->
-  <nav class="fixed top-0 w-full z-50 bg-surface-950/80 backdrop-blur-xl border-b border-white/5">
+  <!-- NAV -->
+  <nav class="fixed top-0 w-full z-50 bg-surface-950/90 backdrop-blur-xl border-b border-white/5">
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="#" class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center font-bold text-sm">DA</div>
-        <span class="text-lg font-bold">DeepAudit</span>
+      <a href="#" class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gold-500 flex items-center justify-center font-bold text-sm text-surface-950">DA</div>
+        <span class="text-lg font-bold tracking-tight">DeepAudit</span>
       </a>
       <div class="hidden md:flex items-center gap-8 text-sm text-gray-400">
-        <a href="#how-it-works" class="hover:text-white transition">How It Works</a>
-        <a href="#benefits" class="hover:text-white transition">Benefits</a>
-        <a href="#categories" class="hover:text-white transition">40 Categories</a>
-        <a href="#api" class="hover:text-white transition">API</a>
-        <a href="#pricing" class="hover:text-white transition">Pricing</a>
+        <a href="#platform" class="hover:text-white transition">Platform</a>
+        <a href="/diligence" class="hover:text-white transition">Due Diligence</a>
+        <a href="#compliance" class="hover:text-white transition">Compliance</a>
+        <a href="#methodology" class="hover:text-white transition">Methodology</a>
         <a href="#contact" class="hover:text-white transition">Contact</a>
       </div>
-      <div class="flex items-center gap-4">
-        <!-- Live Counter -->
-        <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 pulse"></span>
-          <span class="text-xs font-semibold text-emerald-400"><span id="nav-live-count">-</span> online now</span>
-        </div>
-        <a href="#audit" class="hidden md:block text-sm bg-brand-600 hover:bg-brand-700 px-4 py-2 rounded-lg font-semibold transition">Start Free Audit</a>
-      </div>
+      <a href="#contact" class="hidden md:block text-sm bg-gold-500 hover:bg-gold-600 text-surface-950 px-5 py-2 rounded-lg font-semibold transition">Request Assessment</a>
     </div>
   </nav>
 
-  <!-- ======= HERO ======= -->
-  <section class="gradient-hero pt-32 pb-20 relative overflow-hidden">
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(99,102,241,0.15),transparent_70%)]"></div>
+  <!-- HERO -->
+  <section class="pt-32 pb-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,149,44,0.06),transparent_60%)]"></div>
     <div class="max-w-5xl mx-auto px-6 text-center relative">
-      <!-- Live users banner -->
-      <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-5 py-2 mb-8">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 pulse"></span>
-        <span class="text-sm text-gray-300"><strong id="hero-live-count" class="text-emerald-400">-</strong> engineers auditing code right now</span>
-        <span class="text-gray-600">|</span>
-        <span class="text-sm text-gray-400"><strong id="hero-total-audits" class="text-white">-</strong> audits completed</span>
-      </div>
-
-      <h1 class="text-4xl md:text-6xl lg:text-7xl font-black leading-tight">
-        Find <span class="gradient-text">Every Bug</span><br>Before It Finds You
+      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase mb-6">Technical Due Diligence Intelligence</p>
+      <h1 class="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tight">
+        The World's First Automated<br>Technical Due Diligence Engine
       </h1>
-      <p class="mt-6 text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-        AI-powered deep audit that scans your entire codebase for <strong class="text-white">750+ signals</strong> across
-        <strong class="text-white">40 categories</strong> — security, performance, reliability, AI/ML, compliance, and everything in between.
+      <p class="mt-6 text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light">
+        Know what you're buying. In 24 hours, not 6 weeks.
       </p>
-
-      <!-- ===== THE AUDIT FORM — front and center ===== -->
-      <div id="audit" class="mt-12 max-w-2xl mx-auto">
-        <div class="bg-surface-800/80 backdrop-blur border border-white/10 rounded-2xl p-8 shadow-2xl shadow-brand-600/10">
-          <h2 class="text-xl font-bold mb-2">Audit Any GitHub Repository</h2>
-          <p class="text-sm text-gray-400 mb-6">Paste your repo URL. Get 750+ actionable findings. Free.</p>
-
-          <form id="audit-form" class="space-y-4">
-            <div class="relative">
-              <div class="absolute left-4 top-1/2 -translate-y-1/2">
-                <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              </div>
-              <input type="url" id="github-url" placeholder="https://github.com/owner/repo"
-                class="w-full pl-12 pr-4 py-4 bg-surface-900 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 text-lg"
-                required>
-            </div>
-            <div class="relative">
-              <div class="absolute left-4 top-1/2 -translate-y-1/2">
-                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              </div>
-              <input type="email" id="user-email" placeholder="Email (optional — to get notified when done)"
-                class="w-full pl-12 pr-4 py-3 bg-surface-900 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
-            </div>
-            <button type="submit" id="submit-btn"
-              class="w-full py-4 bg-brand-600 hover:bg-brand-700 rounded-xl font-bold text-lg transition flex items-center justify-center gap-2">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-              Start Deep Audit — Free
-            </button>
-          </form>
-          <div id="form-error" class="hidden mt-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg"></div>
-          <p class="text-xs text-gray-500 mt-4">No signup required. Public repos only. Results appear in real-time.</p>
-        </div>
+      <p class="mt-4 text-base text-gray-500 max-w-2xl mx-auto leading-relaxed">
+        AI-powered assessment across 750+ signals, 40 categories. Replaces 3-5 consultants.
+        Used for PE due diligence, post-acquisition compliance, and continuous portfolio monitoring.
+      </p>
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#contact" class="px-8 py-4 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-lg font-bold text-lg transition">Request Assessment</a>
+        <a href="#methodology" class="px-8 py-4 border border-white/10 hover:border-white/25 rounded-lg font-semibold text-lg transition text-gray-300 hover:text-white">View Methodology</a>
       </div>
-
-      <!-- Trust bar -->
-      <div class="mt-12 flex flex-wrap items-center justify-center gap-8 text-gray-500 text-sm">
-        <div class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> 750+ Signals</div>
-        <div class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg> 40 Categories</div>
-        <div class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> 11 Reports</div>
-        <div class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> AI-Powered</div>
+      <div class="mt-14 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-gray-500 text-sm">
+        <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gold-500"></span>750+ Signals</span>
+        <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gold-500"></span>40 Categories</span>
+        <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gold-500"></span>11 PE-Grade Reports</span>
+        <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gold-500"></span>24-Hour Delivery</span>
       </div>
     </div>
   </section>
 
-  <!-- ======= HOW IT WORKS ======= -->
-  <section id="how-it-works" class="py-24 border-t border-white/5">
+  <!-- TWO PRODUCTS -->
+  <section id="platform" class="py-24 border-t border-white/5">
     <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Three Steps. That's It.</h2>
-      <p class="text-gray-400 text-center max-w-xl mx-auto mb-16">No signup, no configuration, no SDK. Just paste a URL and get the most comprehensive audit ever performed on your code.</p>
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="text-center fade-in">
-          <div class="w-16 h-16 rounded-2xl bg-brand-600/20 flex items-center justify-center mx-auto mb-5">
-            <span class="text-2xl font-black text-brand-400">1</span>
+      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Platform</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Two Products. One Intelligence Platform.</h2>
+      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">From pre-acquisition risk discovery to post-close compliance — continuous visibility across your portfolio.</p>
+
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <div class="bg-surface-800 border border-white/5 rounded-2xl p-8 fade-in">
+          <div class="w-12 h-12 rounded-xl bg-gold-500/15 flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           </div>
-          <h3 class="text-xl font-bold mb-2">Paste Your Repo</h3>
-          <p class="text-gray-400">Enter any public GitHub repository URL above. We clone it securely and start analyzing immediately.</p>
+          <h3 class="text-xl font-bold mb-2">Technical Due Diligence</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">Pre-acquisition risk assessment. Full-stack analysis of architecture, security posture, scalability limits, key-person dependencies, and technical debt. Delivered in 24-48 hours.</p>
+          <a href="/diligence" class="text-gold-400 text-sm font-semibold hover:text-gold-500 transition">Learn more &rarr;</a>
         </div>
-        <div class="text-center fade-in">
-          <div class="w-16 h-16 rounded-2xl bg-brand-600/20 flex items-center justify-center mx-auto mb-5">
-            <span class="text-2xl font-black text-brand-400">2</span>
+        <div id="compliance" class="bg-surface-800 border border-white/5 rounded-2xl p-8 fade-in">
+          <div class="w-12 h-12 rounded-xl bg-gold-500/15 flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           </div>
-          <h3 class="text-xl font-bold mb-2">AI Scans Everything</h3>
-          <p class="text-gray-400">Our 8-persona AI engine audits your code across 40 categories in 10 phases. Signals appear in real-time as they're discovered.</p>
+          <h3 class="text-xl font-bold mb-2">Compliance Readiness Audit</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">Post-acquisition compliance mapping across 6 frameworks: SOC 2, GDPR, HIPAA, DPDP, ISO 27001, and CCPA. Gap analysis with control-level remediation plans.</p>
+          <a href="#contact" class="text-gold-400 text-sm font-semibold hover:text-gold-500 transition">Request assessment &rarr;</a>
         </div>
-        <div class="text-center fade-in">
-          <div class="w-16 h-16 rounded-2xl bg-brand-600/20 flex items-center justify-center mx-auto mb-5">
-            <span class="text-2xl font-black text-brand-400">3</span>
-          </div>
-          <h3 class="text-xl font-bold mb-2">Get Your Report</h3>
-          <p class="text-gray-400">Browse findings by severity, view 11 detailed reports, and get a prioritized remediation roadmap — all in your browser.</p>
+      </div>
+
+      <div class="bg-surface-800/50 border border-white/5 rounded-xl p-6 text-center fade-in">
+        <p class="text-sm text-gray-400">
+          <span class="text-white font-semibold">The Flywheel:</span>
+          <span class="mx-2 text-gold-400">Due Diligence</span>&rarr;
+          <span class="mx-2 text-gold-400">Compliance Readiness</span>&rarr;
+          <span class="mx-2 text-gold-400">Portfolio Monitoring</span>
+        </p>
+        <p class="text-xs text-gray-500 mt-2">Continuous intelligence across the full investment lifecycle.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT WE DELIVER -->
+  <section class="py-24 bg-surface-900/40 border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-6">
+      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Deliverables</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">11 PE-Grade Deliverables</h2>
+      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">Every engagement produces a comprehensive intelligence package — structured for investment committees, board presentations, and remediation teams.</p>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Executive Summary</p>
+          <p class="text-xs text-gray-500 mt-1">Investment-ready overview with risk score and key findings</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Risk Heatmap</p>
+          <p class="text-xs text-gray-500 mt-1">Visual severity matrix across all 40 audit categories</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Single Point of Failure Map</p>
+          <p class="text-xs text-gray-500 mt-1">Infrastructure, code, and organizational SPOFs with blast radius</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Scalability Assessment</p>
+          <p class="text-xs text-gray-500 mt-1">Performance projections at 2x, 5x, and 10x current load</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Security Exposure Report</p>
+          <p class="text-xs text-gray-500 mt-1">Vulnerability inventory mapped to OWASP Top 10 and MITRE ATT&CK</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Compliance Gap Matrix</p>
+          <p class="text-xs text-gray-500 mt-1">Control-level mapping across SOC 2, GDPR, HIPAA, and more</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Tech Debt Ledger</p>
+          <p class="text-xs text-gray-500 mt-1">Quantified technical debt with estimated remediation cost and effort</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Remediation Roadmap</p>
+          <p class="text-xs text-gray-500 mt-1">Prioritized 30/60/90-day action plan with resource estimates</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Cost Model</p>
+          <p class="text-xs text-gray-500 mt-1">Infrastructure spend analysis and optimization projections</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Key-Person Dependency Map</p>
+          <p class="text-xs text-gray-500 mt-1">Code ownership concentration and bus-factor risk analysis</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
+          <p class="font-semibold text-sm">Architecture Assessment</p>
+          <p class="text-xs text-gray-500 mt-1">System topology, coupling analysis, and modernization readiness</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ======= BENEFITS ======= -->
-  <section id="benefits" class="py-24 bg-surface-900/50 border-t border-white/5">
+  <!-- METHODOLOGY & ACCURACY -->
+  <section id="methodology" class="py-24 border-t border-white/5">
     <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Why Teams Choose DeepAudit</h2>
-      <p class="text-gray-400 text-center max-w-xl mx-auto mb-16">Every bug that can exist — we find it before it costs you.</p>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-7 card-glow fade-in">
-          <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Methodology</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">8-Persona Analysis Engine</h2>
+      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">Every codebase is examined from 8 independent expert perspectives. Each persona brings domain-specific heuristics, producing findings that generalist tools miss entirely.</p>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
+          <div class="w-10 h-10 rounded-full bg-red-500/15 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
           </div>
-          <h3 class="font-bold text-lg mb-2">Security Before Breach</h3>
-          <p class="text-gray-400 text-sm">Find injection vectors, auth bypasses, SSRF, and 120+ security signals before attackers do. Mapped to OWASP + MITRE ATT&CK.</p>
+          <p class="font-semibold text-sm">Security Analyst</p>
+          <p class="text-xs text-gray-500 mt-1">Vulnerabilities, attack surfaces, auth bypass vectors</p>
         </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-7 card-glow fade-in">
-          <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
+          <div class="w-10 h-10 rounded-full bg-blue-500/15 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
           </div>
-          <h3 class="font-bold text-lg mb-2">Performance at Scale</h3>
-          <p class="text-gray-400 text-sm">Spot O(n&sup2;) in the ORM, memory leaks, N+1 queries, and connection pool issues before they hit production at load.</p>
+          <p class="font-semibold text-sm">Platform Architect</p>
+          <p class="text-xs text-gray-500 mt-1">System design, coupling, scalability ceilings</p>
         </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-7 card-glow fade-in">
-          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
+          <div class="w-10 h-10 rounded-full bg-orange-500/15 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
-          <h3 class="font-bold text-lg mb-2">Reliability & SPOF</h3>
-          <p class="text-gray-400 text-sm">Map every single point of failure, cascading failure chain, and missing circuit breaker. Know blast radius before outages.</p>
+          <p class="font-semibold text-sm">Performance Engineer</p>
+          <p class="text-xs text-gray-500 mt-1">Latency, throughput, memory leaks, N+1 queries</p>
         </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-7 card-glow fade-in">
-          <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
+          <div class="w-10 h-10 rounded-full bg-cyan-500/15 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
           </div>
-          <h3 class="font-bold text-lg mb-2">AI/ML Safety</h3>
-          <p class="text-gray-400 text-sm">Audit prompt injection risks, hallucination in decisions, token cost explosions, and guardrail bypasses in your AI features.</p>
+          <p class="font-semibold text-sm">Code Quality Auditor</p>
+          <p class="text-xs text-gray-500 mt-1">Maintainability, complexity, test coverage gaps</p>
         </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-7 card-glow fade-in">
-          <div class="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
+          <div class="w-10 h-10 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           </div>
-          <h3 class="font-bold text-lg mb-2">Cost Optimization</h3>
-          <p class="text-gray-400 text-sm">Identify over-provisioned resources, wasted cloud spend, and LLM token costs. Get projected savings at 2x, 5x, 10x scale.</p>
+          <p class="font-semibold text-sm">Compliance Officer</p>
+          <p class="text-xs text-gray-500 mt-1">Regulatory gaps, data handling, audit trail readiness</p>
         </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-7 card-glow fade-in">
-          <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
+          <div class="w-10 h-10 rounded-full bg-yellow-500/15 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
           </div>
-          <h3 class="font-bold text-lg mb-2">Compliance Ready</h3>
-          <p class="text-gray-400 text-sm">SOC2, GDPR, HIPAA, PCI-DSS gap matrix with control mapping. Audit trail, data protection, and crypto validation built in.</p>
+          <p class="font-semibold text-sm">DevOps Specialist</p>
+          <p class="text-xs text-gray-500 mt-1">CI/CD, infrastructure-as-code, deployment risk</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
+          <div class="w-10 h-10 rounded-full bg-purple-500/15 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+          </div>
+          <p class="font-semibold text-sm">Data Engineer</p>
+          <p class="text-xs text-gray-500 mt-1">Data pipelines, storage patterns, migration risk</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
+          <div class="w-10 h-10 rounded-full bg-gold-500/15 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          </div>
+          <p class="font-semibold text-sm">Risk Strategist</p>
+          <p class="text-xs text-gray-500 mt-1">Business impact, cost modeling, remediation prioritization</p>
+        </div>
+      </div>
+
+      <div class="bg-surface-800/50 border border-white/5 rounded-xl p-8 fade-in">
+        <div class="grid md:grid-cols-3 gap-8 text-center">
+          <div>
+            <p class="text-2xl font-bold text-white">750+</p>
+            <p class="text-sm text-gray-400 mt-1">Discrete signals per assessment</p>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-white">Evidence-Based</p>
+            <p class="text-sm text-gray-400 mt-1">Every signal includes evidence, failure scenario, and remediation</p>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-white">Benchmarked</p>
+            <p class="text-sm text-gray-400 mt-1">Validated against OWASP Juice Shop and known vulnerable applications</p>
+          </div>
+        </div>
+        <div class="text-center mt-6">
+          <a href="/methodology" class="text-gold-400 text-sm font-semibold hover:text-gold-500 transition">Read our full methodology documentation &rarr;</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ======= 40 CATEGORIES ======= -->
-  <section id="categories" class="py-24 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">40 Audit Categories</h2>
-      <p class="text-gray-400 text-center max-w-xl mx-auto mb-12">Every part of your system examined with NASA-level rigor.</p>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3" id="cat-grid"></div>
+  <!-- HOW WE COMPARE -->
+  <section class="py-24 bg-surface-900/40 border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6">
+      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Comparison</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">How We Compare</h2>
+      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">The same depth as a boutique DD firm. A fraction of the cost and timeline.</p>
+
+      <div class="overflow-x-auto fade-in">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-white/10">
+              <th class="text-left py-4 px-4 font-semibold text-gray-300">Provider</th>
+              <th class="text-left py-4 px-4 font-semibold text-gray-300">Price Range</th>
+              <th class="text-left py-4 px-4 font-semibold text-gray-300">Timeline</th>
+              <th class="text-left py-4 px-4 font-semibold text-gray-300">Scope</th>
+              <th class="text-left py-4 px-4 font-semibold text-gray-300">Consistency</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-400">
+            <tr class="border-b border-white/5">
+              <td class="py-4 px-4 text-white">Boutique DD Firms</td>
+              <td class="py-4 px-4">$50K - $200K</td>
+              <td class="py-4 px-4">2-6 weeks</td>
+              <td class="py-4 px-4">Varies by team</td>
+              <td class="py-4 px-4">Analyst-dependent</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="py-4 px-4 text-white">Big 4 Firms</td>
+              <td class="py-4 px-4">$100K - $500K</td>
+              <td class="py-4 px-4">4-12 weeks</td>
+              <td class="py-4 px-4">Broad but surface-level</td>
+              <td class="py-4 px-4">Team-dependent</td>
+            </tr>
+            <tr class="bg-gold-500/5 border border-gold-500/20 rounded">
+              <td class="py-4 px-4 text-gold-400 font-semibold">DeepAudit</td>
+              <td class="py-4 px-4 text-white font-semibold">$25K - $50K</td>
+              <td class="py-4 px-4 text-white font-semibold">24-48 hours</td>
+              <td class="py-4 px-4 text-white font-semibold">750+ signals, 40 categories</td>
+              <td class="py-4 px-4 text-white font-semibold">Deterministic engine</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
-  <!-- ======= API INTEGRATION ======= -->
-  <section id="api" class="py-24 bg-surface-900/50 border-t border-white/5">
+  <!-- DATA SECURITY & TRUST -->
+  <section class="py-24 border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-6">
+      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Security & Trust</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Your Code. Your Data. Our Commitment.</h2>
+      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">We handle source code for PE transactions. Security is not a feature — it is the foundation.</p>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
+          <p class="font-semibold text-sm mb-2">Auto-Delete Within 24 Hours</p>
+          <p class="text-xs text-gray-500">All cloned source code is automatically purged within 24 hours of assessment completion. No exceptions.</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
+          <p class="font-semibold text-sm mb-2">No Code Retention or Training</p>
+          <p class="text-xs text-gray-500">Customer code is never used for model training, fine-tuning, or any purpose beyond the contracted assessment.</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
+          <p class="font-semibold text-sm mb-2">Encryption at Every Layer</p>
+          <p class="text-xs text-gray-500">TLS 1.3 in transit. AES-256 at rest. All processing occurs in isolated, ephemeral environments.</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
+          <p class="font-semibold text-sm mb-2">SOC 2 Type II In Progress</p>
+          <p class="text-xs text-gray-500">Formal SOC 2 Type II certification is underway. Contact us for our current security documentation package.</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
+          <p class="font-semibold text-sm mb-2">Mutual NDA for Every Engagement</p>
+          <p class="text-xs text-gray-500">We execute a mutual NDA before any code access. Standard NDA available for immediate review.</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
+          <p class="font-semibold text-sm mb-2">Legal & Compliance</p>
+          <p class="text-xs text-gray-500 mb-3">Review our policies:</p>
+          <div class="flex flex-wrap gap-3 text-xs">
+            <a href="/terms" class="text-gold-400 hover:text-gold-500 transition">Terms</a>
+            <a href="/privacy" class="text-gold-400 hover:text-gold-500 transition">Privacy</a>
+            <a href="/nda" class="text-gold-400 hover:text-gold-500 transition">NDA Template</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEVELOPER INTEGRATION -->
+  <section id="api" class="py-24 bg-surface-900/40 border-t border-white/5">
     <div class="max-w-4xl mx-auto px-6">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Integrate in 30 Seconds</h2>
-      <p class="text-gray-400 text-center max-w-xl mx-auto mb-12">One API call. No SDK. No configuration.</p>
+      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Developer Integration</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">For Engineering Teams: Integrate Directly</h2>
+      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">Embed DeepAudit into your CI/CD pipeline, trigger assessments programmatically, or build custom workflows on our API.</p>
 
       <div class="mb-4 flex gap-1">
-        <button onclick="switchCodeTab('curl')" data-codetab="curl" class="code-tab-btn active px-4 py-2 text-sm rounded-lg bg-brand-600 text-white transition">cURL</button>
-        <button onclick="switchCodeTab('python')" data-codetab="python" class="code-tab-btn px-4 py-2 text-sm rounded-lg text-gray-400 hover:text-white transition">Python</button>
-        <button onclick="switchCodeTab('js')" data-codetab="js" class="code-tab-btn px-4 py-2 text-sm rounded-lg text-gray-400 hover:text-white transition">JavaScript</button>
-        <button onclick="switchCodeTab('gh')" data-codetab="gh" class="code-tab-btn px-4 py-2 text-sm rounded-lg text-gray-400 hover:text-white transition">GitHub Action</button>
+        <button onclick="switchCodeTab('curl')" data-codetab="curl" class="code-tab-btn active px-4 py-2 text-sm rounded-lg transition font-medium">cURL</button>
+        <button onclick="switchCodeTab('python')" data-codetab="python" class="code-tab-btn px-4 py-2 text-sm rounded-lg text-gray-400 hover:text-white transition font-medium">Python</button>
+        <button onclick="switchCodeTab('js')" data-codetab="js" class="code-tab-btn px-4 py-2 text-sm rounded-lg text-gray-400 hover:text-white transition font-medium">JavaScript</button>
+        <button onclick="switchCodeTab('gh')" data-codetab="gh" class="code-tab-btn px-4 py-2 text-sm rounded-lg text-gray-400 hover:text-white transition font-medium">GitHub Action</button>
       </div>
       <div class="bg-surface-800 border border-white/10 rounded-xl overflow-hidden">
-        <pre id="code-curl" class="code-block-content p-6"><code class="text-green-400"># Start an audit — that's it!
-curl -X POST https://deepaudit-api.onrender.com/api/v1/quick-audit \
+        <pre id="code-curl" class="code-block-content p-6"><code class="text-gold-400">curl -X POST https://deepaudit-api.onrender.com/api/v1/quick-audit \
   -H "Content-Type: application/json" \
   -d '{"github_url": "https://github.com/your-org/your-repo"}'
 
 # Response includes audit_id + dashboard URL
 # View results at: /audit?id=AUDIT_ID&key=API_KEY</code></pre>
-        <pre id="code-python" class="code-block-content hidden p-6"><code class="text-green-400">import requests
+        <pre id="code-python" class="code-block-content hidden p-6"><code class="text-gold-400">import requests
 
 r = requests.post(
     "https://deepaudit-api.onrender.com/api/v1/quick-audit",
@@ -250,7 +374,7 @@ r = requests.post(
 )
 data = r.json()
 print(f"Dashboard: /audit?id={data['audit_id']}&key={data['api_key']}")</code></pre>
-        <pre id="code-js" class="code-block-content hidden p-6"><code class="text-green-400">const res = await fetch(
+        <pre id="code-js" class="code-block-content hidden p-6"><code class="text-gold-400">const res = await fetch(
   'https://deepaudit-api.onrender.com/api/v1/quick-audit',
   {
     method: 'POST',
@@ -262,7 +386,7 @@ print(f"Dashboard: /audit?id={data['audit_id']}&key={data['api_key']}")</code></
 );
 const { audit_id, api_key } = await res.json();
 window.open(`/audit?id=${audit_id}&key=${api_key}`);</code></pre>
-        <pre id="code-gh" class="code-block-content hidden p-6"><code class="text-green-400"># .github/workflows/deepaudit.yml
+        <pre id="code-gh" class="code-block-content hidden p-6"><code class="text-gold-400"># .github/workflows/deepaudit.yml
 name: DeepAudit
 on: [push]
 jobs:
@@ -278,195 +402,108 @@ jobs:
     </div>
   </section>
 
-  <!-- ======= PRICING ======= -->
-  <section id="pricing" class="py-24 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Simple, Transparent Pricing</h2>
-      <p class="text-gray-400 text-center max-w-xl mx-auto mb-4">The average data breach costs <strong class="text-white">$10.2 million</strong>. A DeepAudit costs <strong class="text-white">$99</strong>. That's a 100,000x ROI.</p>
-      <p class="text-center mb-12">
-        <span class="text-sm bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full">Save 20% with annual billing</span>
-      </p>
-      <div class="grid md:grid-cols-4 gap-5">
-        <!-- Free -->
-        <div class="bg-surface-800 border border-white/5 rounded-2xl p-6 flex flex-col">
-          <h3 class="text-lg font-bold mb-1">Free</h3>
-          <p class="text-3xl font-black mb-1">$0</p>
-          <p class="text-xs text-gray-500 mb-5">forever</p>
-          <ul class="text-sm text-gray-400 space-y-2 flex-1 mb-6">
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 1 audit/month</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Public repos, up to 50K LOC</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 10 categories (security)</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 3 reports</li>
-          </ul>
-          <a href="#audit" class="w-full py-2.5 text-center bg-surface-700 hover:bg-surface-600 rounded-xl font-semibold text-sm transition block">Start Free</a>
-        </div>
-        <!-- Starter -->
-        <div class="bg-surface-800 border border-white/5 rounded-2xl p-6 flex flex-col">
-          <h3 class="text-lg font-bold mb-1">Starter</h3>
-          <p class="text-3xl font-black mb-1">$99<span class="text-base font-normal text-gray-400">/mo</span></p>
-          <p class="text-xs text-gray-500 mb-5">$79/mo billed annually</p>
-          <ul class="text-sm text-gray-400 space-y-2 flex-1 mb-6">
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 5 audits/month</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Private repos, up to 200K LOC</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> All 40 categories</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> All 11 reports</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Email support</li>
-          </ul>
-          <a href="#audit" class="w-full py-2.5 text-center bg-brand-600 hover:bg-brand-700 rounded-xl font-semibold text-sm transition block">Get Started</a>
-        </div>
-        <!-- Pro (highlighted) -->
-        <div class="bg-gradient-to-b from-brand-600/20 to-surface-800 border-2 border-brand-500/40 rounded-2xl p-6 flex flex-col relative">
-          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-xs font-bold px-3 py-1 rounded-full">MOST POPULAR</span>
-          <h3 class="text-lg font-bold mb-1">Pro</h3>
-          <p class="text-3xl font-black mb-1">$499<span class="text-base font-normal text-gray-400">/mo</span></p>
-          <p class="text-xs text-gray-500 mb-5">$399/mo billed annually</p>
-          <ul class="text-sm text-gray-400 space-y-2 flex-1 mb-6">
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 20 audits/month</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Unlimited LOC</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Custom rules</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> CSV/PDF export</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Priority queue (2x faster)</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> CI/CD + Slack integration</li>
-          </ul>
-          <a href="#audit" class="w-full py-2.5 text-center bg-brand-600 hover:bg-brand-700 rounded-xl font-semibold text-sm transition block">Start Pro Trial</a>
-        </div>
-        <!-- Enterprise -->
-        <div class="bg-surface-800 border border-white/5 rounded-2xl p-6 flex flex-col">
-          <h3 class="text-lg font-bold mb-1">Enterprise</h3>
-          <p class="text-3xl font-black mb-1">$2,499<span class="text-base font-normal text-gray-400">/mo</span></p>
-          <p class="text-xs text-gray-500 mb-5">Custom pricing available</p>
-          <ul class="text-sm text-gray-400 space-y-2 flex-1 mb-6">
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Unlimited everything</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> White-label reports</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> 1-hour SLA</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> SSO/SAML</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> SOC2/HIPAA package</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#10003;</span> Dedicated account manager</li>
-          </ul>
-          <a href="#contact" class="w-full py-2.5 text-center bg-surface-700 hover:bg-surface-600 rounded-xl font-semibold text-sm transition block">Contact Sales</a>
-        </div>
-      </div>
-      <!-- Emergency banner -->
-      <div class="mt-8 bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center">
-        <p class="text-lg font-bold text-red-400">Got breached? Need answers NOW?</p>
-        <p class="text-sm text-gray-400 mt-1">Emergency audit: full 750-signal scan with 30-minute SLA. <strong class="text-white">$5,000-$25,000</strong> based on repo size.</p>
-        <a href="#contact" class="inline-block mt-3 bg-red-500 hover:bg-red-600 px-6 py-2 rounded-lg font-semibold text-sm transition">Request Emergency Audit</a>
+  <!-- QUICK TECHNICAL ASSESSMENT -->
+  <section id="quick-assessment" class="py-24 border-t border-white/5">
+    <div class="max-w-2xl mx-auto px-6">
+      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Quick Assessment</p>
+      <h2 class="text-3xl font-bold text-center mb-4">Quick Technical Assessment</h2>
+      <p class="text-gray-400 text-center max-w-lg mx-auto mb-10">Run a preliminary scan on any public GitHub repository. For full PE-grade assessments, <a href="#contact" class="text-gold-400 hover:text-gold-500 transition">contact our team</a>.</p>
+
+      <div class="bg-surface-800 border border-white/5 rounded-2xl p-8">
+        <form id="audit-form" class="space-y-4">
+          <div class="relative">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2">
+              <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </div>
+            <input type="url" id="github-url" placeholder="https://github.com/owner/repo"
+              class="w-full pl-12 pr-4 py-4 bg-surface-900 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 text-lg"
+              required>
+          </div>
+          <div class="relative">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <input type="email" id="user-email" placeholder="Email (optional — for delivery notification)"
+              class="w-full pl-12 pr-4 py-3 bg-surface-900 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20">
+          </div>
+          <button type="submit" id="submit-btn"
+            class="w-full py-4 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-xl font-bold text-lg transition flex items-center justify-center gap-2">
+            Run Assessment
+          </button>
+        </form>
+        <div id="form-error" class="hidden mt-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg"></div>
+        <p class="text-xs text-gray-500 mt-4 text-center">Public repositories only. Results delivered in-browser.</p>
       </div>
     </div>
   </section>
 
-  <!-- ======= TESTIMONIALS ======= -->
-  <section class="py-24 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl font-bold text-center mb-12">What Engineers Say</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-7 fade-in">
-          <div class="flex gap-1 mb-4 text-yellow-400">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p class="text-gray-300 text-sm leading-relaxed mb-4">"We ran DeepAudit on our fintech platform and found 23 P0 issues — including a race condition in payment processing that would have cost us millions. The remediation roadmap paid for itself 100x."</p>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center font-bold text-sm">SK</div>
-            <div><p class="font-semibold text-sm">Sarah Kim</p><p class="text-xs text-gray-500">CTO, FinanceFlow</p></div>
-          </div>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-7 fade-in">
-          <div class="flex gap-1 mb-4 text-yellow-400">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p class="text-gray-300 text-sm leading-relaxed mb-4">"The AI/ML risk register caught prompt injection vulnerabilities in our RAG pipeline that no other tool found. Now we run DeepAudit on every PR."</p>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center font-bold text-sm">MR</div>
-            <div><p class="font-semibold text-sm">Marcus Rodriguez</p><p class="text-xs text-gray-500">Head of Security, DataForge AI</p></div>
-          </div>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-7 fade-in">
-          <div class="flex gap-1 mb-4 text-yellow-400">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p class="text-gray-300 text-sm leading-relaxed mb-4">"750 signals sounded like noise. It wasn't. Every single finding had specific file, line number, failure scenario, and fix. This is what code review should be."</p>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-sm">AP</div>
-            <div><p class="font-semibold text-sm">Anika Patel</p><p class="text-xs text-gray-500">VP Engineering, ScaleStack</p></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- CONTACT / REQUEST ASSESSMENT -->
+  <section id="contact" class="py-24 bg-surface-900/40 border-t border-white/5">
+    <div class="max-w-2xl mx-auto px-6">
+      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Contact</p>
+      <h2 class="text-3xl font-bold text-center mb-4">Request Assessment</h2>
+      <p class="text-gray-400 text-center max-w-lg mx-auto mb-10">Tell us about your engagement. We respond within one business day.</p>
 
-  <!-- ======= CONTACT ======= -->
-  <section id="contact" class="py-24 bg-surface-900/50 border-t border-white/5">
-    <div class="max-w-xl mx-auto px-6 text-center">
-      <h2 class="text-3xl font-bold mb-4">Get in Touch</h2>
-      <p class="text-gray-400 mb-8">Enterprise needs? Custom integration? Questions? We respond within 24 hours.</p>
-      <form id="contact-form" class="space-y-4 text-left">
+      <form id="contact-form" class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
-          <input type="text" id="c-name" placeholder="Name" required class="px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
-          <input type="email" id="c-email" placeholder="Email" required class="px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+          <input type="text" id="c-name" placeholder="Name" required
+            class="px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500">
+          <input type="email" id="c-email" placeholder="Email" required
+            class="px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500">
         </div>
-        <input type="text" id="c-company" placeholder="Company" class="w-full px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
-        <textarea id="c-message" placeholder="How can we help?" rows="4" required class="w-full px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 resize-none"></textarea>
-        <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 rounded-xl font-bold transition">Send Message</button>
+        <input type="text" id="c-company" placeholder="Company" required
+          class="w-full px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500">
+        <div class="grid grid-cols-2 gap-4">
+          <select id="c-role" required
+            class="px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold-500 appearance-none">
+            <option value="" disabled selected class="text-gray-500">Role</option>
+            <option value="operating_partner">Operating Partner</option>
+            <option value="cto">CTO</option>
+            <option value="ciso">CISO</option>
+            <option value="vp_engineering">VP Engineering</option>
+            <option value="head_ai_ml">Head of AI/ML</option>
+            <option value="other">Other</option>
+          </select>
+          <select id="c-deal-stage" required
+            class="px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold-500 appearance-none">
+            <option value="" disabled selected class="text-gray-500">Deal Stage</option>
+            <option value="loi">LOI</option>
+            <option value="confirmatory_dd">Confirmatory DD</option>
+            <option value="post_acquisition">Post-Acquisition</option>
+            <option value="ongoing_monitoring">Ongoing Monitoring</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <textarea id="c-message" placeholder="Tell us about the engagement" rows="4" required
+          class="w-full px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500 resize-none"></textarea>
+        <button type="submit" class="w-full py-3.5 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-xl font-bold transition text-lg">Submit Request</button>
       </form>
-      <div id="contact-success" class="hidden mt-4 text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-lg">Thank you! We'll get back to you within 24 hours.</div>
+      <div id="contact-success" class="hidden mt-6 text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-lg text-center">Thank you. Our team will reach out within one business day.</div>
     </div>
   </section>
 
-  <!-- ======= FOOTER ======= -->
+  <!-- FOOTER -->
   <footer class="py-12 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-2">
-        <div class="w-6 h-6 rounded bg-brand-600 flex items-center justify-center font-bold text-[10px]">DA</div>
-        <span class="text-sm text-gray-400">&copy; 2026 DeepAudit. AI-powered software audit.</span>
-      </div>
-      <div class="flex items-center gap-6 text-sm text-gray-500">
-        <a href="/docs" class="hover:text-white transition">API Docs</a>
-        <a href="https://github.com/rajamohan1950/deepAudit" class="hover:text-white transition">GitHub</a>
-        <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 pulse"></span>
-          <span id="footer-live-count">-</span> online
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-2.5">
+          <div class="w-6 h-6 rounded bg-gold-500 flex items-center justify-center font-bold text-[10px] text-surface-950">DA</div>
+          <span class="text-sm text-gray-500">&copy; 2026 DeepAudit Intelligence Platform</span>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
+          <a href="/diligence" class="hover:text-white transition">Due Diligence</a>
+          <a href="/methodology" class="hover:text-white transition">Methodology</a>
+          <a href="/docs" class="hover:text-white transition">API Docs</a>
+          <a href="/terms" class="hover:text-white transition">Terms</a>
+          <a href="/privacy" class="hover:text-white transition">Privacy</a>
+          <a href="/nda" class="hover:text-white transition">NDA</a>
+          <a href="https://github.com/rajamohan1950/deepAudit" class="hover:text-white transition">GitHub</a>
         </div>
       </div>
     </div>
   </footer>
 
 <script>
-const CATS = [
-  {n:'Authentication',c:'#ef4444'},{n:'Authorization',c:'#ef4444'},{n:'Input Validation',c:'#ef4444'},
-  {n:'Data Protection',c:'#ef4444'},{n:'Cryptography',c:'#ef4444'},{n:'Memory Mgmt',c:'#f97316'},
-  {n:'CPU & Compute',c:'#f97316'},{n:'Network I/O',c:'#f97316'},{n:'Database',c:'#f97316'},
-  {n:'Caching',c:'#f97316'},{n:'OS & Kernel',c:'#f97316'},{n:'Graceful Shutdown',c:'#f97316'},
-  {n:'SPOF',c:'#eab308'},{n:'Fault Tolerance',c:'#eab308'},{n:'Concurrency',c:'#eab308'},
-  {n:'Data Integrity',c:'#eab308'},{n:'Distributed Sys',c:'#eab308'},{n:'Queue Processing',c:'#eab308'},
-  {n:'Infra Security',c:'#22c55e'},{n:'Capacity Plan',c:'#22c55e'},{n:'CI/CD',c:'#22c55e'},
-  {n:'Supply Chain',c:'#22c55e'},{n:'AI/ML Risks',c:'#a855f7'},{n:'AI/ML Ops',c:'#a855f7'},
-  {n:'Metrics',c:'#3b82f6'},{n:'Logging',c:'#3b82f6'},{n:'Tracing',c:'#3b82f6'},
-  {n:'Alerting',c:'#3b82f6'},{n:'Testing & QA',c:'#06b6d4'},{n:'Code Quality',c:'#06b6d4'},
-  {n:'API Design',c:'#06b6d4'},{n:'UX & A11y',c:'#06b6d4'},{n:'Cost & FinOps',c:'#06b6d4'},
-  {n:'Multi-Tenancy',c:'#06b6d4'},{n:'Compliance',c:'#ec4899'},{n:'Disaster Recovery',c:'#ec4899'},
-  {n:'i18n & L10n',c:'#ec4899'},{n:'State Mgmt',c:'#ec4899'},{n:'Backward Compat',c:'#ec4899'},
-  {n:'Organizational',c:'#ec4899'}
-];
-
-const catGrid = document.getElementById('cat-grid');
-CATS.forEach((cat, i) => {
-  catGrid.innerHTML += `<div class="category-pill bg-surface-800 border border-white/5 rounded-lg px-3 py-3 text-center cursor-default">
-    <div class="w-6 h-6 rounded-full mx-auto mb-1.5 flex items-center justify-center text-[10px] font-bold" style="background:${cat.c}22;color:${cat.c}">${i+1}</div>
-    <p class="text-xs font-medium text-gray-300">${cat.n}</p>
-  </div>`;
-});
-
-const sessionId = 'sess_' + Math.random().toString(36).slice(2);
-
-async function updateLiveCount() {
-  try {
-    await fetch(`/api/v1/stats/heartbeat?session_id=${sessionId}`, { method:'POST' });
-    const res = await fetch('/api/v1/stats');
-    const data = await res.json();
-    const count = data.active_users || 1;
-    document.getElementById('nav-live-count').textContent = count;
-    document.getElementById('hero-live-count').textContent = count;
-    document.getElementById('footer-live-count').textContent = count;
-    document.getElementById('hero-total-audits').textContent = data.total_audits || 0;
-  } catch {}
-}
-updateLiveCount();
-setInterval(updateLiveCount, 30000);
-
 // Audit form
 document.getElementById('audit-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -477,7 +514,7 @@ document.getElementById('audit-form').addEventListener('submit', async (e) => {
   errEl.classList.add('hidden');
 
   btn.disabled = true;
-  btn.innerHTML = '<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full spinner"></div> Scanning...';
+  btn.innerHTML = '<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full spinner"></div> Analyzing...';
 
   try {
     const res = await fetch('/api/v1/quick-audit', {
@@ -486,13 +523,13 @@ document.getElementById('audit-form').addEventListener('submit', async (e) => {
       body: JSON.stringify({ github_url: url, email: email || undefined })
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || 'Failed to start audit');
+    if (!res.ok) throw new Error(data.detail || 'Failed to start assessment');
     window.location.href = `/audit?id=${data.audit_id}&key=${data.api_key}`;
   } catch (err) {
     errEl.textContent = err.message;
     errEl.classList.remove('hidden');
     btn.disabled = false;
-    btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> Start Deep Audit — Free';
+    btn.innerHTML = 'Run Assessment';
   }
 });
 
@@ -507,6 +544,8 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
         name: document.getElementById('c-name').value,
         email: document.getElementById('c-email').value,
         company: document.getElementById('c-company').value,
+        role: document.getElementById('c-role').value,
+        deal_stage: document.getElementById('c-deal-stage').value,
         message: document.getElementById('c-message').value
       })
     });
@@ -519,12 +558,12 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
 function switchCodeTab(name) {
   document.querySelectorAll('.code-block-content').forEach(el => el.classList.add('hidden'));
   document.querySelectorAll('.code-tab-btn').forEach(el => {
-    el.classList.remove('active', 'bg-brand-600', 'text-white');
+    el.classList.remove('active');
     el.classList.add('text-gray-400');
   });
   document.getElementById('code-' + name).classList.remove('hidden');
   const btn = document.querySelector(`[data-codetab="${name}"]`);
-  btn.classList.add('active', 'bg-brand-600', 'text-white');
+  btn.classList.add('active');
   btn.classList.remove('text-gray-400');
 }
 

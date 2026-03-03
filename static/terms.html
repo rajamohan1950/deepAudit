@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — DeepAudit Inc.</title>
+  <meta name="description" content="Terms of Service for the DeepAudit Intelligence Platform. Automated code audit services, data handling, and usage terms.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: { 900: '#0a0a0f', 800: '#111118', 700: '#18181f', 600: '#1f1f28', 500: '#2a2a35' },
+            gold: { 50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#d4a853', 500: '#c9952c', 600: '#a37a1f', 700: '#7c5c17' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a0f; }
+  </style>
+</head>
+<body class="bg-[#0a0a0f] text-white antialiased">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 w-full z-50 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-gold-500 flex items-center justify-center font-bold text-sm">DA</div>
+        <span class="text-lg font-bold">DeepAudit</span>
+      </a>
+      <div class="flex items-center gap-6 text-sm text-gray-400">
+        <a href="/" class="hover:text-white transition">Home</a>
+        <a href="/diligence" class="hover:text-white transition">PE Diligence</a>
+        <a href="/static/privacy.html" class="hover:text-white transition">Privacy</a>
+        <a href="/static/nda.html" class="hover:text-white transition">NDA</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <section class="pt-32 pb-16 border-b border-white/5">
+    <div class="max-w-4xl mx-auto px-6">
+      <p class="text-sm text-gold-400 font-semibold uppercase tracking-wider mb-4">Legal</p>
+      <h1 class="text-4xl md:text-5xl font-black leading-tight mb-4">Terms of Service</h1>
+      <p class="text-gray-400">Effective Date: March 1, 2026 &nbsp;|&nbsp; Last Updated: March 1, 2026</p>
+    </div>
+  </section>
+
+  <!-- CONTENT -->
+  <section class="py-16">
+    <div class="max-w-4xl mx-auto px-6 space-y-12">
+
+      <!-- Intro -->
+      <div>
+        <p class="text-gray-300 leading-relaxed">These Terms of Service ("Terms") constitute a legally binding agreement between you ("Customer," "you," or "your") and <strong class="text-white">DeepAudit Inc.</strong>, a Delaware corporation ("DeepAudit," "we," "us," or "our"). By accessing or using the DeepAudit Intelligence Platform ("Platform" or "Service"), you agree to be bound by these Terms. If you do not agree, you must not use the Service.</p>
+      </div>
+
+      <!-- 1. Service Description -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">1. Service Description</h2>
+        <p class="text-gray-300 leading-relaxed mb-3">DeepAudit provides an automated, AI-powered code audit platform that analyzes software repositories for security vulnerabilities, performance issues, reliability risks, compliance gaps, and other software quality signals across 40+ audit categories.</p>
+        <p class="text-gray-300 leading-relaxed">The Service accepts a repository URL, clones the repository to ephemeral storage, performs multi-phase automated analysis using proprietary AI models, and produces structured audit reports containing findings, severity ratings, and remediation recommendations.</p>
+      </div>
+
+      <!-- 2. Permitted Use -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">2. Permitted Use</h2>
+        <p class="text-gray-300 leading-relaxed mb-3">You may use the Service to audit repositories that you own or for which you have obtained all necessary rights, licenses, and permissions. You represent and warrant that:</p>
+        <ul class="list-disc list-inside text-gray-300 space-y-2 ml-4">
+          <li>You have legal authority to submit the repository for analysis;</li>
+          <li>Your use of the Service complies with all applicable laws, regulations, and third-party agreements;</li>
+          <li>You will not submit repositories containing content that is unlawful, harmful, or infringing on any third-party rights;</li>
+          <li>You are at least 18 years of age or the age of legal majority in your jurisdiction.</li>
+        </ul>
+      </div>
+
+      <!-- 3. Prohibited Use -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">3. Prohibited Use</h2>
+        <p class="text-gray-300 leading-relaxed mb-3">You shall not:</p>
+        <ul class="list-disc list-inside text-gray-300 space-y-2 ml-4">
+          <li>Reverse engineer, decompile, or attempt to derive the source code of the Platform's proprietary analysis engine;</li>
+          <li>Use the Service to develop competing products or services;</li>
+          <li>Circumvent, disable, or interfere with any security, rate-limiting, or access-control features of the Service;</li>
+          <li>Submit repositories for the purpose of testing or probing the Platform's AI models for extraction, replication, or adversarial purposes;</li>
+          <li>Use the Service to analyze code without proper authorization from the code owner;</li>
+          <li>Resell, sublicense, or redistribute audit reports to third parties without DeepAudit's prior written consent, except as explicitly permitted under your subscription plan;</li>
+          <li>Transmit malicious code, viruses, or any material intended to damage or disrupt the Service.</li>
+        </ul>
+      </div>
+
+      <!-- 4. Data Handling -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">4. Data Handling</h2>
+        <p class="text-gray-300 leading-relaxed mb-3">DeepAudit processes Customer code solely for the purpose of performing the requested audit. Our data handling practices are as follows:</p>
+        <div class="bg-dark-900 border border-white/5 rounded-xl p-6 space-y-3">
+          <div class="flex items-start gap-3">
+            <span class="text-gold-400 mt-0.5 font-bold">a.</span>
+            <p class="text-gray-300"><strong class="text-white">Ephemeral Processing:</strong> Repository code is cloned to encrypted ephemeral storage, analyzed by our AI engine, and automatically deleted within 24 hours of audit completion.</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-gold-400 mt-0.5 font-bold">b.</span>
+            <p class="text-gray-300"><strong class="text-white">No Retention:</strong> DeepAudit does not retain, store, or archive Customer source code beyond the 24-hour ephemeral processing window.</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-gold-400 mt-0.5 font-bold">c.</span>
+            <p class="text-gray-300"><strong class="text-white">No Training:</strong> Customer code is never used to train, fine-tune, or improve DeepAudit's AI models or any third-party models.</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-gold-400 mt-0.5 font-bold">d.</span>
+            <p class="text-gray-300"><strong class="text-white">Audit Reports:</strong> Generated audit reports are retained and accessible to the Customer for the duration of their subscription or as specified in the applicable plan terms.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Intellectual Property -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">5. Intellectual Property</h2>
+        <p class="text-gray-300 leading-relaxed mb-3"><strong class="text-white">Customer IP:</strong> You retain all right, title, and interest in and to your source code, repositories, and any proprietary materials submitted through the Service. DeepAudit acquires no ownership, license, or other rights to your code by virtue of providing the Service.</p>
+        <p class="text-gray-300 leading-relaxed mb-3"><strong class="text-white">DeepAudit IP:</strong> The Platform, including its AI models, analysis engine, audit methodologies, signal taxonomy, user interface, and documentation, are and remain the exclusive intellectual property of DeepAudit Inc. The audit report format and structure are proprietary to DeepAudit; however, the findings and data contained within reports generated from your code are yours to use without restriction.</p>
+        <p class="text-gray-300 leading-relaxed"><strong class="text-white">Feedback:</strong> If you provide suggestions, enhancement requests, or other feedback regarding the Service, you grant DeepAudit a perpetual, irrevocable, non-exclusive, royalty-free license to use such feedback for any purpose.</p>
+      </div>
+
+      <!-- 6. Confidentiality of Audit Results -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">6. Confidentiality of Audit Results</h2>
+        <p class="text-gray-300 leading-relaxed mb-3">DeepAudit treats all audit results as confidential. We will not disclose, publish, or share your audit findings with any third party without your prior written consent, except as required by law or legal process.</p>
+        <p class="text-gray-300 leading-relaxed">You acknowledge that audit reports may contain sensitive information about your software's vulnerabilities and risks. You are solely responsible for controlling access to and distribution of your audit reports.</p>
+      </div>
+
+      <!-- 7. Data Processing Terms -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">7. Data Processing Terms</h2>
+        <p class="text-gray-300 leading-relaxed mb-3">To the extent that DeepAudit processes personal data on your behalf in the course of providing the Service, the following terms apply:</p>
+        <ul class="list-disc list-inside text-gray-300 space-y-2 ml-4">
+          <li>DeepAudit acts as a data processor on behalf of the Customer (data controller);</li>
+          <li>Processing is limited to the scope and purpose of performing the requested code audit;</li>
+          <li>DeepAudit implements appropriate technical and organizational measures to protect personal data, including encryption in transit (TLS 1.3) and at rest (AES-256);</li>
+          <li>Upon completion of the audit and expiration of the 24-hour retention window, all processed code data is permanently deleted;</li>
+          <li>A Data Processing Agreement (DPA) is available on request for customers requiring GDPR or other regulatory compliance documentation.</li>
+        </ul>
+      </div>
+
+      <!-- 8. Disclaimers and No Warranty on Completeness -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">8. Disclaimers; No Warranty on Completeness</h2>
+        <div class="bg-dark-900 border border-yellow-500/20 rounded-xl p-6">
+          <p class="text-gray-300 leading-relaxed mb-3">THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.</p>
+          <p class="text-gray-300 leading-relaxed mb-3">Audit findings are <strong class="text-white">automated signals generated by AI models</strong> and should be treated as informational indicators, not as comprehensive security assessments, legal advice, or guarantees of code correctness. DeepAudit does not warrant that:</p>
+          <ul class="list-disc list-inside text-gray-300 space-y-2 ml-4">
+            <li>The Service will identify all vulnerabilities, defects, or issues in your code;</li>
+            <li>Findings are free from false positives or false negatives;</li>
+            <li>Following remediation recommendations will fully resolve identified issues;</li>
+            <li>The Service will be uninterrupted, timely, or error-free.</li>
+          </ul>
+          <p class="text-gray-300 leading-relaxed mt-3">You are solely responsible for independently verifying audit findings and making informed decisions about remediation. Audit reports do not constitute legal, regulatory, or compliance advice.</p>
+        </div>
+      </div>
+
+      <!-- 9. Limitation of Liability -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">9. Limitation of Liability</h2>
+        <p class="text-gray-300 leading-relaxed mb-3">TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL DEEPAUDIT, ITS OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, BUSINESS OPPORTUNITIES, OR GOODWILL, ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF THE SERVICE.</p>
+        <p class="text-gray-300 leading-relaxed">DEEPAUDIT'S TOTAL AGGREGATE LIABILITY ARISING OUT OF OR RELATING TO THESE TERMS OR THE SERVICE SHALL NOT EXCEED THE GREATER OF (A) THE AMOUNTS PAID BY YOU TO DEEPAUDIT DURING THE TWELVE (12) MONTHS PRECEDING THE CLAIM, OR (B) ONE HUNDRED DOLLARS ($100).</p>
+      </div>
+
+      <!-- 10. Indemnification -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">10. Indemnification</h2>
+        <p class="text-gray-300 leading-relaxed">You agree to indemnify, defend, and hold harmless DeepAudit Inc. and its officers, directors, employees, agents, and affiliates from and against any and all claims, liabilities, damages, losses, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to: (a) your use of the Service; (b) your violation of these Terms; (c) your violation of any applicable law or regulation; or (d) your submission of code or content to the Service that infringes or misappropriates any third-party right.</p>
+      </div>
+
+      <!-- 11. Governing Law -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">11. Governing Law</h2>
+        <p class="text-gray-300 leading-relaxed">These Terms shall be governed by and construed in accordance with the laws of the State of Delaware, United States of America, without regard to its conflict of laws principles.</p>
+      </div>
+
+      <!-- 12. Dispute Resolution -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">12. Dispute Resolution</h2>
+        <p class="text-gray-300 leading-relaxed mb-3">Any dispute, controversy, or claim arising out of or relating to these Terms or the Service shall be resolved as follows:</p>
+        <ul class="list-disc list-inside text-gray-300 space-y-2 ml-4">
+          <li><strong class="text-white">Informal Resolution:</strong> The parties shall first attempt to resolve any dispute through good-faith negotiation for a period of thirty (30) days following written notice of the dispute.</li>
+          <li><strong class="text-white">Binding Arbitration:</strong> If informal resolution fails, the dispute shall be submitted to binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules. The arbitration shall be conducted in Wilmington, Delaware.</li>
+          <li><strong class="text-white">Class Action Waiver:</strong> You agree that disputes shall be resolved on an individual basis and that you waive any right to participate in a class action or class-wide arbitration.</li>
+          <li><strong class="text-white">Injunctive Relief:</strong> Notwithstanding the foregoing, either party may seek injunctive or equitable relief in any court of competent jurisdiction to protect its intellectual property or confidential information.</li>
+        </ul>
+      </div>
+
+      <!-- 13. Term and Termination -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">13. Term and Termination</h2>
+        <p class="text-gray-300 leading-relaxed mb-3">These Terms are effective upon your first use of the Service and remain in effect until terminated. Either party may terminate this agreement at any time with written notice. DeepAudit may suspend or terminate your access to the Service immediately if you breach these Terms.</p>
+        <p class="text-gray-300 leading-relaxed">Upon termination, your right to use the Service ceases immediately. Sections 5, 6, 8, 9, 10, 11, 12, and 14 shall survive termination.</p>
+      </div>
+
+      <!-- 14. General Provisions -->
+      <div>
+        <h2 class="text-2xl font-bold mb-4 text-white">14. General Provisions</h2>
+        <ul class="list-disc list-inside text-gray-300 space-y-2 ml-4">
+          <li><strong class="text-white">Entire Agreement:</strong> These Terms, together with any applicable order form or subscription agreement, constitute the entire agreement between you and DeepAudit regarding the Service.</li>
+          <li><strong class="text-white">Severability:</strong> If any provision of these Terms is found to be unenforceable, the remaining provisions shall remain in full force and effect.</li>
+          <li><strong class="text-white">Waiver:</strong> The failure of DeepAudit to enforce any provision of these Terms shall not constitute a waiver of that provision.</li>
+          <li><strong class="text-white">Assignment:</strong> You may not assign or transfer these Terms without DeepAudit's prior written consent. DeepAudit may assign these Terms in connection with a merger, acquisition, or sale of substantially all of its assets.</li>
+          <li><strong class="text-white">Modifications:</strong> DeepAudit reserves the right to modify these Terms at any time. Material changes will be communicated via email or through the Platform with at least thirty (30) days' notice.</li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="bg-dark-900 border border-white/5 rounded-xl p-6">
+        <h2 class="text-xl font-bold mb-3 text-white">Contact</h2>
+        <p class="text-gray-300 leading-relaxed">For questions about these Terms of Service, please contact:</p>
+        <p class="text-gray-300 mt-3"><strong class="text-white">DeepAudit Inc.</strong><br>Legal Department<br>Email: legal@deepaudit.com</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-12 border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded bg-gold-500 flex items-center justify-center font-bold text-[10px]">DA</div>
+        <span class="text-sm text-gray-400">&copy; 2026 DeepAudit Inc. All rights reserved.</span>
+      </div>
+      <div class="flex items-center gap-6 text-sm text-gray-500">
+        <a href="/" class="hover:text-white transition">Home</a>
+        <a href="/static/privacy.html" class="hover:text-white transition">Privacy</a>
+        <a href="/static/terms.html" class="text-white">Terms</a>
+        <a href="/static/nda.html" class="hover:text-white transition">NDA</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

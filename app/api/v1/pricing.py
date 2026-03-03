@@ -1,7 +1,6 @@
-"""Dynamic pricing engine — calculates audit cost based on repo size, urgency, and scope."""
+"""Premium pricing engine for PE/M&A technical due diligence and compliance readiness."""
 
 import logging
-import math
 
 from fastapi import APIRouter, Query
 from pydantic import BaseModel
@@ -9,140 +8,226 @@ from pydantic import BaseModel
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-SIZE_MULTIPLIERS = [
-    (50_000, 1.0),
-    (200_000, 1.5),
-    (1_000_000, 2.5),
-    (5_000_000, 4.0),
+DD_TIERS = {
+    "rapid_screen": {
+        "name": "Rapid Screen",
+        "price_range": "$25,000",
+        "price_value": 25000,
+        "scope": "Single repo, up to 200K LOC. Executive risk summary, risk heatmap, top 20 critical findings, investment impact assessment.",
+        "delivery": "24 hours",
+        "target": "Deal screening at LOI stage. Fast kill/proceed signal.",
+    },
+    "full_dd": {
+        "name": "Full Technical DD",
+        "price_range": "$50,000",
+        "price_value": 50000,
+        "scope": "Multi-repo (up to 5), unlimited LOC. All 40 categories, 11 deliverables, SPOF map, scalability assessment, remediation cost model.",
+        "delivery": "48–72 hours",
+        "target": "Confirmatory DD. Full technical risk picture for IC presentation.",
+    },
+    "enterprise_dd": {
+        "name": "Enterprise DD",
+        "price_range": "$75,000–$150,000",
+        "price_value": 75000,
+        "scope": "Unlimited repos, microservices architecture mapping, infrastructure assessment, team capability scoring, M&A integration risk analysis.",
+        "delivery": "5–7 business days",
+        "target": "Large-cap acquisitions ($200M+ deals). Complex multi-system environments.",
+    },
+    "portfolio_intelligence": {
+        "name": "Portfolio Intelligence",
+        "price_range": "$200,000/year",
+        "price_value": 200000,
+        "scope": "Quarterly assessment of up to 10 portfolio companies. Trend tracking. Risk regression alerts. Board-ready quarterly reports.",
+        "delivery": "Ongoing",
+        "target": "PE firms with active tech portfolio. Continuous risk monitoring.",
+    },
+}
+
+COMPLIANCE_TIERS = {
+    "single_framework": {
+        "name": "Single Framework",
+        "price_range": "$30,000",
+        "price_value": 30000,
+        "scope": "One framework (e.g., SOC2) against full codebase. Readiness score, control matrix, gap analysis, remediation roadmap, cost estimate.",
+        "delivery": "48–72 hours",
+        "frameworks": 1,
+    },
+    "multi_framework": {
+        "name": "Multi-Framework Bundle",
+        "price_range": "$50,000–$75,000",
+        "price_value": 50000,
+        "scope": "3–4 frameworks with cross-framework overlap analysis. Combined remediation roadmap. Unified cost-to-compliance model.",
+        "delivery": "5 business days",
+        "frameworks": 4,
+    },
+    "full_suite": {
+        "name": "Full Compliance Suite",
+        "price_range": "$100,000+",
+        "price_value": 100000,
+        "scope": "All 6 frameworks (SOC2, GDPR, HIPAA, DPDP, ISO27001, CCPA). Integration assessment. Vendor risk evaluation.",
+        "delivery": "7–10 business days",
+        "frameworks": 6,
+    },
+    "compliance_monitor": {
+        "name": "Compliance Monitor",
+        "price_range": "$150,000–$350,000/year",
+        "price_value": 150000,
+        "scope": "Ongoing quarterly reassessment across all frameworks. Drift detection. Audit trail for external auditors.",
+        "delivery": "Continuous",
+        "frameworks": 6,
+    },
+}
+
+SUPPORTED_FRAMEWORKS = [
+    {"id": "soc2", "name": "SOC 2 Type II", "jurisdiction": "Global (US origin)", "controls": 54},
+    {"id": "gdpr", "name": "GDPR", "jurisdiction": "EU / EEA", "controls": 29},
+    {"id": "hipaa", "name": "HIPAA", "jurisdiction": "United States", "controls": 29},
+    {"id": "dpdp", "name": "DPDP Act", "jurisdiction": "India", "controls": 15},
+    {"id": "iso27001", "name": "ISO 27001:2022", "jurisdiction": "Global", "controls": 93},
+    {"id": "ccpa", "name": "CCPA / CPRA", "jurisdiction": "California, USA", "controls": 15},
 ]
 
-URGENCY_MULTIPLIERS = {
-    "standard": 1.0,
-    "priority": 2.0,
-    "emergency": 5.0,
-    "instant": 10.0,
-}
 
-SLA_LABELS = {
-    "standard": "24 hours",
-    "priority": "4 hours",
-    "emergency": "1 hour",
-    "instant": "30 minutes",
-}
-
-VOLUME_DISCOUNTS = [
-    (100, 0.40),
-    (50, 0.30),
-    (10, 0.15),
-]
-
-PLANS = {
-    "free": {
-        "name": "Free",
-        "base_price": 0,
-        "audits_per_month": 1,
-        "max_loc": 50_000,
-        "categories": 10,
-        "reports": 3,
-        "private_repos": False,
-        "features": ["Public repos only", "Security basics (10 categories)", "3 reports", "Community support"],
-    },
-    "starter": {
-        "name": "Starter",
-        "base_price": 99,
-        "annual_price": 79,
-        "audits_per_month": 5,
-        "max_loc": 200_000,
-        "categories": 40,
-        "reports": 11,
-        "private_repos": True,
-        "features": ["Public + private repos", "All 40 categories", "All 11 reports", "Email support", "Up to 200K LOC"],
-    },
-    "pro": {
-        "name": "Pro",
-        "base_price": 499,
-        "annual_price": 399,
-        "audits_per_month": 20,
-        "max_loc": None,
-        "categories": 40,
-        "reports": 11,
-        "private_repos": True,
-        "features": ["Unlimited LOC", "Custom rules", "CSV/PDF export", "Priority queue (2x faster)", "CI/CD integration", "Slack/webhook alerts"],
-    },
-    "enterprise": {
-        "name": "Enterprise",
-        "base_price": 2499,
-        "annual_price": 1999,
-        "audits_per_month": None,
-        "max_loc": None,
-        "categories": 40,
-        "reports": 11,
-        "private_repos": True,
-        "features": ["Unlimited audits", "White-label reports", "1-hour SLA", "SSO/SAML", "Dedicated account manager", "SOC2/HIPAA compliance package", "Custom categories"],
-    },
-}
+class DDEstimate(BaseModel):
+    tier: str
+    tier_name: str
+    base_price: int
+    repo_count: int
+    loc_estimate: int
+    delivery: str
+    includes: list[str]
 
 
-class PriceEstimate(BaseModel):
-    plan: str
-    base_price_monthly: float
-    size_multiplier: float
-    urgency_multiplier: str
-    urgency_label: str
-    volume_discount_pct: float
-    estimated_price: float
-    per_audit_price: float
-    annual_savings_pct: float
+class ComplianceEstimate(BaseModel):
+    tier: str
+    tier_name: str
+    base_price: int
+    frameworks: list[str]
+    delivery: str
+    includes: list[str]
 
 
-def _size_multiplier(loc: int) -> float:
-    for threshold, mult in SIZE_MULTIPLIERS:
-        if loc <= threshold:
-            return mult
-    return 6.0
+@router.get("/dd-tiers")
+async def get_dd_tiers():
+    """Technical Due Diligence pricing tiers."""
+    return {"tiers": DD_TIERS}
 
 
-@router.get("/plans")
-async def get_plans():
-    return {"plans": PLANS}
+@router.get("/compliance-tiers")
+async def get_compliance_tiers():
+    """Compliance Readiness Audit pricing tiers."""
+    return {"tiers": COMPLIANCE_TIERS}
 
 
-@router.get("/estimate")
-async def estimate_price(
-    loc: int = Query(10000, description="Lines of code in the repo"),
-    urgency: str = Query("standard", description="standard|priority|emergency|instant"),
-    audits_per_month: int = Query(1, ge=1),
-    plan: str = Query("starter", description="free|starter|pro|enterprise"),
+@router.get("/frameworks")
+async def get_frameworks():
+    """Supported compliance frameworks."""
+    return {"frameworks": SUPPORTED_FRAMEWORKS, "total_controls": 235}
+
+
+@router.get("/dd-estimate")
+async def estimate_dd(
+    repos: int = Query(1, ge=1, le=50, description="Number of repositories"),
+    loc: int = Query(100000, description="Estimated lines of code"),
+    urgency: str = Query("standard", description="standard|expedited|urgent"),
 ):
-    plan_info = PLANS.get(plan, PLANS["starter"])
-    base = plan_info["base_price"]
-    size_mult = _size_multiplier(loc)
-    urg_mult = URGENCY_MULTIPLIERS.get(urgency, 1.0)
-
-    vol_discount = 0.0
-    for threshold, discount in VOLUME_DISCOUNTS:
-        if audits_per_month >= threshold:
-            vol_discount = discount
-            break
-
-    if plan == "free":
-        per_audit = 0
-        monthly = 0
+    """Estimate DD engagement tier and pricing."""
+    if repos == 1 and loc <= 200000:
+        tier = "rapid_screen"
+    elif repos <= 5:
+        tier = "full_dd"
     else:
-        per_audit = base * size_mult * urg_mult / max(plan_info.get("audits_per_month") or audits_per_month, 1)
-        monthly = base * size_mult * urg_mult * (1 - vol_discount)
+        tier = "enterprise_dd"
 
-    annual_price = plan_info.get("annual_price", base)
-    annual_savings = round((1 - annual_price / base) * 100, 1) if base > 0 else 0
+    tier_info = DD_TIERS[tier]
+    base = tier_info["price_value"]
 
-    return PriceEstimate(
-        plan=plan_info["name"],
-        base_price_monthly=base,
-        size_multiplier=size_mult,
-        urgency_multiplier=urgency,
-        urgency_label=SLA_LABELS.get(urgency, "24 hours"),
-        volume_discount_pct=vol_discount * 100,
-        estimated_price=round(monthly, 2),
-        per_audit_price=round(per_audit, 2),
-        annual_savings_pct=annual_savings,
+    urgency_mult = {"standard": 1.0, "expedited": 1.5, "urgent": 2.0}.get(urgency, 1.0)
+    adjusted = int(base * urgency_mult)
+
+    includes = [
+        "Executive Summary with Investment Recommendation",
+        "Risk Heatmap (40 categories)",
+        "Single Point of Failure Map",
+        "Remediation Roadmap with Cost Model",
+    ]
+    if tier in ("full_dd", "enterprise_dd"):
+        includes.extend([
+            "All 11 PE-Grade Deliverables",
+            "Tech Debt Quantification",
+            "Scalability Ceiling Analysis",
+            "Compliance Readiness Overview",
+        ])
+    if tier == "enterprise_dd":
+        includes.extend([
+            "Microservices Architecture Map",
+            "Infrastructure Assessment",
+            "Team Capability Scoring",
+            "M&A Integration Risk Analysis",
+        ])
+
+    return DDEstimate(
+        tier=tier,
+        tier_name=tier_info["name"],
+        base_price=adjusted,
+        repo_count=repos,
+        loc_estimate=loc,
+        delivery=tier_info["delivery"],
+        includes=includes,
     )
+
+
+@router.get("/compliance-estimate")
+async def estimate_compliance(
+    frameworks: str = Query("soc2", description="Comma-separated framework IDs"),
+    loc: int = Query(100000, description="Estimated lines of code"),
+):
+    """Estimate compliance readiness assessment pricing."""
+    fw_list = [f.strip() for f in frameworks.split(",") if f.strip()]
+    fw_count = len(fw_list)
+
+    if fw_count <= 1:
+        tier = "single_framework"
+    elif fw_count <= 4:
+        tier = "multi_framework"
+    else:
+        tier = "full_suite"
+
+    tier_info = COMPLIANCE_TIERS[tier]
+
+    includes = [
+        "Compliance Readiness Score (0–100) per framework",
+        "Control Mapping Matrix",
+        "Gap Severity Classification",
+        "Remediation Roadmap",
+        "Cost-to-Compliance Estimate",
+    ]
+    if fw_count > 1:
+        includes.extend([
+            "Cross-Framework Overlap Analysis",
+            "Unified Remediation Priority",
+            "Certification Timeline per Framework",
+        ])
+
+    return ComplianceEstimate(
+        tier=tier,
+        tier_name=tier_info["name"],
+        base_price=tier_info["price_value"],
+        frameworks=fw_list,
+        delivery=tier_info["delivery"],
+        includes=includes,
+    )
+
+
+@router.get("/unit-economics")
+async def unit_economics():
+    """Unit economics demonstrating software margins at consulting prices."""
+    return {
+        "tiers": [
+            {"tier": "Rapid Screen", "revenue": 25000, "cogs_range": "$20–$80", "gross_margin": "99.7–99.9%"},
+            {"tier": "Full Technical DD", "revenue": 50000, "cogs_range": "$80–$300", "gross_margin": "99.4–99.8%"},
+            {"tier": "Enterprise DD", "revenue": "75K–150K", "cogs_range": "$200–$800", "gross_margin": "98.7–99.5%"},
+            {"tier": "Portfolio Intelligence", "revenue": "200K/yr", "cogs_range": "$2K–$8K/yr", "gross_margin": "96–99%"},
+        ],
+        "insight": "Software margins applied to consulting-level pricing. Consulting-quality output at software-level COGS.",
+    }

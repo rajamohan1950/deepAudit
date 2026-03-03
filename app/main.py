@@ -56,9 +56,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="DeepAudit API",
-    description="Comprehensive Software Deep Audit SaaS — 750+ signals across 40 categories",
-    version="1.0.0",
+    title="DeepAudit Intelligence Platform",
+    description="Automated Technical Due Diligence & Compliance Readiness for PE/M&A",
+    version="2.0.0",
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
@@ -92,6 +92,46 @@ async def audit_dashboard():
     if page.exists():
         return FileResponse(str(page))
     return {"message": "Audit dashboard", "docs": "/docs"}
+
+
+@app.get("/diligence", include_in_schema=False)
+async def pe_landing():
+    page = STATIC_DIR / "diligence.html"
+    if page.exists():
+        return FileResponse(str(page))
+    return {"message": "DeepAudit Due Diligence", "docs": "/docs"}
+
+
+@app.get("/methodology", include_in_schema=False)
+async def methodology_page():
+    page = STATIC_DIR / "methodology.html"
+    if page.exists():
+        return FileResponse(str(page))
+    return {"message": "DeepAudit Methodology", "docs": "/docs"}
+
+
+@app.get("/terms", include_in_schema=False)
+async def terms_page():
+    page = STATIC_DIR / "terms.html"
+    if page.exists():
+        return FileResponse(str(page))
+    return {"message": "Terms of Service"}
+
+
+@app.get("/privacy", include_in_schema=False)
+async def privacy_page():
+    page = STATIC_DIR / "privacy.html"
+    if page.exists():
+        return FileResponse(str(page))
+    return {"message": "Privacy Policy"}
+
+
+@app.get("/nda", include_in_schema=False)
+async def nda_page():
+    page = STATIC_DIR / "nda.html"
+    if page.exists():
+        return FileResponse(str(page))
+    return {"message": "NDA Framework"}
 
 
 @app.get("/health", tags=["health"])

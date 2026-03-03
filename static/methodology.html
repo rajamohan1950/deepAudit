@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Methodology — DeepAudit Intelligence Platform</title>
+  <meta name="description" content="How DeepAudit works: 8-persona AI analysis engine, 40 audit categories, 10 progressive phases, and rigorous signal quality standards.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: { 900: '#0a0a0f', 800: '#111118', 700: '#18181f', 600: '#1f1f28', 500: '#2a2a35' },
+            gold: { 50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#d4a853', 500: '#c9952c', 600: '#a37a1f', 700: '#7c5c17' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .hero-gradient { background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a1a2e 0%, #0a0a0f 70%); }
+    .gold-line { background: linear-gradient(90deg, transparent, #c9952c, transparent); height: 1px; }
+    .gold-glow { box-shadow: 0 0 40px rgba(201, 149, 44, 0.06); }
+    .card-hover { transition: border-color 0.3s, box-shadow 0.3s; }
+    .card-hover:hover { border-color: rgba(201, 149, 44, 0.3); box-shadow: 0 0 60px rgba(201, 149, 44, 0.05); }
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    ::selection { background: rgba(201, 149, 44, 0.3); }
+    .phase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+  </style>
+</head>
+<body class="bg-dark-900 text-white antialiased">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 w-full z-50 bg-dark-900/90 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-8 h-8 border border-gold-400/40 flex items-center justify-center text-gold-400 font-semibold text-xs tracking-wider">DA</div>
+        <span class="text-sm font-semibold tracking-wide text-white/90">DeepAudit</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm text-white/50">
+        <a href="/" class="hover:text-white/90 transition-colors">Home</a>
+        <a href="/diligence" class="hover:text-white/90 transition-colors">PE Diligence</a>
+        <a href="#methodology" class="text-gold-400">Methodology</a>
+        <a href="#personas" class="hover:text-white/90 transition-colors">Personas</a>
+        <a href="#categories" class="hover:text-white/90 transition-colors">Categories</a>
+        <a href="#benchmarks" class="hover:text-white/90 transition-colors">Benchmarks</a>
+      </div>
+      <button id="mobile-menu-btn" class="md:hidden text-white/50 hover:text-white/90">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden bg-dark-800 border-t border-white/5 px-6 py-4 space-y-3 text-sm text-white/60">
+      <a href="/" class="block hover:text-white/90">Home</a>
+      <a href="/diligence" class="block hover:text-white/90">PE Diligence</a>
+      <a href="#methodology" class="block text-gold-400">Methodology</a>
+      <a href="#personas" class="block hover:text-white/90">Personas</a>
+      <a href="#categories" class="block hover:text-white/90">Categories</a>
+      <a href="#benchmarks" class="block hover:text-white/90">Benchmarks</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero-gradient pt-32 pb-20 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <p class="text-gold-400 text-xs font-semibold tracking-[0.2em] uppercase mb-4">Technical Methodology</p>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6">
+        How DeepAudit <span class="text-gold-400">Works</span>
+      </h1>
+      <p class="text-white/50 text-lg max-w-2xl mx-auto leading-relaxed">
+        A rigorous, multi-phase analysis engine that combines 8 specialized AI personas with 40 audit categories to produce investment-grade technical assessments.
+      </p>
+    </div>
+  </section>
+  <div class="gold-line"></div>
+
+  <!-- SECTION 1: METHODOLOGY OVERVIEW -->
+  <section id="methodology" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="fade-up">
+        <p class="text-gold-400 text-xs font-semibold tracking-[0.2em] uppercase mb-3">Section 01</p>
+        <h2 class="text-3xl font-bold mb-4">5-Batch Progressive Analysis</h2>
+        <p class="text-white/50 max-w-3xl mb-12 leading-relaxed">
+          DeepAudit doesn't analyze code in a single pass. Instead, it employs a progressive deepening strategy across 5 analysis batches, each building on findings from the previous batch. This mirrors how the best human auditors work — starting broad, then drilling into areas of concern.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-5 gap-4">
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-5 card-hover">
+          <div class="w-8 h-8 rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-sm font-bold mb-3">1</div>
+          <h3 class="text-sm font-semibold mb-2">Security Sweep</h3>
+          <p class="text-white/40 text-xs leading-relaxed">Authentication, authorization, input validation, data protection, cryptography. The foundation of any technical assessment.</p>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-5 card-hover">
+          <div class="w-8 h-8 rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-sm font-bold mb-3">2</div>
+          <h3 class="text-sm font-semibold mb-2">Performance & Reliability</h3>
+          <p class="text-white/40 text-xs leading-relaxed">Memory, CPU, network, database, caching, OS-level concerns, graceful shutdown, SPOFs, fault tolerance.</p>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-5 card-hover">
+          <div class="w-8 h-8 rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-sm font-bold mb-3">3</div>
+          <h3 class="text-sm font-semibold mb-2">Infrastructure & Supply Chain</h3>
+          <p class="text-white/40 text-xs leading-relaxed">Concurrency, data integrity, distributed systems, queues, infra security, capacity planning, CI/CD, supply chain.</p>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-5 card-hover">
+          <div class="w-8 h-8 rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-sm font-bold mb-3">4</div>
+          <h3 class="text-sm font-semibold mb-2">AI/ML & Observability</h3>
+          <p class="text-white/40 text-xs leading-relaxed">AI/ML risks, ML ops, metrics, logging, tracing, alerting. Critical for modern SaaS and AI-native platforms.</p>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-5 card-hover">
+          <div class="w-8 h-8 rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-sm font-bold mb-3">5</div>
+          <h3 class="text-sm font-semibold mb-2">Quality & Compliance</h3>
+          <p class="text-white/40 text-xs leading-relaxed">Testing, code quality, API design, UX/a11y, cost optimization, multi-tenancy, compliance, DR, i18n, organizational health.</p>
+        </div>
+      </div>
+
+      <div class="fade-up mt-12 bg-dark-800 border border-white/5 rounded-xl p-6">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3">Why Progressive Batching?</h3>
+        <ul class="space-y-2 text-white/50 text-sm leading-relaxed">
+          <li class="flex gap-3"><span class="text-gold-400/60 mt-0.5">&#x2022;</span> <span><strong class="text-white/70">Context accumulation:</strong> Each batch can reference findings from earlier phases, so a SPOF discovered in Batch 2 informs the compliance analysis in Batch 5.</span></li>
+          <li class="flex gap-3"><span class="text-gold-400/60 mt-0.5">&#x2022;</span> <span><strong class="text-white/70">Resource efficiency:</strong> Batching reduces redundant file traversal and allows the AI to maintain richer per-category context.</span></li>
+          <li class="flex gap-3"><span class="text-gold-400/60 mt-0.5">&#x2022;</span> <span><strong class="text-white/70">Quality control:</strong> Each batch output is validated for signal format compliance before proceeding to the next phase.</span></li>
+          <li class="flex gap-3"><span class="text-gold-400/60 mt-0.5">&#x2022;</span> <span><strong class="text-white/70">Deterministic ordering:</strong> Security-first analysis ensures the most business-critical issues surface early in the report.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <div class="gold-line"></div>
+
+  <!-- SECTION 2: 8-PERSONA ANALYSIS ENGINE -->
+  <section id="personas" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="fade-up">
+        <p class="text-gold-400 text-xs font-semibold tracking-[0.2em] uppercase mb-3">Section 02</p>
+        <h2 class="text-3xl font-bold mb-4">8-Persona Analysis Engine</h2>
+        <p class="text-white/50 max-w-3xl mb-12 leading-relaxed">
+          Each codebase is examined from 8 distinct expert perspectives. These personas are not generic prompts — they are deeply engineered analysis frameworks, each with domain-specific heuristics, checklists, and failure-mode knowledge.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 text-lg flex-shrink-0">&#x1f6e1;</div>
+            <div>
+              <h3 class="text-sm font-semibold mb-1">Security Auditor</h3>
+              <p class="text-white/40 text-xs leading-relaxed">OWASP Top 10, CWE-based analysis, authentication flows, authorization bypass patterns, injection vectors, cryptographic misuse, secrets exposure, SSRF/CSRF paths.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center text-yellow-400 text-lg flex-shrink-0">&#x26a1;</div>
+            <div>
+              <h3 class="text-sm font-semibold mb-1">Performance Engineer</h3>
+              <p class="text-white/40 text-xs leading-relaxed">Memory leaks, CPU hotspots, N+1 queries, connection pooling, cache invalidation, network round-trips, database indexing, query optimization patterns.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 text-lg flex-shrink-0">&#x1f3d7;</div>
+            <div>
+              <h3 class="text-sm font-semibold mb-1">Reliability Architect</h3>
+              <p class="text-white/40 text-xs leading-relaxed">Single points of failure, circuit breakers, retry logic, graceful degradation, chaos engineering readiness, failover mechanisms, data consistency guarantees.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 text-lg flex-shrink-0">&#x1f52c;</div>
+            <div>
+              <h3 class="text-sm font-semibold mb-1">Infrastructure Analyst</h3>
+              <p class="text-white/40 text-xs leading-relaxed">Container security, IaC misconfigurations, CI/CD pipeline vulnerabilities, supply chain risks, dependency freshness, build reproducibility, secrets management.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg flex-shrink-0">&#x1f916;</div>
+            <div>
+              <h3 class="text-sm font-semibold mb-1">AI/ML Risk Assessor</h3>
+              <p class="text-white/40 text-xs leading-relaxed">Model versioning, data pipeline integrity, prompt injection risks, bias detection, model monitoring, feature store hygiene, inference cost optimization, ML ops maturity.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400 text-lg flex-shrink-0">&#x1f4ca;</div>
+            <div>
+              <h3 class="text-sm font-semibold mb-1">Observability Expert</h3>
+              <p class="text-white/40 text-xs leading-relaxed">Metrics coverage, structured logging, distributed tracing, alert fatigue assessment, SLI/SLO alignment, dashboard completeness, on-call readiness.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400 text-lg flex-shrink-0">&#x2696;</div>
+            <div>
+              <h3 class="text-sm font-semibold mb-1">Compliance & Governance</h3>
+              <p class="text-white/40 text-xs leading-relaxed">SOC 2 control coverage, GDPR data handling, HIPAA safeguards, PCI DSS requirements, ISO 27001 alignment, audit trail completeness, data retention policies.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fade-up bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-pink-500/10 flex items-center justify-center text-pink-400 text-lg flex-shrink-0">&#x1f9ea;</div>
+            <div>
+              <h3 class="text-sm font-semibold mb-1">Code Quality Reviewer</h3>
+              <p class="text-white/40 text-xs leading-relaxed">Test coverage gaps, code complexity hotspots, API design anti-patterns, tech debt classification, dependency health, documentation completeness, maintainability score.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="gold-line"></div>
+
+  <!-- SECTION 3: 40 AUDIT CATEGORIES -->
+  <section id="categories" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="fade-up">
+        <p class="text-gold-400 text-xs font-semibold tracking-[0.2em] uppercase mb-3">Section 03</p>
+        <h2 class="text-3xl font-bold mb-4">40 Audit Categories</h2>
+        <p class="text-white/50 max-w-3xl mb-12 leading-relaxed">
+          Every signal is classified into one of 40 categories, organized across 10 analysis phases. This taxonomy ensures comprehensive coverage and enables structured reporting.
+        </p>
+      </div>
+
+      <!-- Phase 1 -->
+      <div class="fade-up mb-8">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-gold-400/10 flex items-center justify-center text-xs">1</span>
+          Security Fundamentals
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">01</span> Authentication</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">02</span> Authorization</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">03</span> Input Validation</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">04</span> Data Protection</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">05</span> Cryptography</div>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="fade-up mb-8">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-gold-400/10 flex items-center justify-center text-xs">2</span>
+          Performance &amp; Scalability
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">06</span> Memory</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">07</span> CPU</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">08</span> Network I/O</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">09</span> Database</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">10</span> Caching</div>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="fade-up mb-8">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-gold-400/10 flex items-center justify-center text-xs">3</span>
+          Reliability &amp; Fault Tolerance
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">11</span> OS/Kernel</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">12</span> Graceful Shutdown</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">13</span> SPOF</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">14</span> Fault Tolerance</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">15</span> Concurrency</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">16</span> Data Integrity</div>
+        </div>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="fade-up mb-8">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-gold-400/10 flex items-center justify-center text-xs">4</span>
+          Infrastructure &amp; Supply Chain
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">17</span> Distributed Systems</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">18</span> Queue Processing</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">19</span> Infra Security</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">20</span> Capacity</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">21</span> CI/CD</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">22</span> Supply Chain</div>
+        </div>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="fade-up mb-8">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-gold-400/10 flex items-center justify-center text-xs">5</span>
+          AI/ML Risk &amp; Operations
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-2">
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">23</span> AI/ML Risks</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">24</span> AI/ML Ops</div>
+        </div>
+      </div>
+
+      <!-- Phase 6 -->
+      <div class="fade-up mb-8">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-gold-400/10 flex items-center justify-center text-xs">6</span>
+          Observability
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">25</span> Metrics</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">26</span> Logging</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">27</span> Tracing</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">28</span> Alerting</div>
+        </div>
+      </div>
+
+      <!-- Phase 7 -->
+      <div class="fade-up mb-8">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-gold-400/10 flex items-center justify-center text-xs">7</span>
+          Code Quality &amp; Testing
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">29</span> Testing</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">30</span> Code Quality</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">31</span> API Design</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">32</span> UX/A11y</div>
+        </div>
+      </div>
+
+      <!-- Phase 8 -->
+      <div class="fade-up mb-8">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-gold-400/10 flex items-center justify-center text-xs">8</span>
+          Cost &amp; Multi-Tenancy
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-2">
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">33</span> Cost/FinOps</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">34</span> Multi-Tenancy</div>
+        </div>
+      </div>
+
+      <!-- Phase 9 -->
+      <div class="fade-up mb-8">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-gold-400/10 flex items-center justify-center text-xs">9</span>
+          Compliance &amp; Disaster Recovery
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-2">
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">35</span> Compliance</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">36</span> Disaster Recovery</div>
+        </div>
+      </div>
+
+      <!-- Phase 10 -->
+      <div class="fade-up mb-8">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3 flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-gold-400/10 flex items-center justify-center text-xs">10</span>
+          Organization &amp; Compatibility
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">37</span> i18n</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">38</span> State Management</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">39</span> Backward Compat</div>
+          <div class="bg-dark-800 border border-white/5 rounded-lg px-3 py-2 text-xs text-white/60"><span class="text-white/30 mr-1">40</span> Organizational</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="gold-line"></div>
+
+  <!-- SECTION 4: SIGNAL QUALITY STANDARDS -->
+  <section id="signal-quality" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="fade-up">
+        <p class="text-gold-400 text-xs font-semibold tracking-[0.2em] uppercase mb-3">Section 04</p>
+        <h2 class="text-3xl font-bold mb-4">Signal Quality Standards</h2>
+        <p class="text-white/50 max-w-3xl mb-12 leading-relaxed">
+          Every signal produced by DeepAudit must meet strict quality requirements. Signals that fail validation are rejected and re-generated. This is what separates DeepAudit from generic code scanning tools.
+        </p>
+      </div>
+
+      <div class="fade-up grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-5">
+          <div class="text-gold-400 text-lg mb-2">&#x1f4c4;</div>
+          <h3 class="text-sm font-semibold mb-2">Evidence</h3>
+          <p class="text-white/40 text-xs leading-relaxed">Every signal must cite specific evidence in the format <code class="text-gold-400/70 bg-dark-700 px-1 rounded">file:line</code>. Vague references like "the codebase has issues" are rejected. Auditors can verify every finding.</p>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-5">
+          <div class="text-gold-400 text-lg mb-2">&#x1f4a5;</div>
+          <h3 class="text-sm font-semibold mb-2">Failure Scenario</h3>
+          <p class="text-white/40 text-xs leading-relaxed">Each signal describes the concrete failure mode: what breaks, when, and the downstream impact. This enables risk quantification and prioritization by business stakeholders.</p>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-5">
+          <div class="text-gold-400 text-lg mb-2">&#x1f527;</div>
+          <h3 class="text-sm font-semibold mb-2">Remediation</h3>
+          <p class="text-white/40 text-xs leading-relaxed">Actionable fix guidance with specific implementation steps. Not "improve security" but "add rate limiting to /api/auth/login using express-rate-limit with a 5-request/minute window."</p>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-5">
+          <div class="text-gold-400 text-lg mb-2">&#x23f1;</div>
+          <h3 class="text-sm font-semibold mb-2">Effort Estimate</h3>
+          <p class="text-white/40 text-xs leading-relaxed">T-shirt sizing: <strong class="text-white/60">S</strong> (hours), <strong class="text-white/60">M</strong> (days), <strong class="text-white/60">L</strong> (weeks), <strong class="text-white/60">XL</strong> (months). Enables PE firms to estimate total remediation cost and timeline before deal close.</p>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-5">
+          <div class="text-gold-400 text-lg mb-2">&#x1f3af;</div>
+          <h3 class="text-sm font-semibold mb-2">Confidence Score</h3>
+          <p class="text-white/40 text-xs leading-relaxed">A 0.0–1.0 confidence score quantifies the AI's certainty. Signals below 0.6 are flagged for human review. Median confidence across all audits: 0.82.</p>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-5">
+          <div class="text-gold-400 text-lg mb-2">&#x1f6a8;</div>
+          <h3 class="text-sm font-semibold mb-2">Severity Classification</h3>
+          <p class="text-white/40 text-xs leading-relaxed"><strong class="text-red-400">P0</strong> Critical: Immediate business risk. <strong class="text-orange-400">P1</strong> High: Fix in first sprint. <strong class="text-yellow-400">P2</strong> Medium: Fix within quarter. <strong class="text-green-400">P3</strong> Low: Backlog item.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="gold-line"></div>
+
+  <!-- SECTION 5: ACCURACY & BENCHMARKS -->
+  <section id="benchmarks" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="fade-up">
+        <p class="text-gold-400 text-xs font-semibold tracking-[0.2em] uppercase mb-3">Section 05</p>
+        <h2 class="text-3xl font-bold mb-4">Accuracy &amp; Benchmarks</h2>
+        <p class="text-white/50 max-w-3xl mb-12 leading-relaxed">
+          DeepAudit is continuously benchmarked against known-vulnerable applications and established vulnerability databases. Below are our target benchmarks for Q2 2026.
+        </p>
+      </div>
+
+      <div class="fade-up overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-white/10">
+              <th class="text-left py-3 px-4 text-white/60 font-medium">Benchmark Target</th>
+              <th class="text-left py-3 px-4 text-white/60 font-medium">Metric</th>
+              <th class="text-center py-3 px-4 text-white/60 font-medium">Target</th>
+              <th class="text-left py-3 px-4 text-white/60 font-medium">Notes</th>
+            </tr>
+          </thead>
+          <tbody class="text-white/50">
+            <tr class="border-b border-white/5 table-row-alt">
+              <td class="py-3 px-4">OWASP Juice Shop</td>
+              <td class="py-3 px-4">Vulnerability Detection</td>
+              <td class="py-3 px-4 text-center text-gold-400 font-semibold">&ge; 92%</td>
+              <td class="py-3 px-4 text-xs text-white/30">All known critical + high severity vulnerabilities</td>
+            </tr>
+            <tr class="border-b border-white/5 table-row-alt">
+              <td class="py-3 px-4">DVWA (Damn Vulnerable Web App)</td>
+              <td class="py-3 px-4">Vulnerability Detection</td>
+              <td class="py-3 px-4 text-center text-gold-400 font-semibold">&ge; 95%</td>
+              <td class="py-3 px-4 text-xs text-white/30">Injection, XSS, CSRF, file upload, command injection</td>
+            </tr>
+            <tr class="border-b border-white/5 table-row-alt">
+              <td class="py-3 px-4">Known CVE Corpus (500 repos)</td>
+              <td class="py-3 px-4">True Positive Rate</td>
+              <td class="py-3 px-4 text-center text-gold-400 font-semibold">&ge; 88%</td>
+              <td class="py-3 px-4 text-xs text-white/30">CVEs with public exploit code and known fix</td>
+            </tr>
+            <tr class="border-b border-white/5 table-row-alt">
+              <td class="py-3 px-4">Clean Codebase Corpus (200 repos)</td>
+              <td class="py-3 px-4">False Positive Rate</td>
+              <td class="py-3 px-4 text-center text-gold-400 font-semibold">&le; 8%</td>
+              <td class="py-3 px-4 text-xs text-white/30">Well-maintained OSS projects with strong security posture</td>
+            </tr>
+            <tr class="border-b border-white/5 table-row-alt">
+              <td class="py-3 px-4">SPOF Detection (Infrastructure)</td>
+              <td class="py-3 px-4">Recall</td>
+              <td class="py-3 px-4 text-center text-gold-400 font-semibold">&ge; 85%</td>
+              <td class="py-3 px-4 text-xs text-white/30">Against manually identified SPOFs in 50 production systems</td>
+            </tr>
+            <tr class="border-b border-white/5 table-row-alt">
+              <td class="py-3 px-4">Compliance Mapping (SOC 2)</td>
+              <td class="py-3 px-4">Control Coverage</td>
+              <td class="py-3 px-4 text-center text-gold-400 font-semibold">&ge; 90%</td>
+              <td class="py-3 px-4 text-xs text-white/30">Automated mapping of code-level controls to SOC 2 criteria</td>
+            </tr>
+            <tr class="border-b border-white/5 table-row-alt">
+              <td class="py-3 px-4">Remediation Quality</td>
+              <td class="py-3 px-4">Actionability Score</td>
+              <td class="py-3 px-4 text-center text-gold-400 font-semibold">&ge; 4.2/5</td>
+              <td class="py-3 px-4 text-xs text-white/30">Rated by senior engineers on specificity and correctness</td>
+            </tr>
+            <tr class="border-b border-white/5 table-row-alt">
+              <td class="py-3 px-4">Signal Confidence Calibration</td>
+              <td class="py-3 px-4">Brier Score</td>
+              <td class="py-3 px-4 text-center text-gold-400 font-semibold">&le; 0.12</td>
+              <td class="py-3 px-4 text-xs text-white/30">Confidence scores vs. actual expert-validated findings</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="fade-up mt-6 bg-dark-800 border border-gold-400/10 rounded-lg px-5 py-3 text-xs text-white/40">
+        <span class="text-gold-400 font-medium">Note:</span> These are target benchmarks for Q2 2026. Results are validated through blind evaluation by independent security consultants. Methodology details available under NDA.
+      </div>
+    </div>
+  </section>
+  <div class="gold-line"></div>
+
+  <!-- SECTION 6: COMPLIANCE FRAMEWORK MAPPINGS -->
+  <section id="compliance" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="fade-up">
+        <p class="text-gold-400 text-xs font-semibold tracking-[0.2em] uppercase mb-3">Section 06</p>
+        <h2 class="text-3xl font-bold mb-4">Compliance Framework Mappings</h2>
+        <p class="text-white/50 max-w-3xl mb-12 leading-relaxed">
+          DeepAudit maps code-level findings to 6 major compliance frameworks. Each signal that touches a compliance-relevant category is automatically linked to the applicable controls, enabling gap analysis at the code level.
+        </p>
+      </div>
+
+      <div class="fade-up grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <h3 class="text-sm font-semibold mb-1">SOC 2 Type II</h3>
+          <p class="text-white/40 text-xs leading-relaxed mt-2">Trust Services Criteria mapping: CC6 (logical access), CC7 (monitoring), CC8 (change management), A1 (availability). 8 control families mapped to 15+ audit categories.</p>
+          <div class="mt-3 flex flex-wrap gap-1">
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Access Control</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Encryption</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Monitoring</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Change Mgmt</span>
+          </div>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <h3 class="text-sm font-semibold mb-1">GDPR</h3>
+          <p class="text-white/40 text-xs leading-relaxed mt-2">Articles 5, 25, 30, 32, 33, 35 mapped to data protection, privacy-by-design, breach notification, and DPIA requirements. Focus on PII handling in code.</p>
+          <div class="mt-3 flex flex-wrap gap-1">
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Data Handling</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Consent</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Breach Readiness</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">DPIA</span>
+          </div>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <h3 class="text-sm font-semibold mb-1">HIPAA</h3>
+          <p class="text-white/40 text-xs leading-relaxed mt-2">Technical safeguards (164.312): access control, audit controls, integrity controls, transmission security, authentication. PHI handling in code paths.</p>
+          <div class="mt-3 flex flex-wrap gap-1">
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">PHI Access</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Encryption</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Audit Trail</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Contingency</span>
+          </div>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <h3 class="text-sm font-semibold mb-1">PCI DSS v4.0</h3>
+          <p class="text-white/40 text-xs leading-relaxed mt-2">Requirements 1, 3, 6, 7, 8, 10, 11: network security, stored data protection, secure development, access restriction, authentication, logging, testing.</p>
+          <div class="mt-3 flex flex-wrap gap-1">
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Card Data</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Network Seg</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Secure SDLC</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Pen Testing</span>
+          </div>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <h3 class="text-sm font-semibold mb-1">ISO 27001</h3>
+          <p class="text-white/40 text-xs leading-relaxed mt-2">Annex A controls: A.9 (access), A.10 (crypto), A.12 (operations), A.13 (communications), A.14 (acquisition), A.16 (incident), A.17 (continuity), A.18 (compliance).</p>
+          <div class="mt-3 flex flex-wrap gap-1">
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">ISMS</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Risk Mgmt</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Controls</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Continuity</span>
+          </div>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <h3 class="text-sm font-semibold mb-1">NIST CSF</h3>
+          <p class="text-white/40 text-xs leading-relaxed mt-2">Five core functions mapped: Identify (asset mgmt), Protect (access, data security), Detect (anomalies, monitoring), Respond (planning), Recover (resilience).</p>
+          <div class="mt-3 flex flex-wrap gap-1">
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Identify</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Protect</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Detect</span>
+            <span class="text-[10px] bg-dark-600 text-white/30 px-2 py-0.5 rounded">Respond</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade-up mt-10 bg-dark-800 border border-white/5 rounded-xl p-6">
+        <h3 class="text-sm font-semibold text-gold-400 mb-3">How Code Maps to Controls</h3>
+        <p class="text-white/50 text-sm leading-relaxed mb-4">
+          DeepAudit's compliance engine works by mapping each of the 40 audit categories to specific compliance controls. When a signal is generated in a compliance-relevant category, the system automatically identifies which framework controls are affected and calculates a gap score.
+        </p>
+        <div class="grid md:grid-cols-3 gap-4 text-xs text-white/40">
+          <div>
+            <p class="text-white/60 font-medium mb-1">Step 1: Signal Generation</p>
+            <p>AI persona analyzes code and generates a signal with category, severity, and evidence.</p>
+          </div>
+          <div>
+            <p class="text-white/60 font-medium mb-1">Step 2: Control Mapping</p>
+            <p>The signal's category is cross-referenced against framework-specific control maps to identify affected controls.</p>
+          </div>
+          <div>
+            <p class="text-white/60 font-medium mb-1">Step 3: Gap Scoring</p>
+            <p>Readiness scores and coverage percentages are computed per-framework, with cost-to-compliance estimates.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="gold-line"></div>
+
+  <!-- SECTION 7: DATA HANDLING -->
+  <section id="data-handling" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="fade-up">
+        <p class="text-gold-400 text-xs font-semibold tracking-[0.2em] uppercase mb-3">Section 07</p>
+        <h2 class="text-3xl font-bold mb-4">Data Handling</h2>
+        <p class="text-white/50 max-w-3xl mb-12 leading-relaxed">
+          DeepAudit handles source code with the same rigor expected by PE firms conducting M&A due diligence. All code processing follows strict lifecycle controls.
+        </p>
+      </div>
+
+      <div class="fade-up grid md:grid-cols-3 gap-6">
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg mb-4">&#x1f512;</div>
+          <h3 class="text-sm font-semibold mb-2">Code Lifecycle</h3>
+          <ul class="space-y-2 text-white/40 text-xs leading-relaxed">
+            <li class="flex gap-2"><span class="text-gold-400/60">1.</span> Code is cloned into an isolated, encrypted ephemeral volume</li>
+            <li class="flex gap-2"><span class="text-gold-400/60">2.</span> Analysis runs in a sandboxed environment with no network egress</li>
+            <li class="flex gap-2"><span class="text-gold-400/60">3.</span> Only structured signals are persisted — never raw source code</li>
+            <li class="flex gap-2"><span class="text-gold-400/60">4.</span> Ephemeral volumes are destroyed immediately after analysis</li>
+          </ul>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 text-lg mb-4">&#x1f5d1;</div>
+          <h3 class="text-sm font-semibold mb-2">Auto-Delete Policy</h3>
+          <ul class="space-y-2 text-white/40 text-xs leading-relaxed">
+            <li class="flex gap-2"><span class="text-gold-400/60">&#x2022;</span> Source code: deleted within 1 hour of audit completion</li>
+            <li class="flex gap-2"><span class="text-gold-400/60">&#x2022;</span> Audit signals: retained for 90 days, then purged</li>
+            <li class="flex gap-2"><span class="text-gold-400/60">&#x2022;</span> Reports: retained for 90 days, then purged</li>
+            <li class="flex gap-2"><span class="text-gold-400/60">&#x2022;</span> Custom retention available for Enterprise plans</li>
+          </ul>
+        </div>
+        <div class="bg-dark-800 border border-white/5 rounded-xl p-6 card-hover">
+          <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 text-lg mb-4">&#x1f510;</div>
+          <h3 class="text-sm font-semibold mb-2">Encryption</h3>
+          <ul class="space-y-2 text-white/40 text-xs leading-relaxed">
+            <li class="flex gap-2"><span class="text-gold-400/60">&#x2022;</span> TLS 1.3 for all data in transit</li>
+            <li class="flex gap-2"><span class="text-gold-400/60">&#x2022;</span> AES-256-GCM for data at rest</li>
+            <li class="flex gap-2"><span class="text-gold-400/60">&#x2022;</span> Per-tenant encryption keys (Enterprise)</li>
+            <li class="flex gap-2"><span class="text-gold-400/60">&#x2022;</span> SOC 2 Type II audit in progress</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 py-16 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 border border-gold-400/40 flex items-center justify-center text-gold-400 font-semibold text-xs tracking-wider">DA</div>
+            <span class="text-sm font-semibold tracking-wide text-white/90">DeepAudit</span>
+          </div>
+          <p class="text-white/30 text-xs max-w-xs leading-relaxed">AI-powered technical due diligence for Private Equity and M&A. Investment-grade code intelligence.</p>
+        </div>
+        <div class="flex gap-12 text-xs text-white/40">
+          <div class="space-y-2">
+            <p class="text-white/60 font-medium mb-1">Platform</p>
+            <a href="/" class="block hover:text-white/70 transition-colors">Home</a>
+            <a href="/diligence" class="block hover:text-white/70 transition-colors">PE Diligence</a>
+            <a href="/methodology" class="block text-gold-400/70">Methodology</a>
+          </div>
+          <div class="space-y-2">
+            <p class="text-white/60 font-medium mb-1">Legal</p>
+            <a href="/terms" class="block hover:text-white/70 transition-colors">Terms of Service</a>
+            <a href="/privacy" class="block hover:text-white/70 transition-colors">Privacy Policy</a>
+            <a href="/nda" class="block hover:text-white/70 transition-colors">NDA Template</a>
+          </div>
+        </div>
+      </div>
+      <div class="mt-12 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-3">
+        <p class="text-white/20 text-xs">&copy; 2026 DeepAudit. All rights reserved.</p>
+        <p class="text-white/15 text-xs">Confidential &mdash; For institutional use only</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -18,6 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.database import async_session_factory
 from app.engine.categories.registry import get_analyzer
+from app.engine.data_retention import DataRetentionManager
 from app.engine.deduplicator import SignalDeduplicator
 from app.engine.instant_scan import InstantScanner
 from app.engine.llm.client import LLMClient, LLMUsageTracker
@@ -219,6 +220,9 @@ class AuditOrchestrator:
                     snap = snapshot_result.scalar_one_or_none()
                     if snap and snap.local_path:
                         self.cloner.cleanup(snap.local_path)
+
+                retention_mgr = DataRetentionManager()
+                await retention_mgr.schedule_cleanup(str(audit.id))
 
     async def _run_category_safe(
         self,
