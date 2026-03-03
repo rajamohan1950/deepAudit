@@ -83,7 +83,17 @@
         <div class="border border-white/5 bg-dark-800/50 p-8"><div class="skeleton h-8 w-48 mb-4"></div><div class="skeleton h-4 w-full mb-2"></div><div class="skeleton h-4 w-3/4"></div></div>
         <div class="border border-white/5 bg-dark-800/50 p-8"><div class="skeleton h-8 w-32 mb-4"></div><div class="skeleton h-4 w-full mb-2"></div><div class="skeleton h-4 w-2/3"></div></div>
       </div>
-      <p class="text-center text-white/30 text-sm">Loading report data&hellip;</p>
+      <p id="loading-msg" class="text-center text-white/30 text-sm">Loading report data&hellip;</p>
+      <div id="countdown-container" class="hidden mt-8 flex flex-col items-center">
+        <p class="text-xs text-white/40 uppercase tracking-wider mb-2">Estimated time remaining</p>
+        <div id="countdown-display" class="text-4xl font-bold text-gold-400 font-mono tabular-nums">2:00</div>
+      </div>
+      <div class="mt-8 flex justify-center">
+        <button id="refresh-check-btn" type="button" class="hidden px-6 py-2.5 border border-gold-400/30 text-gold-400 hover:bg-gold-400/10 transition-all text-sm tracking-wider"
+          onclick="location.reload()">
+          Refresh to check status
+        </button>
+      </div>
     </div>
   </div>
 
@@ -288,6 +298,7 @@ function getParams() {
 }
 
 function showError(msg) {
+  stopCountdown();
   document.getElementById("loading-state").classList.add("hidden");
   document.getElementById("error-state").classList.remove("hidden");
   document.getElementById("error-message").textContent = msg;
@@ -304,14 +315,78 @@ function usd(n) {
   return "$" + Number(n || 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 
-const POLL_INTERVAL_MS = 5000;
+const POLL_INTERVAL_MS = 4000;
+const COUNTDOWN_SECONDS = 120;
+const MAX_POLLS = 45;
+let countdownStartTime = null;
+let countdownInterval = null;
+let pollCount = 0;
+
+function formatCountdown(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function updateCountdown() {
+  if (!countdownStartTime) return;
+  const elapsed = Math.floor((Date.now() - countdownStartTime) / 1000);
+  const remaining = Math.max(0, COUNTDOWN_SECONDS - elapsed);
+  const el = document.getElementById("countdown-display");
+  if (el) el.textContent = formatCountdown(remaining);
+  if (remaining <= 0) {
+    const msg = document.getElementById("loading-msg");
+    if (msg && !msg.textContent.includes("Still processing")) {
+      msg.textContent = "Still processing… Click Refresh below to check again.";
+      const refreshBtn = document.getElementById("refresh-check-btn");
+      if (refreshBtn) refreshBtn.classList.remove("hidden");
+    }
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+      countdownInterval = null;
+    }
+  }
+}
+
+function startCountdown() {
+  if (countdownStartTime) return;
+  countdownStartTime = Date.now();
+  document.getElementById("countdown-container")?.classList.remove("hidden");
+  document.getElementById("loading-msg").textContent = "Assessment in progress. Generating PE report…";
+  document.getElementById("refresh-check-btn")?.classList.add("hidden");
+  updateCountdown();
+  countdownInterval = setInterval(updateCountdown, 1000);
+}
+
+function stopCountdown() {
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
+    countdownInterval = null;
+  }
+  countdownStartTime = null;
+  document.getElementById("countdown-container")?.classList.add("hidden");
+}
+
+function showTakingLonger() {
+  stopCountdown();
+  document.getElementById("loading-msg").textContent = "Assessment is taking longer than expected.";
+  document.getElementById("countdown-container")?.classList.add("hidden");
+  const btn = document.getElementById("refresh-check-btn");
+  if (btn) {
+    btn.classList.remove("hidden");
+    btn.textContent = "Refresh to check status";
+  }
+}
 
 async function loadReport() {
   const { id, key } = getParams();
   if (!id || !key) { showError("Missing required parameters. URL must include ?id=AUDIT_ID&key=API_KEY"); return; }
 
   try {
-    const res = await fetch(`/api/v1/pe-reports/${id}?key=${encodeURIComponent(key)}`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
+    const res = await fetch(`/api/v1/pe-reports/${id}?key=${encodeURIComponent(key)}`, { signal: controller.signal });
+    clearTimeout(timeout);
     if (res.status === 401) { showError("Authentication failed. Check your API key."); return; }
     if (res.status === 404) { showError("Audit not found. Verify the audit ID and ensure the assessment is complete."); return; }
     if (!res.ok) { showError(`Server error (${res.status}). Please try again later.`); return; }
@@ -319,18 +394,30 @@ async function loadReport() {
     reportData = await res.json();
     const status = reportData.audit_status || "unknown";
     if (["pending", "running", "ingesting", "generating_reports"].includes(status)) {
-      const p = document.querySelector("#loading-state p");
-      if (p) p.textContent = "Assessment in progress. Generating PE report… This may take up to 3 minutes.";
+      pollCount++;
+      if (pollCount > MAX_POLLS) {
+        showTakingLonger();
+        return;
+      }
+      startCountdown();
       setTimeout(loadReport, POLL_INTERVAL_MS);
       return;
     }
+    stopCountdown();
+    pollCount = 0;
     if (status === "failed") {
       showError(reportData.error_message || "Assessment failed. Please try again or request a full assessment.");
       return;
     }
     renderReport();
   } catch (err) {
-    showError("Network error — unable to reach the DeepAudit API. Check your connection.");
+    stopCountdown();
+    if (err.name === "AbortError") {
+      document.getElementById("loading-msg").textContent = "Request timed out. Click Refresh to try again.";
+      document.getElementById("refresh-check-btn")?.classList.remove("hidden");
+    } else {
+      showError("Network error — unable to reach the DeepAudit API. Check your connection.");
+    }
   }
 }
 

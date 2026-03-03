@@ -67,7 +67,7 @@ class AuditOrchestrator:
                 return
 
             quick_mode = audit.audit_config.get("quick_mode", False)
-            timeout_secs = audit.audit_config.get("quick_timeout_seconds", 180) if quick_mode else None
+            timeout_secs = audit.audit_config.get("quick_timeout_seconds", 120) if quick_mode else None
             max_loc = audit.audit_config.get("max_loc") if quick_mode else None
 
             try:
