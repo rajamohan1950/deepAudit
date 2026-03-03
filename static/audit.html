@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Dashboard — DeepAudit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81' },
+            surface: { 50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',700:'#334155',800:'#1e293b',900:'#0f172a',950:'#020617' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #312e81 70%, #4338ca 100%); }
+    @keyframes pulse-ring { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .pulse { animation: pulse-ring 2s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { animation: spin 1s linear infinite; }
+    .sev-P0 { background: #ef4444; } .sev-P1 { background: #f97316; }
+    .sev-P2 { background: #eab308; } .sev-P3 { background: #3b82f6; }
+    .progress-bar { transition: width 0.8s ease-in-out; }
+    pre { white-space: pre-wrap; word-wrap: break-word; }
+  </style>
+</head>
+<body class="bg-surface-950 text-white min-h-screen">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 w-full z-50 bg-surface-950/90 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center font-bold text-sm">DA</div>
+        <span class="text-lg font-bold">DeepAudit</span>
+      </a>
+      <div class="flex items-center gap-4">
+        <div id="nav-live" class="flex items-center gap-2 text-sm text-gray-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 pulse"></span>
+          <span id="nav-active-count">-</span> users online
+        </div>
+        <a href="/" class="text-sm bg-brand-600 hover:bg-brand-700 px-4 py-2 rounded-lg transition">New Audit</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-24 pb-20 max-w-7xl mx-auto px-6">
+
+    <!-- LOADING STATE -->
+    <div id="loading-state" class="flex flex-col items-center justify-center py-32">
+      <div class="w-12 h-12 border-4 border-brand-600 border-t-transparent rounded-full spinner"></div>
+      <p class="mt-4 text-gray-400">Loading audit...</p>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div id="error-state" class="hidden flex flex-col items-center justify-center py-32">
+      <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-4">
+        <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </div>
+      <h2 class="text-xl font-bold text-red-400">Audit not found</h2>
+      <p id="error-msg" class="text-gray-400 mt-2">Please check the URL or start a new audit.</p>
+      <a href="/" class="mt-6 bg-brand-600 hover:bg-brand-700 px-6 py-3 rounded-lg font-semibold transition">Start New Audit</a>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="hidden space-y-8">
+
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold">Audit Dashboard</h1>
+          <p id="repo-name" class="text-gray-400 mt-1 text-sm"></p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="status-badge" class="px-4 py-1.5 rounded-full text-sm font-semibold"></span>
+          <span id="audit-time" class="text-sm text-gray-500"></span>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5">
+          <p class="text-sm text-gray-400">Total Signals</p>
+          <p id="stat-signals" class="text-3xl font-bold mt-1">0</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5">
+          <p class="text-sm text-gray-400">Phase Progress</p>
+          <p id="stat-phase" class="text-3xl font-bold mt-1">0/10</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5">
+          <p class="text-sm text-gray-400">Critical (P0)</p>
+          <p id="stat-p0" class="text-3xl font-bold mt-1 text-red-400">0</p>
+        </div>
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5">
+          <p class="text-sm text-gray-400">High (P1)</p>
+          <p id="stat-p1" class="text-3xl font-bold mt-1 text-orange-400">0</p>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="bg-surface-800 border border-white/5 rounded-xl p-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-semibold">Audit Progress</h3>
+          <span id="progress-pct" class="text-sm text-brand-400 font-semibold">0%</span>
+        </div>
+        <div class="w-full h-3 bg-surface-900 rounded-full overflow-hidden">
+          <div id="progress-fill" class="h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full progress-bar" style="width:0%"></div>
+        </div>
+        <!-- Phase Timeline -->
+        <div id="phase-timeline" class="mt-6 grid grid-cols-5 md:grid-cols-10 gap-2"></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="border-b border-white/10">
+        <div class="flex gap-1" id="tab-bar">
+          <button onclick="switchTab('signals')" data-tab="signals" class="tab-btn active px-5 py-3 text-sm font-semibold rounded-t-lg transition bg-brand-600 text-white">Signals</button>
+          <button onclick="switchTab('reports')" data-tab="reports" class="tab-btn px-5 py-3 text-sm font-semibold rounded-t-lg transition text-gray-400 hover:text-white">Reports</button>
+          <button onclick="switchTab('phases')" data-tab="phases" class="tab-btn px-5 py-3 text-sm font-semibold rounded-t-lg transition text-gray-400 hover:text-white">Phases</button>
+        </div>
+      </div>
+
+      <!-- SIGNALS TAB -->
+      <div id="tab-signals" class="tab-content">
+        <!-- Severity Filter -->
+        <div class="flex flex-wrap gap-2 mb-6">
+          <button onclick="filterSev(null)" class="sev-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-surface-700 text-white border border-white/10">All</button>
+          <button onclick="filterSev('P0')" class="sev-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-red-500/20 text-red-400 border border-red-500/30">P0 Critical</button>
+          <button onclick="filterSev('P1')" class="sev-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-orange-500/20 text-orange-400 border border-orange-500/30">P1 High</button>
+          <button onclick="filterSev('P2')" class="sev-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">P2 Medium</button>
+          <button onclick="filterSev('P3')" class="sev-filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">P3 Low</button>
+        </div>
+        <div id="signals-list" class="space-y-3">
+          <div class="text-center py-16 text-gray-500">
+            <div class="w-12 h-12 border-4 border-brand-600 border-t-transparent rounded-full spinner mx-auto"></div>
+            <p class="mt-4">Waiting for signals... The audit engine is analyzing your code.</p>
+          </div>
+        </div>
+        <div id="signals-pagination" class="hidden flex items-center justify-center gap-4 mt-6">
+          <button onclick="prevPage()" id="prev-btn" class="px-4 py-2 bg-surface-700 rounded-lg text-sm disabled:opacity-40" disabled>Previous</button>
+          <span id="page-info" class="text-sm text-gray-400">Page 1</span>
+          <button onclick="nextPage()" id="next-btn" class="px-4 py-2 bg-surface-700 rounded-lg text-sm disabled:opacity-40">Next</button>
+        </div>
+      </div>
+
+      <!-- REPORTS TAB -->
+      <div id="tab-reports" class="tab-content hidden">
+        <div id="reports-list" class="space-y-4">
+          <div class="text-center py-16 text-gray-500">
+            <p>Reports are generated after the audit completes. Check back soon!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASES TAB -->
+      <div id="tab-phases" class="tab-content hidden">
+        <div id="phases-detail" class="space-y-3"></div>
+      </div>
+
+    </div>
+  </main>
+
+<script>
+const CATEGORY_NAMES = {
+  1:'Authentication & Identity',2:'Authorization & Access Control',3:'Input Validation & Injection',
+  4:'Data Protection & Privacy',5:'Cryptography & Key Mgmt',6:'Memory Leaks & Mgmt',
+  7:'CPU & Compute',8:'Network & I/O',9:'Database & Storage',10:'Caching',
+  11:'OS & Kernel',12:'Graceful Shutdown',13:'SPOF',14:'Fault Tolerance',
+  15:'Concurrency & Races',16:'Data Integrity',17:'Distributed Systems',18:'Queue Processing',
+  19:'Infra & Cloud Security',20:'Capacity Planning',21:'Deployment & CI/CD',22:'Supply Chain',
+  23:'AI/ML Model Risks',24:'AI/ML Cost & Ops',25:'Metrics & Monitoring',26:'Logging',
+  27:'Distributed Tracing',28:'Alerting & Incident',29:'Testing & QA',30:'Code Quality',
+  31:'API Design',32:'UX & Accessibility',33:'Cost & FinOps',34:'Multi-Tenancy',
+  35:'Compliance',36:'Disaster Recovery',37:'i18n & L10n',38:'State Management',
+  39:'Backward Compatibility',40:'Organizational'
+};
+
+const PHASE_NAMES = {
+  1:'Security & Crypto',2:'Memory, CPU, Network',3:'DB, Cache, OS, Shutdown',
+  4:'SPOF, Fault Tolerance, Concurrency',5:'Data Integrity, Distributed, Queues',
+  6:'Infra, Capacity, Deploy, Supply Chain',7:'AI/ML',8:'Observability',
+  9:'Quality, Code, API, UX, Cost, Tenancy',10:'Compliance, DR, i18n, State, Compat, Org'
+};
+
+const params = new URLSearchParams(window.location.search);
+const auditId = params.get('id');
+const apiKey = params.get('key');
+
+let currentSev = null;
+let currentPage = 1;
+let pollTimer = null;
+let signalCounts = { P0:0, P1:0, P2:0, P3:0 };
+const sessionId = 'sess_' + Math.random().toString(36).slice(2);
+
+function $(id) { return document.getElementById(id); }
+
+async function api(path) {
+  const sep = path.includes('?') ? '&' : '?';
+  const res = await fetch(`/api/v1/web${path}${sep}key=${encodeURIComponent(apiKey)}`);
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  return res.json();
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(el => {
+    el.classList.remove('active', 'bg-brand-600', 'text-white');
+    el.classList.add('text-gray-400');
+  });
+  $(`tab-${name}`).classList.remove('hidden');
+  const btn = document.querySelector(`[data-tab="${name}"]`);
+  btn.classList.add('active', 'bg-brand-600', 'text-white');
+  btn.classList.remove('text-gray-400');
+}
+
+function filterSev(sev) {
+  currentSev = sev;
+  currentPage = 1;
+  loadSignals();
+}
+function prevPage() { if (currentPage > 1) { currentPage--; loadSignals(); } }
+function nextPage() { currentPage++; loadSignals(); }
+
+function statusBadge(status) {
+  const map = {
+    pending: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/40',
+    running: 'bg-blue-500/20 text-blue-400 border-blue-500/40',
+    completed: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40',
+    failed: 'bg-red-500/20 text-red-400 border-red-500/40',
+  };
+  return map[status] || map.pending;
+}
+
+function phaseIcon(status) {
+  if (status === 'completed') return `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+  if (status === 'running') return `<div class="w-4 h-4 border-2 border-brand-400 border-t-transparent rounded-full spinner"></div>`;
+  if (status === 'failed') return `<svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`;
+  return `<div class="w-4 h-4 rounded-full bg-surface-700 border border-white/10"></div>`;
+}
+
+function timeAgo(iso) {
+  if (!iso) return '';
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+
+async function loadAudit() {
+  try {
+    const data = await api(`/audit/${auditId}`);
+    $('loading-state').classList.add('hidden');
+    $('dashboard').classList.remove('hidden');
+
+    const repoUrl = data.source?.repo_url || '';
+    const repoShort = repoUrl.replace('https://github.com/', '');
+    $('repo-name').innerHTML = repoUrl
+      ? `<a href="${repoUrl}" target="_blank" class="hover:text-brand-400 transition">${repoShort}</a>`
+      : 'Audit';
+
+    const badge = $('status-badge');
+    badge.textContent = data.status.charAt(0).toUpperCase() + data.status.slice(1);
+    badge.className = `px-4 py-1.5 rounded-full text-sm font-semibold border ${statusBadge(data.status)}`;
+    $('audit-time').textContent = `Started ${timeAgo(data.created_at)}`;
+
+    $('stat-signals').textContent = data.total_signals;
+    const donePhases = data.phases.filter(p => p.status === 'completed').length;
+    $('stat-phase').textContent = `${donePhases}/10`;
+
+    const pct = Math.round((donePhases / 10) * 100);
+    $('progress-pct').textContent = pct + '%';
+    $('progress-fill').style.width = pct + '%';
+
+    // Phase timeline
+    let timelineHtml = '';
+    data.phases.forEach(p => {
+      const bg = p.status === 'completed' ? 'bg-emerald-500/20 border-emerald-500/40'
+        : p.status === 'running' ? 'bg-brand-500/20 border-brand-500/40'
+        : p.status === 'failed' ? 'bg-red-500/20 border-red-500/40'
+        : 'bg-surface-700 border-white/10';
+      timelineHtml += `
+        <div class="flex flex-col items-center gap-1 p-2 rounded-lg border ${bg}" title="Phase ${p.phase_number}: ${PHASE_NAMES[p.phase_number]}">
+          ${phaseIcon(p.status)}
+          <span class="text-xs font-medium">${p.phase_number}</span>
+          <span class="text-[10px] text-gray-500">${p.signals_found}s</span>
+        </div>`;
+    });
+    $('phase-timeline').innerHTML = timelineHtml;
+
+    // Phases detail
+    let phasesHtml = '';
+    data.phases.forEach(p => {
+      const cats = (p.categories || []).map(c => `<span class="text-xs bg-surface-700 px-2 py-1 rounded">${CATEGORY_NAMES[c] || 'Cat '+c}</span>`).join(' ');
+      phasesHtml += `
+        <div class="bg-surface-800 border border-white/5 rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              ${phaseIcon(p.status)}
+              <h4 class="font-semibold">Phase ${p.phase_number}: ${PHASE_NAMES[p.phase_number]}</h4>
+            </div>
+            <span class="text-sm text-gray-400">${p.signals_found} signals</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5">${cats}</div>
+          ${p.started_at ? `<p class="text-xs text-gray-500 mt-3">Started ${timeAgo(p.started_at)}${p.completed_at ? ' &bull; Completed ' + timeAgo(p.completed_at) : ''}</p>` : ''}
+        </div>`;
+    });
+    $('phases-detail').innerHTML = phasesHtml;
+
+    if (data.status === 'pending' || data.status === 'running') {
+      pollTimer = setTimeout(loadAudit, 5000);
+    }
+    loadSignals();
+    loadReports();
+  } catch (err) {
+    $('loading-state').classList.add('hidden');
+    $('error-state').classList.remove('hidden');
+    $('error-msg').textContent = err.message;
+  }
+}
+
+async function loadSignals() {
+  try {
+    let path = `/audit/${auditId}/signals?page=${currentPage}&page_size=50`;
+    if (currentSev) path += `&severity=${currentSev}`;
+    const data = await api(path);
+
+    signalCounts = { P0:0, P1:0, P2:0, P3:0 };
+
+    if (data.signals.length === 0 && currentPage === 1) {
+      $('signals-list').innerHTML = `
+        <div class="text-center py-16 text-gray-500">
+          <div class="w-12 h-12 border-4 border-brand-600 border-t-transparent rounded-full spinner mx-auto"></div>
+          <p class="mt-4">Waiting for signals... The audit engine is analyzing your code.</p>
+        </div>`;
+      $('signals-pagination').classList.add('hidden');
+      return;
+    }
+
+    let html = '';
+    data.signals.forEach(s => {
+      signalCounts[s.severity] = (signalCounts[s.severity] || 0) + 1;
+      const sevColor = { P0:'bg-red-500/20 text-red-400 border-red-500/40', P1:'bg-orange-500/20 text-orange-400 border-orange-500/40', P2:'bg-yellow-500/20 text-yellow-400 border-yellow-500/40', P3:'bg-blue-500/20 text-blue-400 border-blue-500/40' }[s.severity] || '';
+      const effortLabel = { S:'Small (hours)', M:'Medium (days)', L:'Large (weeks)', XL:'X-Large (months)' }[s.effort] || s.effort;
+      html += `
+        <details class="bg-surface-800 border border-white/5 rounded-xl group">
+          <summary class="flex items-start gap-4 p-5 cursor-pointer list-none">
+            <span class="mt-0.5 text-sm font-mono text-gray-500 w-8 text-right flex-shrink-0">#${s.sequence_number}</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border ${sevColor} flex-shrink-0">${s.severity}</span>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-sm leading-relaxed">${escapeHtml(s.signal_text)}</p>
+              <p class="text-xs text-gray-500 mt-1">${CATEGORY_NAMES[s.category_id] || 'Category '+s.category_id} &bull; Score: ${s.score}/10 &bull; Effort: ${effortLabel}</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-5 pb-5 space-y-3 border-t border-white/5 pt-4">
+            ${s.evidence ? `<div><p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Evidence</p><pre class="text-sm text-gray-300 bg-surface-900 rounded-lg p-3">${escapeHtml(s.evidence)}</pre></div>` : ''}
+            ${s.failure_scenario ? `<div><p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Failure / Attack Scenario</p><p class="text-sm text-gray-300">${escapeHtml(s.failure_scenario)}</p></div>` : ''}
+            ${s.remediation ? `<div><p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Remediation</p><p class="text-sm text-emerald-300">${escapeHtml(s.remediation)}</p></div>` : ''}
+          </div>
+        </details>`;
+    });
+    $('signals-list').innerHTML = html;
+
+    $('stat-p0').textContent = signalCounts.P0 || 0;
+    $('stat-p1').textContent = signalCounts.P1 || 0;
+
+    $('signals-pagination').classList.remove('hidden');
+    $('prev-btn').disabled = currentPage <= 1;
+    $('next-btn').disabled = data.signals.length < 50;
+    $('page-info').textContent = `Page ${currentPage}`;
+  } catch (err) {
+    console.error('Failed to load signals', err);
+  }
+}
+
+async function loadReports() {
+  try {
+    const data = await api(`/audit/${auditId}/reports`);
+    if (!data.reports || data.reports.length === 0) {
+      $('reports-list').innerHTML = `
+        <div class="text-center py-16 text-gray-500">
+          <svg class="w-12 h-12 mx-auto text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <p class="mt-4">Reports will appear here once the audit completes.</p>
+          <p class="text-xs mt-1">11 comprehensive reports are generated automatically.</p>
+        </div>`;
+      return;
+    }
+
+    const REPORT_ICONS = {
+      'signal-table':'<path d="M3 10h18M3 14h18M3 18h18M3 6h18"/>',
+      'executive-summary':'<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>',
+      'risk-heatmap':'<path d="M4 6h16M4 10h16M4 14h16M4 18h16"/>',
+      'default':'<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>'
+    };
+
+    let html = '';
+    data.reports.forEach(r => {
+      const icon = REPORT_ICONS[r.report_type] || REPORT_ICONS.default;
+      const title = r.title || r.report_type.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      html += `
+        <details class="bg-surface-800 border border-white/5 rounded-xl group">
+          <summary class="flex items-center gap-4 p-5 cursor-pointer list-none">
+            <div class="w-10 h-10 rounded-lg bg-brand-600/20 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">${icon}</svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold">${escapeHtml(title)}</h4>
+              <p class="text-xs text-gray-500 mt-0.5">Generated ${timeAgo(r.created_at)}</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-5 pb-5 border-t border-white/5 pt-4">
+            <pre class="text-sm text-gray-300 bg-surface-900 rounded-lg p-4 overflow-x-auto max-h-96 overflow-y-auto">${escapeHtml(JSON.stringify(r.content, null, 2))}</pre>
+          </div>
+        </details>`;
+    });
+    $('reports-list').innerHTML = html;
+  } catch (err) {
+    console.error('Failed to load reports', err);
+  }
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  const d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+// Heartbeat for live user count
+async function heartbeat() {
+  try {
+    await fetch(`/api/v1/stats/heartbeat?session_id=${sessionId}`, { method:'POST' });
+    const res = await fetch('/api/v1/stats');
+    const data = await res.json();
+    $('nav-active-count').textContent = data.active_users || 1;
+  } catch {}
+}
+
+// Init
+if (!auditId || !apiKey) {
+  $('loading-state').classList.add('hidden');
+  $('error-state').classList.remove('hidden');
+  $('error-msg').textContent = 'Missing audit ID or API key in URL.';
+} else {
+  loadAudit();
+  heartbeat();
+  setInterval(heartbeat, 30000);
+}
+</script>
+</body>
+</html>

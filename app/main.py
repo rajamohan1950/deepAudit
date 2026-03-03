@@ -86,6 +86,14 @@ async def landing_page():
     return {"message": "DeepAudit API", "docs": "/docs"}
 
 
+@app.get("/audit", include_in_schema=False)
+async def audit_dashboard():
+    page = STATIC_DIR / "audit.html"
+    if page.exists():
+        return FileResponse(str(page))
+    return {"message": "Audit dashboard", "docs": "/docs"}
+
+
 @app.get("/health", tags=["health"])
 async def health_check():
     return {"status": "healthy", "service": "deepaudit"}
