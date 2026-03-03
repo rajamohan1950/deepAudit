@@ -1,4 +1,11 @@
-"""Audit orchestrator — executes 10 phases of the deep audit."""
+"""Audit orchestrator — 5-batch progressive delivery with instant first results.
+
+Batch 1: Instant static scan (<100ms, no LLM) — 50-100 signals
+Batch 2: LLM phases 1-3 in parallel (Security + Memory/CPU/Network + DB/OS)
+Batch 3: LLM phases 4-6 in parallel (SPOF/Resilience + Data Integrity + Infra)
+Batch 4: LLM phases 7-9 in parallel (AI/ML + Observability + Quality)
+Batch 5: LLM phase 10 + report generation (Compliance/DR/Org)
+"""
 
 import asyncio
 import logging
@@ -12,6 +19,7 @@ from app.config import settings
 from app.database import async_session_factory
 from app.engine.categories.registry import get_analyzer
 from app.engine.deduplicator import SignalDeduplicator
+from app.engine.instant_scan import InstantScanner
 from app.engine.llm.client import LLMClient, LLMUsageTracker
 from app.engine.llm.prompt_builder import PromptBuilder
 from app.engine.phase_registry import get_all_phases
@@ -26,9 +34,16 @@ from app.models.signal import Signal
 
 logger = logging.getLogger(__name__)
 
+LLM_BATCHES = {
+    2: [1, 2, 3],
+    3: [4, 5, 6],
+    4: [7, 8, 9],
+    5: [10],
+}
+
 
 class AuditOrchestrator:
-    """Runs the complete 10-phase audit lifecycle."""
+    """Runs the 5-batch progressive audit lifecycle."""
 
     def __init__(self):
         self.cloner = RepoCloner()
@@ -39,6 +54,7 @@ class AuditOrchestrator:
         self.prompt_builder = PromptBuilder()
         self.deduplicator = SignalDeduplicator()
         self.usage_tracker = LLMUsageTracker()
+        self.instant_scanner = InstantScanner()
 
     async def run_audit(self, audit_id: str) -> None:
         async with async_session_factory() as db:
@@ -55,107 +71,125 @@ class AuditOrchestrator:
                     db, audit, source
                 )
 
-                llm_client = self._create_llm_client(audit.audit_config)
-                system_prompt = self.prompt_builder.build_system_prompt()
-
+                # ========== BATCH 1: Instant scan (<100ms) ==========
                 await self._update_status(db, audit, "running")
                 audit.started_at = datetime.now(timezone.utc)
                 await db.commit()
 
+                instant_signals = self.instant_scanner.scan(
+                    snapshot.local_path, classified_files
+                )
                 signal_counter = 0
+                for sig in instant_signals:
+                    signal_counter += 1
+                    db.add(Signal(
+                        audit_id=audit.id,
+                        category_id=sig.category_id,
+                        sequence_number=signal_counter,
+                        signal_text=sig.signal_text,
+                        severity=sig.severity,
+                        score=sig.score,
+                        score_type="risk",
+                        evidence=sig.evidence,
+                        failure_scenario=sig.failure_scenario,
+                        remediation=sig.remediation,
+                        effort=sig.effort,
+                        confidence=sig.confidence,
+                        references=[],
+                        phase_number=0,
+                    ))
+
+                audit.total_signals = signal_counter
+                audit.current_phase = 0
+                await db.commit()
+                logger.info(f"Batch 1 (instant scan): {signal_counter} signals in <100ms")
+
+                # ========== BATCHES 2-5: LLM phases in parallel batches ==========
+                llm_client = self._create_llm_client(audit.audit_config)
+                system_prompt = self.prompt_builder.build_system_prompt()
                 phases = get_all_phases()
 
-                for phase_num in sorted(phases.keys()):
-                    phase_def = phases[phase_num]
-                    category_ids = phase_def["categories"]
+                for batch_num, phase_nums in LLM_BATCHES.items():
+                    batch_tasks = []
+                    batch_phases = []
 
-                    selected_cats = self._filter_categories(
-                        category_ids, audit.audit_config
-                    )
-                    if not selected_cats:
-                        continue
+                    for phase_num in phase_nums:
+                        phase_def = phases.get(phase_num)
+                        if not phase_def:
+                            continue
+                        category_ids = phase_def["categories"]
+                        selected_cats = self._filter_categories(category_ids, audit.audit_config)
+                        if not selected_cats:
+                            continue
 
-                    audit_phase = await self._get_phase(db, audit.id, phase_num)
-                    await self._update_phase(db, audit_phase, "running")
-                    audit.current_phase = phase_num
+                        audit_phase = await self._get_phase(db, audit.id, phase_num)
+                        await self._update_phase(db, audit_phase, "running")
+                        batch_phases.append((phase_num, audit_phase, selected_cats))
+
+                        for cat_id in selected_cats:
+                            batch_tasks.append(
+                                self._run_category_safe(
+                                    llm_client, system_prompt,
+                                    audit.system_context, classified_files,
+                                    git_analysis, cat_id, phase_num,
+                                )
+                            )
+
+                    audit.current_phase = phase_nums[-1]
                     await db.commit()
 
-                    phase_signals = []
-                    phase_tokens = 0
-                    phase_cost = 0.0
+                    results = await asyncio.gather(*batch_tasks)
 
-                    tasks = []
-                    for cat_id in selected_cats:
-                        tasks.append(
-                            self._run_category(
-                                llm_client,
-                                system_prompt,
-                                audit.system_context,
-                                classified_files,
-                                git_analysis,
-                                cat_id,
-                            )
+                    phase_signal_map: dict[int, list] = {}
+                    phase_token_map: dict[int, int] = {}
+                    phase_cost_map: dict[int, float] = {}
+
+                    for phase_num, cat_signals, cat_tokens, cat_cost in results:
+                        unique = self.deduplicator.deduplicate(cat_signals)
+                        phase_signal_map.setdefault(phase_num, []).extend(unique)
+                        phase_token_map[phase_num] = phase_token_map.get(phase_num, 0) + cat_tokens
+                        phase_cost_map[phase_num] = phase_cost_map.get(phase_num, 0.0) + cat_cost
+
+                    for phase_num, audit_phase, _ in batch_phases:
+                        p_signals = phase_signal_map.get(phase_num, [])
+                        for sig_data in p_signals:
+                            signal_counter += 1
+                            db.add(Signal(
+                                audit_id=audit.id,
+                                category_id=sig_data.category_id,
+                                sequence_number=signal_counter,
+                                signal_text=sig_data.signal_text,
+                                severity=sig_data.severity,
+                                score=sig_data.score,
+                                score_type=sig_data.score_type,
+                                evidence=sig_data.evidence,
+                                failure_scenario=sig_data.failure_scenario,
+                                remediation=sig_data.remediation,
+                                effort=sig_data.effort,
+                                confidence=sig_data.confidence,
+                                references=sig_data.references or [],
+                                phase_number=phase_num,
+                            ))
+
+                        await self._update_phase(
+                            db, audit_phase, "completed",
+                            signals_found=len(p_signals),
+                            tokens_used=phase_token_map.get(phase_num, 0),
+                            cost_usd=phase_cost_map.get(phase_num, 0.0),
                         )
-
-                    sem = asyncio.Semaphore(settings.max_concurrent_phases)
-
-                    async def bounded_task(coro):
-                        async with sem:
-                            return await coro
-
-                    results = await asyncio.gather(
-                        *[bounded_task(t) for t in tasks],
-                        return_exceptions=True,
-                    )
-
-                    for result in results:
-                        if isinstance(result, Exception):
-                            logger.error(f"Category error in phase {phase_num}: {result}")
-                            continue
-                        cat_signals, cat_tokens, cat_cost = result
-                        unique_signals = self.deduplicator.deduplicate(cat_signals)
-                        phase_signals.extend(unique_signals)
-                        phase_tokens += cat_tokens
-                        phase_cost += cat_cost
-
-                    for sig_data in phase_signals:
-                        signal_counter += 1
-                        signal = Signal(
-                            audit_id=audit.id,
-                            category_id=sig_data.category_id,
-                            sequence_number=signal_counter,
-                            signal_text=sig_data.signal_text,
-                            severity=sig_data.severity,
-                            score=sig_data.score,
-                            score_type=sig_data.score_type,
-                            evidence=sig_data.evidence,
-                            failure_scenario=sig_data.failure_scenario,
-                            remediation=sig_data.remediation,
-                            effort=sig_data.effort,
-                            confidence=sig_data.confidence,
-                            references=sig_data.references or [],
-                            phase_number=phase_num,
-                        )
-                        db.add(signal)
-
-                    await self._update_phase(
-                        db, audit_phase, "completed",
-                        signals_found=len(phase_signals),
-                        tokens_used=phase_tokens,
-                        cost_usd=phase_cost,
-                    )
+                        audit.total_tokens_used += phase_token_map.get(phase_num, 0)
+                        audit.total_cost_usd += phase_cost_map.get(phase_num, 0.0)
 
                     audit.total_signals = signal_counter
-                    audit.total_tokens_used += phase_tokens
-                    audit.total_cost_usd += phase_cost
                     await db.commit()
 
+                    total_batch_sigs = sum(len(v) for v in phase_signal_map.values())
                     logger.info(
-                        f"Phase {phase_num} complete: "
-                        f"{len(phase_signals)} signals, "
-                        f"{phase_tokens} tokens, ${phase_cost:.4f}"
+                        f"Batch {batch_num} (phases {phase_nums}): "
+                        f"{total_batch_sigs} signals, total so far: {signal_counter}"
                     )
 
+                # ========== REPORTS ==========
                 audit.status = "generating_reports"
                 await db.commit()
 
@@ -167,10 +201,8 @@ class AuditOrchestrator:
                 await db.commit()
 
                 logger.info(
-                    f"Audit {audit_id} completed: "
-                    f"{signal_counter} signals, "
-                    f"{audit.total_tokens_used} tokens, "
-                    f"${audit.total_cost_usd:.2f}"
+                    f"Audit {audit_id} completed: {signal_counter} signals, "
+                    f"{audit.total_tokens_used} tokens, ${audit.total_cost_usd:.2f}"
                 )
 
             except Exception as e:
@@ -187,6 +219,26 @@ class AuditOrchestrator:
                     snap = snapshot_result.scalar_one_or_none()
                     if snap and snap.local_path:
                         self.cloner.cleanup(snap.local_path)
+
+    async def _run_category_safe(
+        self,
+        llm_client: LLMClient,
+        system_prompt: str,
+        system_context: dict,
+        classified_files: list[dict],
+        git_analysis: dict,
+        category_id: int,
+        phase_number: int,
+    ) -> tuple[int, list, int, float]:
+        try:
+            signals, tokens, cost = await self._run_category(
+                llm_client, system_prompt, system_context,
+                classified_files, git_analysis, category_id,
+            )
+            return phase_number, signals, tokens, cost
+        except Exception as e:
+            logger.error(f"Category {category_id} phase {phase_number} failed: {e}")
+            return phase_number, [], 0, 0.0
 
     async def _ingest(
         self, db: AsyncSession, audit: Audit, source: dict
@@ -212,11 +264,7 @@ class AuditOrchestrator:
         classified_files = self.classifier.classify(raw_files)
         git_analysis = self.git_analyzer.analyze(repo_path)
 
-        file_index = {
-            "total": len(classified_files),
-            "by_type": {},
-            "by_language": {},
-        }
+        file_index = {"total": len(classified_files), "by_type": {}, "by_language": {}}
         for f in classified_files:
             ft = f.get("file_type", "unknown")
             file_index["by_type"][ft] = file_index["by_type"].get(ft, 0) + 1
@@ -255,7 +303,6 @@ class AuditOrchestrator:
 
         await db.commit()
         logger.info(f"Ingestion complete: {len(classified_files)} files classified")
-
         return classified_files, git_analysis, snapshot
 
     async def _run_category(
@@ -268,17 +315,13 @@ class AuditOrchestrator:
         category_id: int,
     ) -> tuple[list, int, float]:
         analyzer = get_analyzer(category_id)
-
         context_bundle = self.context_builder.build_context(
             category_id, classified_files, git_analysis
         )
-
         signals, response = await analyzer.analyze(
             llm_client, system_prompt, system_context, context_bundle
         )
-
         self.usage_tracker.record(response, category_id)
-
         return signals, response.total_tokens, response.cost_usd
 
     def _create_llm_client(self, audit_config: dict) -> LLMClient:
@@ -287,23 +330,17 @@ class AuditOrchestrator:
             model=audit_config.get("llm_model") or settings.default_llm_model,
         )
 
-    def _filter_categories(
-        self, category_ids: list[int], audit_config: dict
-    ) -> list[int]:
+    def _filter_categories(self, category_ids: list[int], audit_config: dict) -> list[int]:
         requested = audit_config.get("categories", "all")
         if requested == "all":
             return category_ids
         return [c for c in category_ids if c in requested]
 
     async def _load_audit(self, db: AsyncSession, audit_id: str) -> Audit | None:
-        result = await db.execute(
-            select(Audit).where(Audit.id == uuid.UUID(audit_id))
-        )
+        result = await db.execute(select(Audit).where(Audit.id == uuid.UUID(audit_id)))
         return result.scalar_one_or_none()
 
-    async def _get_phase(
-        self, db: AsyncSession, audit_id: uuid.UUID, phase_number: int
-    ) -> AuditPhase:
+    async def _get_phase(self, db: AsyncSession, audit_id: uuid.UUID, phase_number: int) -> AuditPhase:
         result = await db.execute(
             select(AuditPhase).where(
                 AuditPhase.audit_id == audit_id,
@@ -312,20 +349,13 @@ class AuditOrchestrator:
         )
         return result.scalar_one()
 
-    async def _update_status(
-        self, db: AsyncSession, audit: Audit, status: str
-    ) -> None:
+    async def _update_status(self, db: AsyncSession, audit: Audit, status: str) -> None:
         audit.status = status
         await db.commit()
 
     async def _update_phase(
-        self,
-        db: AsyncSession,
-        phase: AuditPhase,
-        status: str,
-        signals_found: int = 0,
-        tokens_used: int = 0,
-        cost_usd: float = 0.0,
+        self, db: AsyncSession, phase: AuditPhase, status: str,
+        signals_found: int = 0, tokens_used: int = 0, cost_usd: float = 0.0,
     ) -> None:
         phase.status = status
         if status == "running":

@@ -83,6 +83,35 @@
         </div>
       </div>
 
+      <!-- Batch Progress Banner -->
+      <div id="batch-banner" class="bg-gradient-to-r from-brand-600/20 to-purple-600/20 border border-brand-500/30 rounded-xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <div id="batch-icon" class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center">
+              <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full spinner"></div>
+            </div>
+            <div>
+              <p id="batch-title" class="font-bold">Scanning...</p>
+              <p id="batch-subtitle" class="text-xs text-gray-400">Analyzing your codebase</p>
+            </div>
+          </div>
+          <div id="batch-counter" class="text-right">
+            <p class="text-2xl font-bold text-brand-400" id="batch-signal-count">0</p>
+            <p class="text-xs text-gray-400">signals found</p>
+          </div>
+        </div>
+        <div class="flex gap-1.5">
+          <div id="b1" class="flex-1 h-2 rounded-full bg-surface-700 overflow-hidden"><div class="h-full bg-emerald-400 progress-bar" style="width:0%"></div></div>
+          <div id="b2" class="flex-1 h-2 rounded-full bg-surface-700 overflow-hidden"><div class="h-full bg-brand-400 progress-bar" style="width:0%"></div></div>
+          <div id="b3" class="flex-1 h-2 rounded-full bg-surface-700 overflow-hidden"><div class="h-full bg-purple-400 progress-bar" style="width:0%"></div></div>
+          <div id="b4" class="flex-1 h-2 rounded-full bg-surface-700 overflow-hidden"><div class="h-full bg-pink-400 progress-bar" style="width:0%"></div></div>
+          <div id="b5" class="flex-1 h-2 rounded-full bg-surface-700 overflow-hidden"><div class="h-full bg-amber-400 progress-bar" style="width:0%"></div></div>
+        </div>
+        <div class="flex justify-between mt-1.5 text-[10px] text-gray-500">
+          <span>Instant Scan</span><span>Security</span><span>Reliability</span><span>AI/ML + Quality</span><span>Compliance</span>
+        </div>
+      </div>
+
       <!-- Stats Cards -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-surface-800 border border-white/5 rounded-xl p-5">
@@ -252,6 +281,61 @@ function timeAgo(iso) {
   return Math.floor(diff/86400) + 'd ago';
 }
 
+const BATCH_PHASES = { 2:[1,2,3], 3:[4,5,6], 4:[7,8,9], 5:[10] };
+const BATCH_LABELS = {
+  0: { title:'Instant Scan Complete', sub:'Static analysis found initial issues in <100ms' },
+  1: { title:'Batch 1: Instant Scan', sub:'Pattern matching, config analysis, dependency check — <100ms' },
+  2: { title:'Batch 2: Security & Performance', sub:'Authentication, authorization, injection, memory, CPU, network' },
+  3: { title:'Batch 3: Reliability & Infrastructure', sub:'SPOF, fault tolerance, concurrency, data integrity, infra' },
+  4: { title:'Batch 4: AI/ML, Observability & Quality', sub:'AI/ML risks, metrics, logging, tracing, testing, code quality' },
+  5: { title:'Batch 5: Compliance & Organization', sub:'Compliance, DR, i18n, state management, backward compat' },
+};
+
+function updateBatchBanner(data) {
+  const donePhases = data.phases.filter(p => p.status === 'completed').length;
+  const runningPhases = data.phases.filter(p => p.status === 'running').length;
+
+  let currentBatch = 0;
+  if (data.total_signals > 0 && donePhases === 0 && runningPhases === 0) currentBatch = 1;
+  for (const [bn, pnums] of Object.entries(BATCH_PHASES)) {
+    const b = parseInt(bn);
+    if (pnums.some(pn => data.phases.find(p => p.phase_number === pn && p.status === 'running'))) currentBatch = b;
+    if (pnums.every(pn => data.phases.find(p => p.phase_number === pn && p.status === 'completed'))) currentBatch = Math.max(currentBatch, b);
+  }
+
+  $('batch-signal-count').textContent = data.total_signals;
+
+  for (let b = 1; b <= 5; b++) {
+    const bar = $(`b${b}`).querySelector('div');
+    if (b === 1) {
+      bar.style.width = data.total_signals > 0 ? '100%' : '0%';
+    } else {
+      const pnums = BATCH_PHASES[b];
+      const done = pnums.filter(pn => data.phases.find(p => p.phase_number === pn && p.status === 'completed')).length;
+      const running = pnums.filter(pn => data.phases.find(p => p.phase_number === pn && p.status === 'running')).length;
+      if (done === pnums.length) bar.style.width = '100%';
+      else if (running > 0) bar.style.width = '50%';
+      else bar.style.width = '0%';
+    }
+  }
+
+  if (data.status === 'completed') {
+    $('batch-title').textContent = 'Audit Complete!';
+    $('batch-subtitle').textContent = `${data.total_signals} signals across 40 categories`;
+    $('batch-icon').innerHTML = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+    $('batch-banner').className = 'bg-gradient-to-r from-emerald-600/20 to-emerald-400/10 border border-emerald-500/30 rounded-xl p-5';
+  } else if (data.status === 'failed') {
+    $('batch-title').textContent = 'Audit Failed';
+    $('batch-subtitle').textContent = data.error_message || 'An error occurred during analysis';
+    $('batch-icon').innerHTML = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`;
+    $('batch-banner').className = 'bg-gradient-to-r from-red-600/20 to-red-400/10 border border-red-500/30 rounded-xl p-5';
+  } else {
+    const label = BATCH_LABELS[currentBatch] || BATCH_LABELS[1];
+    $('batch-title').textContent = label.title;
+    $('batch-subtitle').textContent = label.sub;
+  }
+}
+
 async function loadAudit() {
   try {
     const data = await api(`/audit/${auditId}`);
@@ -276,6 +360,8 @@ async function loadAudit() {
     const pct = Math.round((donePhases / 10) * 100);
     $('progress-pct').textContent = pct + '%';
     $('progress-fill').style.width = pct + '%';
+
+    updateBatchBanner(data);
 
     // Phase timeline
     let timelineHtml = '';
@@ -312,8 +398,8 @@ async function loadAudit() {
     });
     $('phases-detail').innerHTML = phasesHtml;
 
-    if (data.status === 'pending' || data.status === 'running') {
-      pollTimer = setTimeout(loadAudit, 5000);
+    if (data.status === 'pending' || data.status === 'running' || data.status === 'ingesting' || data.status === 'generating_reports') {
+      pollTimer = setTimeout(loadAudit, 2000);
     }
     loadSignals();
     loadReports();
@@ -336,7 +422,8 @@ async function loadSignals() {
       $('signals-list').innerHTML = `
         <div class="text-center py-16 text-gray-500">
           <div class="w-12 h-12 border-4 border-brand-600 border-t-transparent rounded-full spinner mx-auto"></div>
-          <p class="mt-4">Waiting for signals... The audit engine is analyzing your code.</p>
+          <p class="mt-4 font-medium text-gray-400">Instant scan running...</p>
+          <p class="text-sm mt-1">First results appear in seconds — no waiting for AI.</p>
         </div>`;
       $('signals-pagination').classList.add('hidden');
       return;
