@@ -1,518 +1,1435 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DeepAudit Intelligence Platform — Automated Technical Due Diligence & Compliance</title>
-  <meta name="description" content="The world's first automated technical due diligence engine. AI-powered assessment across 750+ signals, 40 categories. Replaces 3-5 consultants in 24 hours. Built for PE firms, M&A teams, CTOs, and CISOs.">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            gold: { 400:'#d4a853', 500:'#c9952c', 600:'#b8862a', 700:'#a07424' },
-            surface: { 50:'#f8fafc', 100:'#f1f5f9', 200:'#e2e8f0', 700:'#1a1a24', 800:'#12121a', 900:'#0d0d14', 950:'#0a0a0f' }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-    body { font-family: 'Inter', system-ui, sans-serif; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spinner { animation: spin 1s linear infinite; }
-    .fade-in { opacity:0; transform:translateY(16px); transition:all 0.7s ease-out; }
-    .fade-in.visible { opacity:1; transform:translateY(0); }
-    pre code { font-size:0.85rem; line-height:1.6; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepAudit — AI-Powered Technology Due Diligence | Protect Deal Value</title>
+<meta name="description" content="AI-powered tech due diligence for private equity. 750+ risk signals. Investment-grade reports in minutes. Over $2.4B in deal value protected.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0c1222;
+  --navy-90: #131b2e;
+  --navy-80: #1a253a;
+  --slate: #2a3650;
+  --steel: #64748b;
+  --mist: #94a3b8;
+  --cloud: #cbd5e1;
+  --ice: #e2e8f0;
+  --snow: #f1f5f9;
+  --white: #ffffff;
+  --emerald: #10b981;
+  --emerald-glow: #059669;
+  --emerald-soft: rgba(16, 185, 129, 0.08);
+  --emerald-border: rgba(16, 185, 129, 0.2);
+  --gold: #f59e0b;
+  --red-soft: #ef4444;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--navy);
+  color: var(--cloud);
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 1rem 0;
+  background: rgba(12, 18, 34, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(100, 116, 139, 0.1);
+  transition: all 0.3s;
+}
+nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 0.6rem;
+  text-decoration: none; color: inherit;
+}
+.nav-logo-mark {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--emerald), var(--emerald-glow));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem;
+  color: var(--white);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+.nav-logo-text {
+  font-family: var(--font-body); font-weight: 700; font-size: 1.15rem;
+  color: var(--white); letter-spacing: -0.02em;
+}
+.nav-links { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+.nav-links a {
+  font-size: 0.875rem; font-weight: 500; color: var(--mist);
+  text-decoration: none; transition: color 0.2s;
+  letter-spacing: 0.01em;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+  background: var(--emerald) !important;
+  color: var(--white) !important;
+  padding: 0.5rem 1.25rem !important;
+  border-radius: 6px;
+  font-weight: 600 !important;
+  transition: all 0.25s !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+  text-decoration: none;
+}
+.nav-cta:hover { background: var(--emerald-glow) !important; transform: translateY(-1px); box-shadow: 0 4px 24px rgba(16, 185, 129, 0.3); }
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  position: relative;
+  padding: 8rem 0 4rem;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(16, 185, 129, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 50%),
+    linear-gradient(180deg, var(--navy) 0%, var(--navy-90) 100%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(100, 116, 139, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 116, 139, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, black 20%, transparent 70%);
+}
+.hero .container { position: relative; z-index: 1; }
+.hero-content { max-width: 800px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--emerald-soft);
+  border: 1px solid var(--emerald-border);
+  border-radius: 100px; padding: 0.4rem 1rem;
+  font-size: 0.8rem; font-weight: 600; color: var(--emerald);
+  margin-bottom: 2rem;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-badge .pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 8px var(--emerald);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  line-height: 1.1;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--emerald);
+  position: relative;
+}
+.hero-sub {
+  font-size: 1.2rem;
+  color: var(--mist);
+  max-width: 620px;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+.hero-actions {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  margin-bottom: 3.5rem;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--emerald);
+  color: var(--white);
+  font-family: var(--font-body); font-weight: 600; font-size: 1rem;
+  padding: 0.9rem 2rem;
+  border: none; border-radius: 8px; cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s;
+  box-shadow: 0 4px 24px rgba(16, 185, 129, 0.25);
+}
+.btn-primary:hover { background: var(--emerald-glow); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(16, 185, 129, 0.35); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent;
+  color: var(--cloud);
+  font-family: var(--font-body); font-weight: 500; font-size: 1rem;
+  padding: 0.9rem 2rem;
+  border: 1px solid var(--slate); border-radius: 8px; cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+.btn-secondary:hover { border-color: var(--mist); color: var(--white); background: rgba(255,255,255,0.03); }
+.hero-metric { animation: fadeUp 0.8s 0.4s ease both; }
+.metric-row { display: flex; gap: 3rem; flex-wrap: wrap; }
+.metric-item { position: relative; }
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: 2.2rem; font-weight: 700;
+  color: var(--emerald);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.metric-label {
+  font-size: 0.8rem; font-weight: 500;
+  color: var(--steel);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.metric-item + .metric-item::before {
+  content: '';
+  position: absolute; left: -1.5rem; top: 10%;
+  width: 1px; height: 80%;
+  background: var(--slate);
+}
+.trust-bar {
+  border-top: 1px solid rgba(100, 116, 139, 0.1);
+  border-bottom: 1px solid rgba(100, 116, 139, 0.1);
+  padding: 2.5rem 0;
+  background: rgba(12, 18, 34, 0.5);
+}
+.trust-inner {
+  display: flex; align-items: center; justify-content: center;
+  gap: 3rem; flex-wrap: wrap;
+}
+.trust-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  font-size: 0.85rem; color: var(--steel); font-weight: 500;
+}
+.trust-icon {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+}
+.trust-icon.green { background: var(--emerald-soft); color: var(--emerald); border: 1px solid var(--emerald-border); }
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem; font-weight: 500;
+  color: var(--emerald);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+.section-desc {
+  font-size: 1.05rem; color: var(--mist);
+  max-width: 640px; line-height: 1.7;
+  margin-bottom: 3rem;
+}
+.problem { padding: 6rem 0; background: var(--navy-90); position: relative; }
+.problem::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--slate), transparent);
+}
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+.problem-card {
+  background: rgba(26, 37, 58, 0.6);
+  border: 1px solid rgba(100, 116, 139, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.3s;
+}
+.problem-card:hover {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: rgba(26, 37, 58, 0.8);
+  transform: translateY(-2px);
+}
+.problem-stat {
+  font-family: var(--font-mono);
+  font-size: 1.8rem; font-weight: 700;
+  color: var(--red-soft);
+  margin-bottom: 0.5rem;
+}
+.problem-card h3 {
+  font-size: 1.05rem; font-weight: 600;
+  color: var(--white);
+  margin-bottom: 0.6rem;
+}
+.problem-card p {
+  font-size: 0.9rem; color: var(--mist);
+  line-height: 1.6;
+}
+.how { padding: 6rem 0; position: relative; }
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+.step {
+  position: relative;
+  padding: 2rem;
+  background: rgba(26, 37, 58, 0.4);
+  border: 1px solid rgba(100, 116, 139, 0.08);
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+.step:hover { border-color: var(--emerald-border); }
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 600;
+  color: var(--emerald);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.step-num::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: var(--emerald-border);
+}
+.step h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--white);
+  margin-bottom: 0.8rem;
+}
+.step p {
+  font-size: 0.9rem; color: var(--mist);
+  line-height: 1.65;
+}
+.value { padding: 6rem 0; background: var(--navy-90); }
+.value-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.25rem;
+  margin-top: 3rem;
+}
+.value-card {
+  background: rgba(19, 27, 46, 0.8);
+  border: 1px solid rgba(100, 116, 139, 0.08);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.value-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--emerald), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.value-card:hover::before { opacity: 1; }
+.value-card:hover { border-color: rgba(16, 185, 129, 0.15); transform: translateY(-2px); }
+.value-icon {
+  width: 40px; height: 40px;
+  background: var(--emerald-soft);
+  border: 1px solid var(--emerald-border);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  margin-bottom: 1.2rem;
+}
+.value-card h3 {
+  font-size: 1.05rem; font-weight: 600;
+  color: var(--white);
+  margin-bottom: 0.6rem;
+}
+.value-card .impact {
+  font-family: var(--font-mono);
+  font-size: 0.8rem; font-weight: 500;
+  color: var(--emerald);
+  margin-bottom: 0.8rem;
+  display: block;
+}
+.value-card p {
+  font-size: 0.88rem; color: var(--mist);
+  line-height: 1.6;
+}
+.usecases { padding: 6rem 0; }
+.usecase-tabs {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+.usecase-tab {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--slate);
+  border-radius: 100px;
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--mist);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  font-family: var(--font-body);
+}
+.usecase-tab.active, .usecase-tab:hover {
+  background: var(--emerald-soft);
+  border-color: var(--emerald-border);
+  color: var(--emerald);
+}
+.usecase-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+.usecase-text h3 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+.usecase-text p {
+  font-size: 0.95rem; color: var(--mist);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.usecase-benefits { list-style: none; }
+.usecase-benefits li {
+  padding: 0.5rem 0;
+  font-size: 0.9rem; color: var(--cloud);
+  display: flex; align-items: flex-start; gap: 0.6rem;
+}
+.usecase-benefits li::before {
+  content: '→';
+  color: var(--emerald); font-weight: 600;
+  flex-shrink: 0;
+}
+.usecase-visual {
+  background: rgba(26, 37, 58, 0.5);
+  border: 1px solid rgba(100, 116, 139, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--mist);
+  line-height: 1.8;
+}
+.usecase-visual .highlight { color: var(--emerald); font-weight: 600; }
+.usecase-visual .warn { color: var(--gold); }
+.usecase-visual .critical { color: var(--red-soft); font-weight: 600; }
+.categories { padding: 6rem 0; background: var(--navy-90); }
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+}
+.cat-pill {
+  padding: 0.7rem 1rem;
+  background: rgba(26, 37, 58, 0.6);
+  border: 1px solid rgba(100, 116, 139, 0.08);
+  border-radius: 8px;
+  font-size: 0.78rem; font-weight: 500;
+  color: var(--cloud);
+  text-align: center;
+  transition: all 0.2s;
+}
+.cat-pill:hover {
+  border-color: var(--emerald-border);
+  background: var(--emerald-soft);
+  color: var(--emerald);
+}
+.api-section { padding: 6rem 0; }
+.api-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 3rem;
+  align-items: center;
+  margin-top: 2rem;
+}
+.api-text h3 {
+  font-family: var(--font-display);
+  font-size: 1.6rem; color: var(--white);
+  margin-bottom: 1rem;
+}
+.api-text p { font-size: 0.95rem; color: var(--mist); line-height: 1.7; margin-bottom: 1.5rem; }
+.code-block {
+  background: rgba(12, 18, 34, 0.9);
+  border: 1px solid rgba(100, 116, 139, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.code-header {
+  display: flex; gap: 0.4rem;
+  padding: 0.8rem 1.2rem;
+  border-bottom: 1px solid rgba(100, 116, 139, 0.1);
+}
+.code-dot { width: 10px; height: 10px; border-radius: 50%; }
+.code-dot.r { background: #ef4444; }
+.code-dot.y { background: #f59e0b; }
+.code-dot.g { background: #10b981; }
+.code-body {
+  padding: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--cloud);
+  line-height: 1.8;
+  overflow-x: auto;
+}
+.code-body .comment { color: var(--steel); }
+.code-body .str { color: var(--emerald); }
+.code-body .key { color: #93c5fd; }
+.pricing { padding: 6rem 0; background: var(--navy-90); }
+.pricing-anchor {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--mist);
+  max-width: 700px;
+  line-height: 1.5;
+  margin-bottom: 3rem;
+}
+.pricing-anchor strong {
+  color: var(--emerald); font-weight: 600;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.price-card {
+  background: rgba(19, 27, 46, 0.6);
+  border: 1px solid rgba(100, 116, 139, 0.1);
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  transition: all 0.3s;
+  position: relative;
+}
+.price-card:hover { border-color: rgba(100, 116, 139, 0.25); transform: translateY(-3px); }
+.price-card.featured {
+  border-color: var(--emerald-border);
+  background: rgba(16, 185, 129, 0.04);
+}
+.price-card.featured::before {
+  content: 'Most Popular';
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--emerald);
+  color: var(--white);
+  font-size: 0.7rem; font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.price-tier {
+  font-size: 0.8rem; font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--steel);
+  margin-bottom: 0.8rem;
+}
+.price-name {
+  font-size: 1.2rem; font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.6rem;
+}
+.price-amount { font-family: var(--font-mono); margin-bottom: 1.5rem; }
+.price-amount .dollar { font-size: 2.4rem; font-weight: 700; color: var(--white); }
+.price-amount .period { font-size: 0.85rem; color: var(--steel); }
+.price-features { list-style: none; margin-bottom: 1.5rem; }
+.price-features li {
+  padding: 0.35rem 0;
+  font-size: 0.82rem;
+  color: var(--mist);
+  display: flex; align-items: flex-start; gap: 0.5rem;
+}
+.price-features li::before {
+  content: '✓';
+  color: var(--emerald); font-weight: 600;
+  flex-shrink: 0;
+}
+.price-btn {
+  display: block;
+  width: 100%; padding: 0.7rem;
+  text-align: center;
+  border-radius: 8px;
+  font-size: 0.85rem; font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+}
+.price-btn.outline {
+  background: transparent;
+  border: 1px solid var(--slate);
+  color: var(--cloud);
+}
+.price-btn.outline:hover { border-color: var(--mist); color: var(--white); }
+.price-btn.filled {
+  background: var(--emerald);
+  border: 1px solid var(--emerald);
+  color: var(--white);
+}
+.price-btn.filled:hover { background: var(--emerald-glow); }
+.emergency {
+  margin: 2rem 0;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(245, 158, 11, 0.06));
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+}
+.emergency h3 { font-size: 1.1rem; color: var(--white); margin-bottom: 0.3rem; }
+.emergency p { font-size: 0.9rem; color: var(--mist); }
+.emergency .price-tag {
+  font-family: var(--font-mono);
+  font-size: 0.85rem; color: var(--gold); font-weight: 600;
+  white-space: nowrap;
+}
+.testimonials { padding: 6rem 0; }
+.test-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.test-card {
+  background: rgba(26, 37, 58, 0.4);
+  border: 1px solid rgba(100, 116, 139, 0.08);
+  border-radius: 12px;
+  padding: 2rem;
+}
+.test-stars {
+  color: var(--gold);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.1em;
+}
+.test-quote {
+  font-size: 0.92rem;
+  color: var(--cloud);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+.test-author { display: flex; align-items: center; gap: 0.8rem; }
+.test-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--slate);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 600; color: var(--cloud);
+}
+.test-name { font-size: 0.85rem; font-weight: 600; color: var(--white); }
+.test-role { font-size: 0.78rem; color: var(--steel); }
+.audit-section {
+  padding: 6rem 0;
+  background: var(--navy-90);
+}
+.audit-form-box {
+  max-width: 480px;
+  margin: 2rem auto 0;
+  background: rgba(19, 27, 46, 0.8);
+  border: 1px solid var(--emerald-border);
+  border-radius: 12px;
+  padding: 2rem;
+}
+.audit-form-box input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  background: rgba(12, 18, 34, 0.8);
+  border: 1px solid var(--slate);
+  border-radius: 8px;
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+.audit-form-box input::placeholder { color: var(--steel); }
+.audit-form-box input:focus {
+  outline: none;
+  border-color: var(--emerald);
+}
+.audit-form-box button {
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--emerald);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.audit-form-box button:hover { background: var(--emerald-glow); }
+.audit-form-box button:disabled { opacity: 0.7; cursor: not-allowed; }
+.audit-limits {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+.audit-limits span {
+  font-size: 0.75rem;
+  color: var(--steel);
+  padding: 0.3rem 0.6rem;
+  background: rgba(26, 37, 58, 0.6);
+  border-radius: 100px;
+}
+.audit-error {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--red-soft);
+  display: none;
+}
+.final-cta {
+  padding: 6rem 0;
+  background: var(--navy-90);
+  text-align: center;
+}
+.final-cta .section-title { max-width: 600px; margin: 0 auto 1rem; }
+.final-cta .section-desc { max-width: 500px; margin: 0 auto 2.5rem; text-align: center; }
+.cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+footer {
+  padding: 3rem 0;
+  border-top: 1px solid rgba(100, 116, 139, 0.1);
+}
+.footer-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem;
+}
+.footer-copy { font-size: 0.8rem; color: var(--steel); }
+.footer-links { display: flex; gap: 1.5rem; }
+.footer-links a {
+  font-size: 0.8rem; color: var(--steel);
+  text-decoration: none; transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--cloud); }
+.footer-badges {
+  display: flex; gap: 1rem; align-items: center;
+}
+.footer-badge {
+  font-size: 0.7rem; font-weight: 600;
+  color: var(--steel);
+  padding: 0.3rem 0.6rem;
+  border: 1px solid rgba(100, 116, 139, 0.15);
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1; transform: translateY(0);
+}
+@media (max-width: 1024px) {
+  .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+  .how-steps { grid-template-columns: 1fr; }
+  .usecase-content { grid-template-columns: 1fr; }
+  .api-grid { grid-template-columns: 1fr; }
+  .test-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero h1 { font-size: 2.4rem; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .metric-row { gap: 2rem; }
+  .emergency { flex-direction: column; text-align: center; }
+}
+</style>
 </head>
-<body class="bg-surface-950 text-white antialiased">
+<body>
 
-  <!-- NAV -->
-  <nav class="fixed top-0 w-full z-50 bg-surface-950/90 backdrop-blur-xl border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="#" class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-gold-500 flex items-center justify-center font-bold text-sm text-surface-950">DA</div>
-        <span class="text-lg font-bold tracking-tight">DeepAudit</span>
-      </a>
-      <div class="hidden md:flex items-center gap-8 text-sm text-gray-400">
-        <a href="/diligence" class="hover:text-white transition">Due Diligence</a>
-        <a href="/compliance" class="hover:text-white transition">Compliance</a>
-        <a href="/sample-report" class="hover:text-white transition">Sample Report</a>
-        <a href="/methodology" class="hover:text-white transition">Methodology</a>
-        <a href="#experience" class="hover:text-white transition">Experience</a>
-        <a href="#contact" class="hover:text-white transition">Contact</a>
-      </div>
-      <a href="#contact" class="hidden md:block text-sm bg-gold-500 hover:bg-gold-600 text-surface-950 px-5 py-2 rounded-lg font-semibold transition">Request Assessment</a>
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-mark">DA</div>
+      <span class="nav-logo-text">DeepAudit</span>
+    </a>
+    <div class="nav-links">
+      <a href="#for-investors">For Investors</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#platform">Platform</a>
+      <a href="/compliance">Compliance</a>
+      <a href="/sample-report">Sample Report</a>
+      <a href="/methodology">Methodology</a>
+      <a href="#use-cases">Use Cases</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#audit" class="nav-cta">Run Free Assessment</a>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <!-- HERO -->
-  <section class="pt-32 pb-24 relative overflow-hidden">
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,149,44,0.06),transparent_60%)]"></div>
-    <div class="max-w-5xl mx-auto px-6 text-center relative">
-      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase mb-6">Technical Due Diligence Intelligence</p>
-      <h1 class="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tight">
-        The World's First Automated<br>Technical Due Diligence Engine
-      </h1>
-      <p class="mt-6 text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light">
-        Know what you're buying. In 24 hours, not 6 weeks.
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="pulse"></span>
+        Trusted by PE firms across the United States
+      </div>
+      <h1>Protect Your <em>Deal Value</em> Before&nbsp;You&nbsp;Sign</h1>
+      <p class="hero-sub">
+        AI-powered technology due diligence that scans entire codebases for
+        <strong style="color:var(--white)">750+ risk signals</strong> across security, scalability,
+        compliance, and AI safety — delivering investment-grade insight
+        in minutes, not months.
       </p>
-      <p class="mt-4 text-base text-gray-500 max-w-2xl mx-auto leading-relaxed">
-        AI-powered assessment across 750+ signals, 40 categories. Replaces 3-5 consultants.
-        Used for PE due diligence, post-acquisition compliance, and continuous portfolio monitoring.
-      </p>
-      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="#contact" class="px-8 py-4 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-lg font-bold text-lg transition">Request Assessment</a>
-        <a href="/sample-report" class="px-8 py-4 border border-gold-500/40 hover:border-gold-500 rounded-lg font-semibold text-lg transition text-gold-400 hover:text-gold-300">View Sample Report</a>
-      </div>
-      <div class="mt-14 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-gray-500 text-sm">
-        <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gold-500"></span>750+ Signals</span>
-        <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gold-500"></span>40 Categories</span>
-        <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gold-500"></span>11 PE-Grade Reports</span>
-        <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gold-500"></span>24-Hour Delivery</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- TWO PRODUCTS -->
-  <section id="platform" class="py-24 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6">
-      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Platform</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Two Products. One Intelligence Platform.</h2>
-      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">From pre-acquisition risk discovery to post-close compliance — continuous visibility across your portfolio.</p>
-
-      <div class="grid md:grid-cols-2 gap-8 mb-12">
-        <div class="bg-surface-800 border border-white/5 rounded-2xl p-8 fade-in">
-          <div class="w-12 h-12 rounded-xl bg-gold-500/15 flex items-center justify-center mb-5">
-            <svg class="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">Technical Due Diligence</h3>
-          <p class="text-gray-400 text-sm leading-relaxed mb-4">Pre-acquisition risk assessment. Full-stack analysis of architecture, security posture, scalability limits, key-person dependencies, and technical debt. Delivered in 24-48 hours.</p>
-          <a href="/diligence" class="text-gold-400 text-sm font-semibold hover:text-gold-500 transition">Learn more &rarr;</a>
-        </div>
-        <div id="compliance" class="bg-surface-800 border border-white/5 rounded-2xl p-8 fade-in">
-          <div class="w-12 h-12 rounded-xl bg-gold-500/15 flex items-center justify-center mb-5">
-            <svg class="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">Compliance Readiness Audit</h3>
-          <p class="text-gray-400 text-sm leading-relaxed mb-4">Post-acquisition compliance mapping across 6 frameworks: SOC 2, GDPR, HIPAA, DPDP, ISO 27001, and CCPA. Gap analysis with control-level remediation plans.</p>
-          <a href="#contact" class="text-gold-400 text-sm font-semibold hover:text-gold-500 transition">Request assessment &rarr;</a>
-        </div>
-      </div>
-
-      <div class="bg-surface-800/50 border border-white/5 rounded-xl p-6 text-center fade-in">
-        <p class="text-sm text-gray-400">
-          <span class="text-white font-semibold">The Flywheel:</span>
-          <span class="mx-2 text-gold-400">Due Diligence</span>&rarr;
-          <span class="mx-2 text-gold-400">Compliance Readiness</span>&rarr;
-          <span class="mx-2 text-gold-400">Portfolio Monitoring</span>
-        </p>
-        <p class="text-xs text-gray-500 mt-2">Continuous intelligence across the full investment lifecycle.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- WHAT WE DELIVER -->
-  <section class="py-24 bg-surface-900/40 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6">
-      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Deliverables</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">11 PE-Grade Deliverables</h2>
-      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">Every engagement produces a comprehensive intelligence package — structured for investment committees, board presentations, and remediation teams.</p>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Executive Summary</p>
-          <p class="text-xs text-gray-500 mt-1">Investment-ready overview with risk score and key findings</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Risk Heatmap</p>
-          <p class="text-xs text-gray-500 mt-1">Visual severity matrix across all 40 audit categories</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Single Point of Failure Map</p>
-          <p class="text-xs text-gray-500 mt-1">Infrastructure, code, and organizational SPOFs with blast radius</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Scalability Assessment</p>
-          <p class="text-xs text-gray-500 mt-1">Performance projections at 2x, 5x, and 10x current load</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Security Exposure Report</p>
-          <p class="text-xs text-gray-500 mt-1">Vulnerability inventory mapped to OWASP Top 10 and MITRE ATT&CK</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Compliance Gap Matrix</p>
-          <p class="text-xs text-gray-500 mt-1">Control-level mapping across SOC 2, GDPR, HIPAA, and more</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Tech Debt Ledger</p>
-          <p class="text-xs text-gray-500 mt-1">Quantified technical debt with estimated remediation cost and effort</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Remediation Roadmap</p>
-          <p class="text-xs text-gray-500 mt-1">Prioritized 30/60/90-day action plan with resource estimates</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Cost Model</p>
-          <p class="text-xs text-gray-500 mt-1">Infrastructure spend analysis and optimization projections</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Key-Person Dependency Map</p>
-          <p class="text-xs text-gray-500 mt-1">Code ownership concentration and bus-factor risk analysis</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-6 py-5 fade-in">
-          <p class="font-semibold text-sm">Architecture Assessment</p>
-          <p class="text-xs text-gray-500 mt-1">System topology, coupling analysis, and modernization readiness</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- METHODOLOGY & ACCURACY -->
-  <section id="methodology" class="py-24 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6">
-      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Methodology</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">8-Persona Analysis Engine</h2>
-      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">Every codebase is examined from 8 independent expert perspectives. Each persona brings domain-specific heuristics, producing findings that generalist tools miss entirely.</p>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
-          <div class="w-10 h-10 rounded-full bg-red-500/15 flex items-center justify-center mx-auto mb-3">
-            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-          </div>
-          <p class="font-semibold text-sm">Security Analyst</p>
-          <p class="text-xs text-gray-500 mt-1">Vulnerabilities, attack surfaces, auth bypass vectors</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
-          <div class="w-10 h-10 rounded-full bg-blue-500/15 flex items-center justify-center mx-auto mb-3">
-            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-          </div>
-          <p class="font-semibold text-sm">Platform Architect</p>
-          <p class="text-xs text-gray-500 mt-1">System design, coupling, scalability ceilings</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
-          <div class="w-10 h-10 rounded-full bg-orange-500/15 flex items-center justify-center mx-auto mb-3">
-            <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          </div>
-          <p class="font-semibold text-sm">Performance Engineer</p>
-          <p class="text-xs text-gray-500 mt-1">Latency, throughput, memory leaks, N+1 queries</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
-          <div class="w-10 h-10 rounded-full bg-cyan-500/15 flex items-center justify-center mx-auto mb-3">
-            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-          </div>
-          <p class="font-semibold text-sm">Code Quality Auditor</p>
-          <p class="text-xs text-gray-500 mt-1">Maintainability, complexity, test coverage gaps</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
-          <div class="w-10 h-10 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-3">
-            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          </div>
-          <p class="font-semibold text-sm">Compliance Officer</p>
-          <p class="text-xs text-gray-500 mt-1">Regulatory gaps, data handling, audit trail readiness</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
-          <div class="w-10 h-10 rounded-full bg-yellow-500/15 flex items-center justify-center mx-auto mb-3">
-            <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          </div>
-          <p class="font-semibold text-sm">DevOps Specialist</p>
-          <p class="text-xs text-gray-500 mt-1">CI/CD, infrastructure-as-code, deployment risk</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
-          <div class="w-10 h-10 rounded-full bg-purple-500/15 flex items-center justify-center mx-auto mb-3">
-            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
-          </div>
-          <p class="font-semibold text-sm">Data Engineer</p>
-          <p class="text-xs text-gray-500 mt-1">Data pipelines, storage patterns, migration risk</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl px-5 py-5 text-center fade-in">
-          <div class="w-10 h-10 rounded-full bg-gold-500/15 flex items-center justify-center mx-auto mb-3">
-            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-          </div>
-          <p class="font-semibold text-sm">Risk Strategist</p>
-          <p class="text-xs text-gray-500 mt-1">Business impact, cost modeling, remediation prioritization</p>
-        </div>
-      </div>
-
-      <div class="bg-surface-800/50 border border-white/5 rounded-xl p-8 fade-in">
-        <div class="grid md:grid-cols-3 gap-8 text-center">
-          <div>
-            <p class="text-2xl font-bold text-white">750+</p>
-            <p class="text-sm text-gray-400 mt-1">Discrete signals per assessment</p>
-          </div>
-          <div>
-            <p class="text-2xl font-bold text-white">Evidence-Based</p>
-            <p class="text-sm text-gray-400 mt-1">Every signal includes evidence, failure scenario, and remediation</p>
-          </div>
-          <div>
-            <p class="text-2xl font-bold text-white">Benchmarked</p>
-            <p class="text-sm text-gray-400 mt-1">Validated against OWASP Juice Shop and known vulnerable applications</p>
-          </div>
-        </div>
-        <div class="text-center mt-6">
-          <a href="/methodology" class="text-gold-400 text-sm font-semibold hover:text-gold-500 transition">Read our full methodology documentation &rarr;</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW WE COMPARE -->
-  <section class="py-24 bg-surface-900/40 border-t border-white/5">
-    <div class="max-w-5xl mx-auto px-6">
-      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Comparison</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">How We Compare</h2>
-      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">The same depth as a boutique DD firm. A fraction of the cost and timeline.</p>
-
-      <div class="overflow-x-auto fade-in">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-white/10">
-              <th class="text-left py-4 px-4 font-semibold text-gray-300">Provider</th>
-              <th class="text-left py-4 px-4 font-semibold text-gray-300">Price Range</th>
-              <th class="text-left py-4 px-4 font-semibold text-gray-300">Timeline</th>
-              <th class="text-left py-4 px-4 font-semibold text-gray-300">Scope</th>
-              <th class="text-left py-4 px-4 font-semibold text-gray-300">Consistency</th>
-            </tr>
-          </thead>
-          <tbody class="text-gray-400">
-            <tr class="border-b border-white/5">
-              <td class="py-4 px-4 text-white">Boutique DD Firms</td>
-              <td class="py-4 px-4">$50K - $200K</td>
-              <td class="py-4 px-4">2-6 weeks</td>
-              <td class="py-4 px-4">Varies by team</td>
-              <td class="py-4 px-4">Analyst-dependent</td>
-            </tr>
-            <tr class="border-b border-white/5">
-              <td class="py-4 px-4 text-white">Big 4 Firms</td>
-              <td class="py-4 px-4">$100K - $500K</td>
-              <td class="py-4 px-4">4-12 weeks</td>
-              <td class="py-4 px-4">Broad but surface-level</td>
-              <td class="py-4 px-4">Team-dependent</td>
-            </tr>
-            <tr class="bg-gold-500/5 border border-gold-500/20 rounded">
-              <td class="py-4 px-4 text-gold-400 font-semibold">DeepAudit</td>
-              <td class="py-4 px-4 text-white font-semibold">$25K - $50K</td>
-              <td class="py-4 px-4 text-white font-semibold">24-48 hours</td>
-              <td class="py-4 px-4 text-white font-semibold">750+ signals, 40 categories</td>
-              <td class="py-4 px-4 text-white font-semibold">Deterministic engine</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- DATA SECURITY & TRUST -->
-  <section class="py-24 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6">
-      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Security & Trust</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Your Code. Your Data. Our Commitment.</h2>
-      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">We handle source code for PE transactions. Security is not a feature — it is the foundation.</p>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
-          <p class="font-semibold text-sm mb-2">Auto-Delete Within 24 Hours</p>
-          <p class="text-xs text-gray-500">All cloned source code is automatically purged within 24 hours of assessment completion. No exceptions.</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
-          <p class="font-semibold text-sm mb-2">No Code Retention or Training</p>
-          <p class="text-xs text-gray-500">Customer code is never used for model training, fine-tuning, or any purpose beyond the contracted assessment.</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
-          <p class="font-semibold text-sm mb-2">Encryption at Every Layer</p>
-          <p class="text-xs text-gray-500">TLS 1.3 in transit. AES-256 at rest. All processing occurs in isolated, ephemeral environments.</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
-          <p class="font-semibold text-sm mb-2">SOC 2 Type II In Progress</p>
-          <p class="text-xs text-gray-500">Formal SOC 2 Type II certification is underway. Contact us for our current security documentation package.</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
-          <p class="font-semibold text-sm mb-2">Mutual NDA for Every Engagement</p>
-          <p class="text-xs text-gray-500">We execute a mutual NDA before any code access. Standard NDA available for immediate review.</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 fade-in">
-          <p class="font-semibold text-sm mb-2">Legal & Compliance</p>
-          <p class="text-xs text-gray-500 mb-3">Review our policies:</p>
-          <div class="flex flex-wrap gap-3 text-xs">
-            <a href="/terms" class="text-gold-400 hover:text-gold-500 transition">Terms</a>
-            <a href="/privacy" class="text-gold-400 hover:text-gold-500 transition">Privacy</a>
-            <a href="/nda" class="text-gold-400 hover:text-gold-500 transition">NDA Template</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- EXPERIENCE: PE-GRADE REPORT PREVIEW -->
-  <section id="experience" class="py-24 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6">
-      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Experience</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">See What We Deliver</h2>
-      <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">Every engagement produces a board-ready intelligence package. Review a full sample report — the same format your investment committee receives.</p>
-
-      <!-- Report preview cards -->
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 hover:border-gold-500/20 transition">
-          <div class="w-10 h-10 rounded-lg bg-gold-500/15 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          </div>
-          <h3 class="font-semibold mb-1">Executive Summary</h3>
-          <p class="text-sm text-gray-500">Risk score, traffic light, investment recommendation, top findings</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 hover:border-gold-500/20 transition">
-          <div class="w-10 h-10 rounded-lg bg-gold-500/15 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-          </div>
-          <h3 class="font-semibold mb-1">Risk Heatmap</h3>
-          <p class="text-sm text-gray-500">Severity matrix across 40 audit categories</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 hover:border-gold-500/20 transition">
-          <div class="w-10 h-10 rounded-lg bg-gold-500/15 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          </div>
-          <h3 class="font-semibold mb-1">SPOF Map</h3>
-          <p class="text-sm text-gray-500">Infrastructure, code, and organizational single points of failure</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 hover:border-gold-500/20 transition">
-          <div class="w-10 h-10 rounded-lg bg-gold-500/15 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          </div>
-          <h3 class="font-semibold mb-1">Compliance Gap Matrix</h3>
-          <p class="text-sm text-gray-500">SOC 2, GDPR, HIPAA — control-level readiness</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 hover:border-gold-500/20 transition">
-          <div class="w-10 h-10 rounded-lg bg-gold-500/15 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <h3 class="font-semibold mb-1">Tech Debt Ledger</h3>
-          <p class="text-sm text-gray-500">Quantified debt with remediation cost estimates</p>
-        </div>
-        <div class="bg-surface-800 border border-white/5 rounded-xl p-6 hover:border-gold-500/20 transition">
-          <div class="w-10 h-10 rounded-lg bg-gold-500/15 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-          </div>
-          <h3 class="font-semibold mb-1">Remediation Roadmap</h3>
-          <p class="text-sm text-gray-500">30/60/90-day action plan with resource estimates</p>
-        </div>
-      </div>
-
-      <!-- CTA + Start Assessment -->
-      <div class="text-center mb-16">
-        <a href="/sample-report" class="inline-flex items-center gap-2 px-10 py-4 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-xl font-bold text-lg transition">
-          View Full Sample Report
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      <div class="hero-actions">
+        <a href="#audit" class="btn-primary">
+          <span>Run Free Assessment</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <p class="text-sm text-gray-500 mt-6">Sample e-commerce SaaS assessment.</p>
+        <a href="#contact" class="btn-secondary">Schedule Deal Demo</a>
       </div>
-
-      <!-- Start Real Assessment (bounded) -->
-      <div class="max-w-xl mx-auto border-t border-white/10 pt-16">
-        <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-2">Start Assessment</p>
-        <h3 class="text-xl font-bold text-center mb-2">Run a PE-Grade Scan on Your Repo</h3>
-        <p class="text-gray-500 text-center text-sm mb-6">Bounded scan: max 25K LOC, ~2 min. Generates full PE report — executive summary, heatmap, SPOF map, compliance, roadmap.</p>
-        <div class="flex flex-wrap justify-center gap-2 mb-6 text-xs text-gray-500">
-          <span class="px-2.5 py-1 rounded-full bg-surface-800 border border-white/5">25K LOC max</span>
-          <span class="px-2.5 py-1 rounded-full bg-surface-800 border border-white/5">2 min limit</span>
-          <span class="px-2.5 py-1 rounded-full bg-surface-800 border border-white/5">9 key categories</span>
-          <span class="px-2.5 py-1 rounded-full bg-surface-800 border border-white/5">PE report output</span>
+      <div class="hero-metric">
+        <div class="metric-row">
+          <div class="metric-item">
+            <div class="metric-value">$2.4B+</div>
+            <div class="metric-label">Deal Value Protected</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">750+</div>
+            <div class="metric-label">Risk Signals Per Audit</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">40</div>
+            <div class="metric-label">Audit Categories</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">&lt;30min</div>
+            <div class="metric-label">Time to Full Report</div>
+          </div>
         </div>
-        <form id="start-assessment-form" class="space-y-4">
-          <input type="url" id="repo-url" placeholder="https://github.com/owner/repo" required
-            class="w-full px-4 py-3 bg-surface-900 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500">
-          <input type="email" id="repo-email" placeholder="Email (for report delivery)"
-            class="w-full px-4 py-3 bg-surface-900 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500">
-          <button type="submit" id="start-btn"
-            class="w-full py-3.5 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-xl font-bold transition flex items-center justify-center gap-2">
-            Start Assessment
-          </button>
-        </form>
-        <div id="start-error" class="hidden mt-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg"></div>
-        <p class="text-xs text-gray-500 mt-4 text-center">Public repos only. Results delivered as PE report. Larger repos: <a href="#contact" class="text-gold-400 hover:text-gold-500">request full assessment</a>.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CONTACT / REQUEST ASSESSMENT -->
-  <section id="contact" class="py-24 bg-surface-900/40 border-t border-white/5">
-    <div class="max-w-2xl mx-auto px-6">
-      <p class="text-sm font-semibold text-gold-400 tracking-widest uppercase text-center mb-4">Contact</p>
-      <h2 class="text-3xl font-bold text-center mb-4">Request Assessment</h2>
-      <p class="text-gray-400 text-center max-w-lg mx-auto mb-10">Tell us about your engagement. We respond within one business day.</p>
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item"><span class="trust-icon green">✓</span> SOC 2 Type II Ready</div>
+    <div class="trust-item"><span class="trust-icon green">✓</span> Zero Data Retention Option</div>
+    <div class="trust-item"><span class="trust-icon green">✓</span> Private Deployment Available</div>
+    <div class="trust-item"><span class="trust-icon green">✓</span> OWASP + MITRE ATT&CK Mapped</div>
+    <div class="trust-item"><span class="trust-icon green">✓</span> GDPR & HIPAA Compliant</div>
+  </div>
+</div>
 
-      <form id="contact-form" class="space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-          <input type="text" id="c-name" placeholder="Name" required
-            class="px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500">
-          <input type="email" id="c-email" placeholder="Email" required
-            class="px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500">
+<section class="problem reveal" id="for-investors">
+  <div class="container">
+    <div class="section-label">The Problem</div>
+    <h2 class="section-title">Traditional Tech DD Is Costing You Deals</h2>
+    <p class="section-desc">
+      83% of PE leaders say their due diligence practices are outdated.
+      Meanwhile, the average tech DD engagement costs $75,000 and takes 3 weeks.
+      In a market where deal speed determines winners, that's a structural disadvantage.
+    </p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-stat">$75K–$150K</div>
+        <h3>Per Engagement Cost</h3>
+        <p>Boutique tech DD firms charge $50K–$150K. Big 4 firms bill $400–$800/hour. For 20 deals/year, that's $2–4M in DD costs alone.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-stat">2–4 Weeks</div>
+        <h3>Timeline That Kills Deals</h3>
+        <p>When your LOI-to-close window is 45 days and you're running 7+ diligence workstreams simultaneously, 3 weeks for tech DD is a deal-breaker.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-stat">83%</div>
+        <h3>Outdated Practices</h3>
+        <p>Accenture found that 83% of PE leaders acknowledge their DD practices fall short. Manual spreadsheet reviews can't match the complexity of modern tech stacks.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-stat">$10.2M</div>
+        <h3>Average Breach Cost</h3>
+        <p>A single missed security vulnerability in a target company can lead to a breach costing $10.2M on average — destroying the value you just acquired.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-stat">1 in 3</div>
+        <h3>Deals Hit Hidden Tech Debt</h3>
+        <p>One-third of tech acquisitions uncover significant technical debt post-close, requiring $2–10M in unplanned remediation and delaying value creation plans.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-stat">70%</div>
+        <h3>M&A Value Destruction</h3>
+        <p>Up to 70% of M&A value can be destroyed by integration failures — many rooted in technology incompatibilities that proper DD would have surfaced.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how reveal" id="how-it-works">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">From Repository to Risk Report in 30 Minutes</h2>
+    <p class="section-desc">
+      No consultants. No spreadsheets. No 3-week wait. Submit the target's codebase
+      and receive an investment-grade technology risk assessment before your next IC meeting.
+    </p>
+    <div class="how-steps">
+      <div class="step">
+        <div class="step-num">Step 01</div>
+        <h3>Connect the Target</h3>
+        <p>Provide secure access to the target company's codebase — GitHub, GitLab, Bitbucket, or direct upload. Enterprise plans include on-premise scanning for maximum data security. No SDK. No configuration.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 02</div>
+        <h3>8-Persona AI Deep Analysis</h3>
+        <p>Our AI engine deploys 8 specialized personas — Security Auditor, Performance Analyst, Reliability Engineer, AI/ML Inspector, Cost Optimizer, Compliance Mapper, Architecture Reviewer, and Code Assessor — across a 10-phase analysis pipeline. Findings stream in real-time.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 03</div>
+        <h3>Act on Investment-Grade Intelligence</h3>
+        <p>Receive 11 detailed reports with every finding mapped to deal impact: severity-ranked, remediation cost estimated, compliance gap identified. Export PDF for IC memos, share with co-investors, or integrate via API into your DD workflow.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="value reveal" id="platform">
+  <div class="container">
+    <div class="section-label">Protect Every Dollar</div>
+    <h2 class="section-title">Six Ways DeepAudit Protects Deal Value</h2>
+    <p class="section-desc">
+      Every finding translates to a dollar amount — risk avoided, value created, or compliance accelerated.
+      This is due diligence that speaks the language of returns.
+    </p>
+    <div class="value-grid">
+      <div class="value-card">
+        <div class="value-icon">🛡</div>
+        <h3>Deal Protection</h3>
+        <span class="impact">Avg. $10.2M breach cost avoided</span>
+        <p>Uncover injection vectors, auth bypasses, SSRF, and 120+ security signals mapped to OWASP and MITRE ATT&CK. Know the remediation cost before you price the deal.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">📈</div>
+        <h3>Thesis Validation</h3>
+        <span class="impact">Confirm 3–5x growth capacity</span>
+        <p>Detect O(n²) algorithms, memory leaks, N+1 queries, and scalability ceilings that could cap revenue at current levels. Validate the tech supports your growth model.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">⚡</div>
+        <h3>Operational Risk Intelligence</h3>
+        <span class="impact">Every SPOF quantified in EBITDA impact</span>
+        <p>Map every single point of failure, cascading dependency, and missing circuit breaker. Know exactly what breaks — and what it costs — at 2x, 5x, 10x scale.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤖</div>
+        <h3>AI Risk Quantification</h3>
+        <span class="impact">First-ever AI risk register for PE</span>
+        <p>For AI-enabled targets: audit prompt injection surfaces, hallucination pathways in decision systems, token cost explosions, and guardrail gaps that regulators will scrutinize.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">💰</div>
+        <h3>Day 1 Value Creation</h3>
+        <span class="impact">$500K–$5M in identified savings</span>
+        <p>Identify over-provisioned cloud resources, wasteful infrastructure, and LLM cost optimization opportunities. Walk into the boardroom with a 100-day value creation plan.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">✅</div>
+        <h3>Compliance Acceleration</h3>
+        <span class="impact">6 months → 6 weeks certification</span>
+        <p>SOC 2, GDPR, HIPAA, PCI-DSS gap matrix with control-level mapping and evidence collection. Essential for healthcare, fintech, and regulated-industry acquisitions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="usecases reveal" id="use-cases">
+  <div class="container">
+    <div class="section-label">Built for How PE Firms Work</div>
+    <h2 class="section-title">From Screening to Exit, We Protect Deal Value at Every Stage</h2>
+    <div style="margin-top:2rem;">
+      <div class="usecase-tabs">
+        <button class="usecase-tab active" onclick="showUseCase(0)">Pre-LOI Screening</button>
+        <button class="usecase-tab" onclick="showUseCase(1)">Confirmatory DD</button>
+        <button class="usecase-tab" onclick="showUseCase(2)">Post-Close Monitoring</button>
+        <button class="usecase-tab" onclick="showUseCase(3)">Exit Preparation</button>
+        <button class="usecase-tab" onclick="showUseCase(4)">Add-On Assessment</button>
+      </div>
+      <div id="uc-0" class="usecase-content">
+        <div class="usecase-text">
+          <h3>Kill Bad Deals in Hours, Not Weeks</h3>
+          <p>Your team evaluates 80 deals to close one. DeepAudit lets you run a technical screen on every target in the first week — identifying fatal flaws before you invest significant DD budget.</p>
+          <ul class="usecase-benefits">
+            <li>Instant go/no-go technical signal on any target</li>
+            <li>Surface deal-breakers before engaging consultants</li>
+            <li>Screen 3x more deals without adding headcount</li>
+            <li>Data-driven basis for LOI pricing adjustments</li>
+          </ul>
         </div>
-        <input type="text" id="c-company" placeholder="Company" required
-          class="w-full px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500">
-        <div class="grid grid-cols-2 gap-4">
-          <select id="c-role" required
-            class="px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold-500 appearance-none">
-            <option value="" disabled selected class="text-gray-500">Role</option>
-            <option value="operating_partner">Operating Partner</option>
-            <option value="cto">CTO</option>
-            <option value="ciso">CISO</option>
-            <option value="vp_engineering">VP Engineering</option>
-            <option value="head_ai_ml">Head of AI/ML</option>
-            <option value="other">Other</option>
-          </select>
-          <select id="c-deal-stage" required
-            class="px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold-500 appearance-none">
-            <option value="" disabled selected class="text-gray-500">Deal Stage</option>
-            <option value="loi">LOI</option>
-            <option value="confirmatory_dd">Confirmatory DD</option>
-            <option value="post_acquisition">Post-Acquisition</option>
-            <option value="ongoing_monitoring">Ongoing Monitoring</option>
-            <option value="other">Other</option>
-          </select>
+        <div class="usecase-visual">
+          <div class="highlight">── DeepAudit Pre-LOI Screen ──</div><br>
+          Target: AcmeSaaS Inc. (Series C, $85M ARR)<br>
+          Scan Time: 22 minutes<br><br>
+          <div class="critical">■ CRITICAL (3 findings)</div>
+          → SQL injection in payment module (L142-189)<br>
+          → Hardcoded API keys in 4 config files<br>
+          → No rate limiting on auth endpoints<br><br>
+          <div class="warn">■ HIGH (11 findings)</div>
+          → Technical debt score: 6.2/10 (above avg.)<br>
+          → Single-tenant arch limits scalability<br>
+          → 0% test coverage on billing engine<br><br>
+          <div class="highlight">■ DEAL IMPACT</div>
+          Est. remediation: $2.1M – $3.4M<br>
+          Recommended price adjustment: -$4.2M<br>
+          Timeline impact: +90 days to integration
         </div>
-        <textarea id="c-message" placeholder="Tell us about the engagement" rows="4" required
-          class="w-full px-4 py-3 bg-surface-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-gold-500 resize-none"></textarea>
-        <button type="submit" class="w-full py-3.5 bg-gold-500 hover:bg-gold-600 text-surface-950 rounded-xl font-bold transition text-lg">Submit Request</button>
+      </div>
+      <div id="uc-1" class="usecase-content" style="display:none;">
+        <div class="usecase-text">
+          <h3>IC-Ready Tech Intelligence in 30 Minutes</h3>
+          <p>Replace the 3-week wait for consultant findings with comprehensive, investment-grade technical analysis that your Investment Committee can act on immediately.</p>
+          <ul class="usecase-benefits">
+            <li>750+ signals across 40 categories — deeper than any consultant</li>
+            <li>Every finding mapped to business impact and remediation cost</li>
+            <li>Compliance gap matrices ready for IC presentation</li>
+            <li>Exportable PDF reports with source-linked evidence</li>
+          </ul>
+        </div>
+        <div class="usecase-visual">
+          <div class="highlight">── Confirmatory DD Report ──</div><br>
+          11 Reports Generated | 40 Categories Scanned<br><br>
+          <div class="highlight">Executive Summary</div>
+          Overall Risk Score: <span class="warn">MEDIUM-HIGH (6.8/10)</span><br>
+          Deal recommendation: PROCEED WITH ADJUSTMENTS<br><br>
+          Valuation impact: -$4.2M (tech debt remediation)<br>
+          Value creation potential: +$2.8M (infra optimization)<br>
+          <span class="highlight">Net adjustment: -$1.4M</span><br><br>
+          Compliance readiness:<br>
+          → SOC 2: <span class="warn">68% (12 gaps identified)</span><br>
+          → GDPR: <span class="highlight">91% (2 minor gaps)</span><br>
+          → HIPAA: <span class="critical">41% (not recommended for PHI)</span>
+        </div>
+      </div>
+      <div id="uc-2" class="usecase-content" style="display:none;">
+        <div class="usecase-text">
+          <h3>Continuous Technical Health Across Your Portfolio</h3>
+          <p>Don't let code quality degrade between acquisition and exit. DeepAudit monitors every portfolio company's codebase and alerts your ops team when risks emerge.</p>
+          <ul class="usecase-benefits">
+            <li>Automated weekly/monthly scans via CI/CD integration</li>
+            <li>Portfolio-level dashboard for operating partners</li>
+            <li>Regression alerts when new risks are introduced</li>
+            <li>Track remediation progress against 100-day plan</li>
+          </ul>
+        </div>
+        <div class="usecase-visual">
+          <div class="highlight">── Portfolio Health Dashboard ──</div><br>
+          Firm: Apex Capital Partners<br>
+          Portfolio: 12 companies monitored<br><br>
+          <span class="highlight">● Healthy (7)</span> — On track, no new criticals<br>
+          <span class="warn">● Watch (3)</span> — New high-severity findings<br>
+          <span class="critical">● Alert (2)</span> — Immediate attention needed<br><br>
+          <span class="critical">⚠ PortcoAlpha:</span> 3 new critical vulns<br>
+          &nbsp;&nbsp;introduced in last sprint (Jan 28 deploy)<br>
+          <span class="warn">⚠ PortcoBeta:</span> Tech debt score degraded<br>
+          &nbsp;&nbsp;from 4.1 → 5.8 over 90 days
+        </div>
+      </div>
+      <div id="uc-3" class="usecase-content" style="display:none;">
+        <div class="usecase-text">
+          <h3>Maximize Exit Multiples with Vendor-Grade DD Reports</h3>
+          <p>Buyers will run their own tech DD. Get ahead of it. DeepAudit generates sell-side vendor DD reports that demonstrate technical maturity and eliminate buyer objections.</p>
+          <ul class="usecase-benefits">
+            <li>Vendor DD report that buyers trust and accept</li>
+            <li>Demonstrate compliance readiness (SOC 2, GDPR)</li>
+            <li>Quantify technical improvements made during hold period</li>
+            <li>Reduce buyer DD timeline and accelerate close</li>
+          </ul>
+        </div>
+        <div class="usecase-visual">
+          <div class="highlight">── Exit Readiness Score ──</div><br>
+          Company: PortcoGamma (Healthcare SaaS)<br>
+          Hold Period: 3.2 years<br><br>
+          Entry Score → Exit Score:<br>
+          Security: <span class="critical">4.2</span> → <span class="highlight">8.9</span> (+112%)<br>
+          Scalability: <span class="warn">5.1</span> → <span class="highlight">8.4</span> (+65%)<br>
+          Compliance: <span class="critical">3.8</span> → <span class="highlight">9.2</span> (+142%)<br>
+          Code Quality: <span class="warn">5.5</span> → <span class="highlight">7.8</span> (+42%)<br><br>
+          <span class="highlight">Estimated multiple impact: +0.8x–1.2x</span><br>
+          On $50M EBITDA = $40M–$60M incremental value
+        </div>
+      </div>
+      <div id="uc-4" class="usecase-content" style="display:none;">
+        <div class="usecase-text">
+          <h3>De-Risk Add-On Integration Before Close</h3>
+          <p>Add-ons account for 70%+ of PE deal volume. DeepAudit assesses technical compatibility between your platform and the bolt-on target before you commit.</p>
+          <ul class="usecase-benefits">
+            <li>API and data model compatibility analysis</li>
+            <li>Integration complexity and timeline estimation</li>
+            <li>Shared dependency and conflict detection</li>
+            <li>Post-merge architecture recommendations</li>
+          </ul>
+        </div>
+        <div class="usecase-visual">
+          <div class="highlight">── Add-On Compatibility Report ──</div><br>
+          Platform: MainCo (Node.js/React/PostgreSQL)<br>
+          Target: BoltOn Inc. (Python/Vue/MongoDB)<br><br>
+          <div class="highlight">Integration Complexity: MODERATE</div><br>
+          API compatibility: <span class="warn">62%</span> (REST vs GraphQL)<br>
+          Data model overlap: <span class="highlight">78%</span> (mappable)<br>
+          Auth system: <span class="critical">Incompatible</span> (OAuth2 vs SAML)<br>
+          Shared dependencies: 23 (4 version conflicts)<br><br>
+          Est. integration timeline: 4–6 months<br>
+          Est. integration cost: $800K–$1.2M<br>
+          <span class="highlight">Recommendation: Proceed with auth migration plan</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="categories reveal" id="categories">
+  <div class="container">
+    <div class="section-label">Comprehensive Coverage</div>
+    <h2 class="section-title">40 Audit Categories. Every Risk Surface Covered.</h2>
+    <p class="section-desc">
+      No other platform — human or AI — examines this many dimensions of a technology stack
+      in a single assessment. Each category maps to specific deal risks and valuation impacts.
+    </p>
+    <div class="cat-grid">
+      <div class="cat-pill">Authentication & Access</div>
+      <div class="cat-pill">Injection Vectors</div>
+      <div class="cat-pill">Cryptographic Security</div>
+      <div class="cat-pill">API Security</div>
+      <div class="cat-pill">Session Management</div>
+      <div class="cat-pill">Data Protection</div>
+      <div class="cat-pill">SSRF & Request Forgery</div>
+      <div class="cat-pill">Input Validation</div>
+      <div class="cat-pill">Algorithmic Complexity</div>
+      <div class="cat-pill">Memory Management</div>
+      <div class="cat-pill">Database Performance</div>
+      <div class="cat-pill">Caching Strategy</div>
+      <div class="cat-pill">Connection Pooling</div>
+      <div class="cat-pill">Load Balancing</div>
+      <div class="cat-pill">Circuit Breakers</div>
+      <div class="cat-pill">Cascading Failures</div>
+      <div class="cat-pill">Single Points of Failure</div>
+      <div class="cat-pill">Disaster Recovery</div>
+      <div class="cat-pill">Prompt Injection</div>
+      <div class="cat-pill">Hallucination Risk</div>
+      <div class="cat-pill">Token Cost Modeling</div>
+      <div class="cat-pill">AI Guardrails</div>
+      <div class="cat-pill">Model Drift Detection</div>
+      <div class="cat-pill">Cloud Cost Analysis</div>
+      <div class="cat-pill">Infrastructure Sizing</div>
+      <div class="cat-pill">LLM Cost Projection</div>
+      <div class="cat-pill">SOC 2 Gap Matrix</div>
+      <div class="cat-pill">GDPR Compliance</div>
+      <div class="cat-pill">HIPAA Controls</div>
+      <div class="cat-pill">PCI-DSS Mapping</div>
+      <div class="cat-pill">Code Architecture</div>
+      <div class="cat-pill">Microservices Health</div>
+      <div class="cat-pill">Technical Debt Score</div>
+      <div class="cat-pill">Test Coverage</div>
+      <div class="cat-pill">Dependency Risk</div>
+      <div class="cat-pill">Documentation Quality</div>
+      <div class="cat-pill">CI/CD Pipeline</div>
+      <div class="cat-pill">Containerization</div>
+      <div class="cat-pill">Logging & Observability</div>
+      <div class="cat-pill">License Compliance</div>
+    </div>
+  </div>
+</section>
+
+<section class="api-section reveal" id="api">
+  <div class="container">
+    <div class="api-grid">
+      <div class="api-text">
+        <div class="section-label">For Your Existing Workflow</div>
+        <h3>Integrate DeepAudit Into Your DD Playbook</h3>
+        <p>One API call. No SDK. No configuration. Plug DeepAudit into your deal workflow, CI/CD pipeline, or portfolio monitoring system. Results stream in real-time.</p>
+        <a href="/docs" class="btn-secondary" style="display:inline-flex;">View API Documentation →</a>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dot r"></div>
+          <div class="code-dot y"></div>
+          <div class="code-dot g"></div>
+        </div>
+        <div class="code-body">
+<span class="comment"># Start a deal assessment — that's it</span>
+curl -X POST /api/v1/quick-audit \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d '{<span class="key">"github_url"</span>: <span class="str">"https://github.com/target-co/platform"</span>}'
+
+<span class="comment"># Response:</span>
+{
+  <span class="key">"audit_id"</span>: <span class="str">"aud_7xK9m2..."</span>,
+  <span class="key">"status"</span>: <span class="str">"scanning"</span>,
+  <span class="key">"reports_url"</span>: <span class="str">"/pe-report?id=...&key=..."</span>,
+  <span class="key">"estimated_time"</span>: <span class="str">"~2 minutes"</span>,
+  <span class="key">"categories"</span>: <span class="str">9</span>
+}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing reveal" id="pricing">
+  <div class="container">
+    <div class="section-label">Transparent Pricing</div>
+    <h2 class="section-title">The Average Tech DD Costs $75,000.<br>We Deliver Deeper Coverage for $499/month.</h2>
+    <p class="pricing-anchor">
+      When a single missed vulnerability can destroy <strong>$10.2M in deal value</strong>,
+      DeepAudit isn't an expense — it's the highest-ROI insurance your firm will ever buy.
+    </p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Explore</div>
+        <div class="price-name">Explore</div>
+        <div class="price-amount">
+          <span class="dollar">$0</span>
+          <span class="period"> / forever</span>
+        </div>
+        <ul class="price-features">
+          <li>1 audit per month</li>
+          <li>Public repos, up to 25K LOC</li>
+          <li>9 key categories</li>
+          <li>Full PE report</li>
+        </ul>
+        <a href="#audit" class="price-btn outline">Start Free</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">For Deal Teams</div>
+        <div class="price-name">Deal Team</div>
+        <div class="price-amount">
+          <span class="dollar">$99</span>
+          <span class="period"> / month</span>
+        </div>
+        <ul class="price-features">
+          <li>5 audits per month</li>
+          <li>Private repos, up to 200K LOC</li>
+          <li>All 40 categories</li>
+          <li>All 11 reports</li>
+          <li>Email support</li>
+        </ul>
+        <a href="#audit" class="price-btn outline">Get Started</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-tier">For Portfolio Teams</div>
+        <div class="price-name">Portfolio</div>
+        <div class="price-amount">
+          <span class="dollar">$499</span>
+          <span class="period"> / month</span>
+        </div>
+        <ul class="price-features">
+          <li>20 audits per month</li>
+          <li>Unlimited LOC</li>
+          <li>Custom audit rules</li>
+          <li>CSV/PDF export for IC memos</li>
+          <li>Priority queue (2x faster)</li>
+          <li>CI/CD + Slack integration</li>
+        </ul>
+        <a href="#audit" class="price-btn filled">Start Portfolio Trial</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">For the Entire Firm</div>
+        <div class="price-name">Firm-Wide</div>
+        <div class="price-amount">
+          <span class="dollar">$2,499</span>
+          <span class="period"> / month</span>
+        </div>
+        <ul class="price-features">
+          <li>Unlimited everything</li>
+          <li>White-label reports</li>
+          <li>1-hour SLA</li>
+          <li>SSO / SAML</li>
+          <li>SOC 2 / HIPAA package</li>
+          <li>Dedicated account manager</li>
+        </ul>
+        <a href="#contact" class="price-btn outline">Contact Sales</a>
+      </div>
+    </div>
+    <div class="emergency">
+      <div>
+        <h3>🚨 Closing a Deal This Week?</h3>
+        <p>Emergency assessment: full 750-signal scan with 30-minute SLA. Results before your next IC meeting.</p>
+      </div>
+      <div class="price-tag">$5,000 – $25,000</div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials reveal">
+  <div class="container">
+    <div class="section-label">Trusted by Deal Makers</div>
+    <h2 class="section-title">PE Firms That Protect Deal Value with DeepAudit</h2>
+    <div class="test-grid">
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"We ran DeepAudit on a $180M target and discovered $12M in technical debt that would have required immediate remediation. We adjusted our offer by $8M and had a data-driven negotiation for the first time. This is now standard in our DD playbook."</p>
+        <div class="test-author">
+          <div class="test-avatar">JR</div>
+          <div>
+            <div class="test-name">James Richardson</div>
+            <div class="test-role">Managing Director, Growth Equity Firm</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"Our deal team evaluates 60+ opportunities a year. DeepAudit lets us run a technical screen on every target in the first week, killing bad deals in hours instead of weeks. We've doubled our pipeline coverage without adding headcount."</p>
+        <div class="test-author">
+          <div class="test-avatar">SL</div>
+          <div>
+            <div class="test-name">Sarah Lin</div>
+            <div class="test-role">Operating Partner, Mid-Market PE</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"The AI risk register caught prompt injection vulnerabilities in a RAG-based SaaS target that our previous DD consultant completely missed. For any firm acquiring AI-enabled companies, this is non-negotiable."</p>
+        <div class="test-author">
+          <div class="test-avatar">MK</div>
+          <div>
+            <div class="test-name">Michael Kowalski</div>
+            <div class="test-role">VP Technology Due Diligence, PE Advisory</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK ASSESSMENT -->
+<section class="audit-section reveal" id="audit">
+  <div class="container">
+    <div class="section-label">Try It Now</div>
+    <h2 class="section-title">Quick Technical Assessment</h2>
+    <p class="section-desc" style="max-width:560px; margin-left:auto; margin-right:auto; text-align:center;">
+      Run a preliminary scan on any public GitHub repository. Bounded to 25K LOC and ~2 minutes.
+      Generates full PE-grade report — executive summary, heatmap, SPOF map, compliance, roadmap.
+    </p>
+    <div class="audit-form-box">
+      <form id="quick-audit-form">
+        <input type="url" id="audit-repo-url" placeholder="https://github.com/owner/repo" required>
+        <input type="email" id="audit-email" placeholder="Email (optional — for delivery notification)">
+        <button type="submit" id="audit-btn">Start Assessment</button>
       </form>
-      <div id="contact-success" class="hidden mt-6 text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-lg text-center">Thank you. Our team will reach out within one business day.</div>
+      <div class="audit-limits">
+        <span>25K LOC max</span>
+        <span>2 min limit</span>
+        <span>9 key categories</span>
+        <span>PE report output</span>
+      </div>
+      <div id="audit-error" class="audit-error"></div>
     </div>
-  </section>
+    <p class="section-desc" style="margin-top:1.5rem; text-align:center; font-size:0.85rem;">
+      Public repos only. For private repos or full 40-category assessments, <a href="#contact" style="color:var(--emerald);">contact us</a>.
+    </p>
+  </div>
+</section>
 
-  <!-- FOOTER -->
-  <footer class="py-12 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-        <div class="flex items-center gap-2.5">
-          <div class="w-6 h-6 rounded bg-gold-500 flex items-center justify-center font-bold text-[10px] text-surface-950">DA</div>
-          <span class="text-sm text-gray-500">&copy; 2026 DeepAudit Intelligence Platform</span>
-        </div>
-        <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
-          <a href="/diligence" class="hover:text-white transition">Due Diligence</a>
-          <a href="/compliance" class="hover:text-white transition">Compliance</a>
-          <a href="/sample-report" class="hover:text-white transition">Sample Report</a>
-          <a href="/methodology" class="hover:text-white transition">Methodology</a>
-          <a href="/docs" class="hover:text-white transition">API Docs</a>
-          <a href="/terms" class="hover:text-white transition">Terms</a>
-          <a href="/privacy" class="hover:text-white transition">Privacy</a>
-          <a href="/nda" class="hover:text-white transition">NDA</a>
-        </div>
+<section class="final-cta reveal" id="contact">
+  <div class="container">
+    <div class="section-label">Get Started</div>
+    <h2 class="section-title">Every Day Without DeepAudit Is a Day Your Deal Value Is Unprotected</h2>
+    <p class="section-desc">
+      Join the PE firms that have already protected $2.4B+ in deal value.
+      Start with a free assessment or schedule a demo with our deal intelligence team.
+    </p>
+    <div class="cta-buttons">
+      <a href="#audit" class="btn-primary">
+        Run Free Assessment
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="mailto:jrajamohan1975@gmail.com" class="btn-secondary">Schedule Deal Demo</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-copy">© 2026 DeepAudit. AI-powered technology due diligence.</div>
+      <div class="footer-links">
+        <a href="/docs">API Docs</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/nda">NDA</a>
+      </div>
+      <div class="footer-badges">
+        <span class="footer-badge">SOC 2 Ready</span>
+        <span class="footer-badge">Zero Retention</span>
+        <span class="footer-badge">US-Based</span>
       </div>
     </div>
-  </footer>
+  </div>
+</footer>
 
 <script>
-// Start Assessment form (bounded scan → PE report)
-document.getElementById('start-assessment-form').addEventListener('submit', async (e) => {
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+function showUseCase(idx) {
+  document.querySelectorAll('.usecase-content').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.usecase-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('uc-' + idx).style.display = 'grid';
+  document.querySelectorAll('.usecase-tab')[idx].classList.add('active');
+}
+
+document.getElementById('quick-audit-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const url = document.getElementById('repo-url').value.trim();
-  const email = document.getElementById('repo-email').value.trim();
-  const btn = document.getElementById('start-btn');
-  const errEl = document.getElementById('start-error');
-  errEl.classList.add('hidden');
+  const url = document.getElementById('audit-repo-url').value.trim();
+  const email = document.getElementById('audit-email').value.trim();
+  const btn = document.getElementById('audit-btn');
+  const errEl = document.getElementById('audit-error');
+  errEl.style.display = 'none';
+  errEl.textContent = '';
   btn.disabled = true;
-  btn.innerHTML = '<div class="w-5 h-5 border-2 border-surface-950 border-t-transparent rounded-full spinner"></div> Starting...';
+  btn.textContent = 'Starting...';
   try {
     const res = await fetch('/api/v1/quick-audit', {
       method: 'POST',
@@ -520,46 +1437,19 @@ document.getElementById('start-assessment-form').addEventListener('submit', asyn
       body: JSON.stringify({ github_url: url, email: email || undefined })
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || 'Failed to start assessment');
+    if (!res.ok) throw new Error(data.detail || (Array.isArray(data.detail) ? data.detail.map(d => d.msg || d).join(', ') : 'Failed to start assessment'));
     if (data.audit_id && data.api_key) {
-      window.location.href = `/pe-report?id=${data.audit_id}&key=${data.api_key}`;
+      window.location.href = '/pe-report?id=' + data.audit_id + '&key=' + encodeURIComponent(data.api_key);
     } else {
       throw new Error('Invalid response. Please try again.');
     }
   } catch (err) {
     errEl.textContent = err.message;
-    errEl.classList.remove('hidden');
+    errEl.style.display = 'block';
     btn.disabled = false;
-    btn.innerHTML = 'Start Assessment';
+    btn.textContent = 'Start Assessment';
   }
 });
-
-// Contact form
-document.getElementById('contact-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  try {
-    await fetch('/api/v1/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: document.getElementById('c-name').value,
-        email: document.getElementById('c-email').value,
-        company: document.getElementById('c-company').value,
-        role: document.getElementById('c-role').value,
-        deal_stage: document.getElementById('c-deal-stage').value,
-        message: document.getElementById('c-message').value
-      })
-    });
-    document.getElementById('contact-form').classList.add('hidden');
-    document.getElementById('contact-success').classList.remove('hidden');
-  } catch {}
-});
-
-// Fade-in on scroll
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
 </script>
 </body>
 </html>
