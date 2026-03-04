@@ -52,6 +52,12 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     log_format: Literal["json", "text"] = "json"
 
+    # Admin
+    admin_secret: str = ""
+
+    # AI agent / demo scheduling (no humans)
+    demo_scheduling_url: str = ""  # e.g. Calendly link for self-serve demo
+
     # Contact / notifications
     contact_notification_email: str = "jrajamohan1975@gmail.com"
     smtp_host: str = ""

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepAudit Admin — Traction Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0a0a0f;
+  --black-90: #0d0d14;
+  --slate: #2a2a35;
+  --steel: #64748b;
+  --mist: #94a3b8;
+  --cloud: #cbd5e1;
+  --white: #ffffff;
+  --gold: #c9952c;
+  --gold-soft: rgba(201, 149, 44, 0.08);
+  --gold-border: rgba(201, 149, 44, 0.25);
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--font-body);
+  background: var(--black);
+  color: var(--cloud);
+  min-height: 100vh;
+  padding: 2rem;
+}
+.container { max-width: 1100px; margin: 0 auto; }
+h1 {
+  font-size: 1.5rem;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+h1::before {
+  content: '';
+  width: 4px; height: 1.5rem;
+  background: var(--gold);
+  border-radius: 2px;
+}
+.login-box {
+  max-width: 400px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background: var(--black-90);
+  border: 1px solid var(--gold-border);
+  border-radius: 12px;
+}
+.login-box h2 { font-size: 1.1rem; color: var(--white); margin-bottom: 1rem; }
+.login-box input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(17, 17, 24, 0.8);
+  border: 1px solid var(--slate);
+  border-radius: 8px;
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+.login-box button {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--gold);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.login-box button:hover { opacity: 0.9; }
+.login-box .error {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.stat-card {
+  background: var(--black-90);
+  border: 1px solid rgba(201, 149, 44, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.stat-card .value {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.stat-card .label {
+  font-size: 0.85rem;
+  color: var(--steel);
+  margin-top: 0.25rem;
+}
+.section {
+  margin-bottom: 2rem;
+}
+.section h2 {
+  font-size: 1rem;
+  color: var(--white);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--slate);
+  border-radius: 8px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+th, td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--slate);
+}
+th {
+  background: var(--black-90);
+  color: var(--steel);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(201, 149, 44, 0.04); }
+.empty { color: var(--steel); padding: 2rem; text-align: center; }
+.logout {
+  position: absolute;
+  top: 2rem; right: 2rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid var(--slate);
+  color: var(--mist);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.logout:hover { border-color: var(--mist); color: var(--white); }
+.dashboard { position: relative; }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="login-view" class="login-box">
+    <h2>Admin Access</h2>
+    <p style="color:var(--mist); font-size:0.9rem; margin-bottom:1rem;">Enter your admin secret to view traction metrics.</p>
+    <input type="password" id="admin-secret" placeholder="Admin secret">
+    <button type="button" id="login-btn">Login</button>
+    <div id="login-error" class="error hidden"></div>
+  </div>
+
+  <div id="dashboard-view" class="dashboard hidden">
+    <button class="logout" id="logout-btn">Logout</button>
+    <h1>DeepAudit Traction Dashboard</h1>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="value" id="stat-tenants">—</div>
+        <div class="label">Tenants</div>
+      </div>
+      <div class="stat-card">
+        <div class="value" id="stat-audits">—</div>
+        <div class="label">Audits</div>
+      </div>
+      <div class="stat-card">
+        <div class="value" id="stat-signals">—</div>
+        <div class="label">Signals Generated</div>
+      </div>
+      <div class="stat-card">
+        <div class="value" id="stat-contacts">—</div>
+        <div class="label">Demo Requests</div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Contact / Demo Requests</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Company</th>
+              <th>Role</th>
+              <th>Deal Stage</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody id="contacts-tbody">
+            <tr><td colspan="7" class="empty">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const ADMIN_KEY = 'deepaudit_admin_secret';
+
+function getStoredSecret() {
+  try {
+    return sessionStorage.getItem(ADMIN_KEY);
+  } catch { return null; }
+}
+
+function setStoredSecret(s) {
+  try { sessionStorage.setItem(ADMIN_KEY, s); } catch {}
+}
+
+function clearStoredSecret() {
+  try { sessionStorage.removeItem(ADMIN_KEY); } catch {}
+}
+
+async function fetchTraction(secret) {
+  const res = await fetch('/api/v1/admin/traction', {
+    headers: { 'X-Admin-Secret': secret }
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+function showLogin(err) {
+  document.getElementById('login-view').classList.remove('hidden');
+  document.getElementById('dashboard-view').classList.add('hidden');
+  const errEl = document.getElementById('login-error');
+  errEl.textContent = err || '';
+  errEl.classList.toggle('hidden', !err);
+}
+
+function showDashboard(data) {
+  document.getElementById('login-view').classList.add('hidden');
+  document.getElementById('dashboard-view').classList.remove('hidden');
+  document.getElementById('stat-tenants').textContent = data.tenants ?? '—';
+  document.getElementById('stat-audits').textContent = data.audits ?? '—';
+  document.getElementById('stat-signals').textContent = data.signals ?? '—';
+  document.getElementById('stat-contacts').textContent = data.contact_submissions ?? '—';
+
+  const tbody = document.getElementById('contacts-tbody');
+  const list = data.contact_submissions_list || [];
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">No demo requests yet</td></tr>';
+  } else {
+    tbody.innerHTML = list.map(c => `
+      <tr>
+        <td>${(c.submitted_at || '').slice(0, 19).replace('T', ' ')}</td>
+        <td>${escapeHtml(c.name || '')}</td>
+        <td>${escapeHtml(c.email || '')}</td>
+        <td>${escapeHtml(c.company || '')}</td>
+        <td>${escapeHtml(c.role || '')}</td>
+        <td>${escapeHtml(c.deal_stage || '')}</td>
+        <td>${escapeHtml((c.message || '').slice(0, 80))}${(c.message || '').length > 80 ? '…' : ''}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+function escapeHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const secret = document.getElementById('admin-secret').value.trim();
+  if (!secret) {
+    document.getElementById('login-error').textContent = 'Enter admin secret';
+    document.getElementById('login-error').classList.remove('hidden');
+    return;
+  }
+  try {
+    const data = await fetchTraction(secret);
+    setStoredSecret(secret);
+    showDashboard(data);
+  } catch (e) {
+    document.getElementById('login-error').textContent = e.message || 'Login failed';
+    document.getElementById('login-error').classList.remove('hidden');
+  }
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  clearStoredSecret();
+  showLogin();
+});
+
+document.getElementById('admin-secret').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('login-btn').click();
+});
+
+(async () => {
+  const secret = getStoredSecret();
+  if (secret) {
+    try {
+      const data = await fetchTraction(secret);
+      showDashboard(data);
+    } catch {
+      clearStoredSecret();
+      showLogin('Session expired. Please login again.');
+    }
+  }
+})();
+</script>
+</body>
+</html>

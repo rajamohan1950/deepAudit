@@ -150,6 +150,14 @@ async def sample_report_page():
     return {"message": "Sample Report"}
 
 
+@app.get("/admin", include_in_schema=False)
+async def admin_page():
+    page = STATIC_DIR / "admin.html"
+    if page.exists():
+        return FileResponse(str(page))
+    return {"message": "Admin dashboard", "docs": "/docs"}
+
+
 @app.get("/pe-report", include_in_schema=False)
 async def pe_report_page():
     page = STATIC_DIR / "pe-report.html"

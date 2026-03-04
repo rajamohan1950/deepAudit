@@ -124,6 +124,92 @@ class LLMClient:
 
         raise RuntimeError(f"LLM call failed after {max_retries} retries")
 
+    async def chat(
+        self,
+        system_prompt: str,
+        messages: list[dict],
+        max_tokens: int = 4096,
+        temperature: float = 0.7,
+    ) -> LLMResponse:
+        """Multi-turn chat. messages: [{"role":"user"|"assistant","content":"..."}]"""
+        start = time.monotonic()
+        for attempt in range(settings.llm_max_retries + 1):
+            try:
+                if self.provider == "openai":
+                    resp = await self._chat_openai(
+                        system_prompt, messages, max_tokens, temperature
+                    )
+                elif self.provider == "anthropic":
+                    resp = await self._chat_anthropic(
+                        system_prompt, messages, max_tokens, temperature
+                    )
+                else:
+                    raise ValueError(f"Unknown provider: {self.provider}")
+                resp.latency_ms = int((time.monotonic() - start) * 1000)
+                resp.cost_usd = self._calculate_cost(
+                    resp.input_tokens, resp.output_tokens
+                )
+                return resp
+            except Exception as e:
+                if attempt >= settings.llm_max_retries:
+                    logger.error(f"Chat failed after retries: {e}")
+                    raise
+                import asyncio
+                await asyncio.sleep(2 ** attempt)
+        raise RuntimeError("Chat failed")
+
+    async def _chat_openai(
+        self,
+        system_prompt: str,
+        messages: list[dict],
+        max_tokens: int,
+        temperature: float,
+    ) -> LLMResponse:
+        api_messages = [{"role": "system", "content": system_prompt}]
+        for m in messages:
+            api_messages.append({"role": m["role"], "content": m["content"]})
+        resp = await self.openai_client.chat.completions.create(
+            model=self.model,
+            messages=api_messages,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
+        choice = resp.choices[0]
+        return LLMResponse(
+            content=choice.message.content or "",
+            input_tokens=resp.usage.prompt_tokens if resp.usage else 0,
+            output_tokens=resp.usage.completion_tokens if resp.usage else 0,
+            total_tokens=resp.usage.total_tokens if resp.usage else 0,
+            model=self.model,
+        )
+
+    async def _chat_anthropic(
+        self,
+        system_prompt: str,
+        messages: list[dict],
+        max_tokens: int,
+        temperature: float,
+    ) -> LLMResponse:
+        api_messages = [{"role": m["role"], "content": m["content"]} for m in messages]
+        resp = await self.anthropic_client.messages.create(
+            model=self.model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            system=system_prompt,
+            messages=api_messages,
+        )
+        content = ""
+        for block in resp.content:
+            if hasattr(block, "text"):
+                content += block.text
+        return LLMResponse(
+            content=content,
+            input_tokens=resp.usage.input_tokens,
+            output_tokens=resp.usage.output_tokens,
+            total_tokens=resp.usage.input_tokens + resp.usage.output_tokens,
+            model=self.model,
+        )
+
     async def _call_openai(
         self,
         system_prompt: str,
