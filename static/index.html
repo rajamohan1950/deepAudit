@@ -8,21 +8,22 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy: #0c1222;
-  --navy-90: #131b2e;
-  --navy-80: #1a253a;
-  --slate: #2a3650;
+  --black: #0a0a0f;
+  --black-90: #0d0d14;
+  --black-80: #111118;
+  --black-70: #18181f;
+  --slate: #2a2a35;
   --steel: #64748b;
   --mist: #94a3b8;
   --cloud: #cbd5e1;
   --ice: #e2e8f0;
-  --snow: #f1f5f9;
   --white: #ffffff;
-  --emerald: #10b981;
-  --emerald-glow: #059669;
-  --emerald-soft: rgba(16, 185, 129, 0.08);
-  --emerald-border: rgba(16, 185, 129, 0.2);
-  --gold: #f59e0b;
+  --gold: #c9952c;
+  --gold-light: #d4a853;
+  --gold-dark: #a37a1f;
+  --gold-soft: rgba(201, 149, 44, 0.08);
+  --gold-border: rgba(201, 149, 44, 0.25);
+  --gold-glow: rgba(201, 149, 44, 0.2);
   --red-soft: #ef4444;
   --font-display: 'Instrument Serif', Georgia, serif;
   --font-body: 'DM Sans', -apple-system, sans-serif;
@@ -32,13 +33,14 @@
 html { scroll-behavior: smooth; font-size: 16px; }
 body {
   font-family: var(--font-body);
-  background: var(--navy);
+  background: var(--black);
   color: var(--cloud);
   line-height: 1.65;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+.container-narrow { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
 body::before {
   content: '';
@@ -56,7 +58,7 @@ nav {
   border-bottom: 1px solid rgba(100, 116, 139, 0.1);
   transition: all 0.3s;
 }
-nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
+nav.scrolled { padding: 0.6rem 0; background: rgba(10, 10, 15, 0.98); }
 .nav-inner {
   display: flex; align-items: center; justify-content: space-between;
   max-width: 1200px; margin: 0 auto; padding: 0 2rem;
@@ -67,12 +69,12 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 }
 .nav-logo-mark {
   width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--emerald), var(--emerald-glow));
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem;
   color: var(--white);
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 20px var(--gold-glow);
 }
 .nav-logo-text {
   font-family: var(--font-body); font-weight: 700; font-size: 1.15rem;
@@ -86,16 +88,16 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 }
 .nav-links a:hover { color: var(--white); }
 .nav-cta {
-  background: var(--emerald) !important;
+  background: var(--gold) !important;
   color: var(--white) !important;
   padding: 0.5rem 1.25rem !important;
   border-radius: 6px;
   font-weight: 600 !important;
   transition: all 0.25s !important;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 0 20px var(--gold-glow);
   text-decoration: none;
 }
-.nav-cta:hover { background: var(--emerald-glow) !important; transform: translateY(-1px); box-shadow: 0 4px 24px rgba(16, 185, 129, 0.3); }
+.nav-cta:hover { background: var(--gold-light) !important; transform: translateY(-1px); box-shadow: 0 4px 24px rgba(201, 149, 44, 0.35); }
 .hero {
   min-height: 100vh;
   display: flex; align-items: center;
@@ -106,9 +108,9 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 .hero-bg {
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(16, 185, 129, 0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 50%),
-    linear-gradient(180deg, var(--navy) 0%, var(--navy-90) 100%);
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 149, 44, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(201, 149, 44, 0.04) 0%, transparent 50%),
+    linear-gradient(180deg, var(--black) 0%, var(--black-90) 100%);
 }
 .hero-grid {
   position: absolute; inset: 0;
@@ -122,17 +124,17 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 .hero-content { max-width: 800px; }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  background: var(--emerald-soft);
-  border: 1px solid var(--emerald-border);
+  background: var(--gold-soft);
+  border: 1px solid var(--gold-border);
   border-radius: 100px; padding: 0.4rem 1rem;
-  font-size: 0.8rem; font-weight: 600; color: var(--emerald);
+  font-size: 0.8rem; font-weight: 600; color: var(--gold);
   margin-bottom: 2rem;
   animation: fadeUp 0.8s ease both;
 }
 .hero-badge .pulse {
   width: 7px; height: 7px; border-radius: 50%;
-  background: var(--emerald);
-  box-shadow: 0 0 8px var(--emerald);
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
@@ -150,7 +152,7 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 }
 .hero h1 em {
   font-style: italic;
-  color: var(--emerald);
+  color: var(--gold);
   position: relative;
 }
 .hero-sub {
@@ -168,16 +170,16 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 }
 .btn-primary {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  background: var(--emerald);
+  background: var(--gold);
   color: var(--white);
   font-family: var(--font-body); font-weight: 600; font-size: 1rem;
   padding: 0.9rem 2rem;
   border: none; border-radius: 8px; cursor: pointer;
   text-decoration: none;
   transition: all 0.25s;
-  box-shadow: 0 4px 24px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 24px var(--gold-glow);
 }
-.btn-primary:hover { background: var(--emerald-glow); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(16, 185, 129, 0.35); }
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201, 149, 44, 0.35); }
 .btn-secondary {
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: transparent;
@@ -195,7 +197,7 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 .metric-value {
   font-family: var(--font-mono);
   font-size: 2.2rem; font-weight: 700;
-  color: var(--emerald);
+  color: var(--gold);
   line-height: 1;
   margin-bottom: 0.3rem;
 }
@@ -209,13 +211,16 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   content: '';
   position: absolute; left: -1.5rem; top: 10%;
   width: 1px; height: 80%;
-  background: var(--slate);
+  background: rgba(201, 149, 44, 0.2);
+}
+@media (max-width: 768px) {
+  .metric-item + .metric-item::before { display: none; }
 }
 .trust-bar {
   border-top: 1px solid rgba(100, 116, 139, 0.1);
   border-bottom: 1px solid rgba(100, 116, 139, 0.1);
   padding: 2.5rem 0;
-  background: rgba(12, 18, 34, 0.5);
+  background: rgba(10, 10, 15, 0.5);
 }
 .trust-inner {
   display: flex; align-items: center; justify-content: center;
@@ -231,11 +236,11 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   display: flex; align-items: center; justify-content: center;
   font-size: 0.65rem;
 }
-.trust-icon.green { background: var(--emerald-soft); color: var(--emerald); border: 1px solid var(--emerald-border); }
+.trust-icon.green { background: var(--gold-soft); color: var(--gold); border: 1px solid var(--gold-border); }
 .section-label {
   font-family: var(--font-mono);
   font-size: 0.75rem; font-weight: 500;
-  color: var(--emerald);
+  color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin-bottom: 1rem;
@@ -253,12 +258,17 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   max-width: 640px; line-height: 1.7;
   margin-bottom: 3rem;
 }
-.problem { padding: 6rem 0; background: var(--navy-90); position: relative; }
+.section-centered .section-label,
+.section-centered .section-title,
+.section-centered .section-desc { text-align: center; }
+.section-centered .section-desc { margin-left: auto; margin-right: auto; }
+.problem { padding: 6rem 0; background: var(--black-90); position: relative; }
 .problem::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--slate), transparent);
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.3;
 }
 .problem-grid {
   display: grid;
@@ -266,16 +276,17 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   gap: 1.5rem;
 }
 .problem-card {
-  background: rgba(26, 37, 58, 0.6);
-  border: 1px solid rgba(100, 116, 139, 0.1);
+  background: rgba(17, 17, 24, 0.6);
+  border: 1px solid rgba(201, 149, 44, 0.1);
   border-radius: 12px;
   padding: 2rem;
   transition: all 0.3s;
 }
 .problem-card:hover {
-  border-color: rgba(16, 185, 129, 0.2);
-  background: rgba(26, 37, 58, 0.8);
+  border-color: var(--gold-border);
+  background: rgba(17, 17, 24, 0.9);
   transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 .problem-stat {
   font-family: var(--font-mono);
@@ -302,16 +313,16 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 .step {
   position: relative;
   padding: 2rem;
-  background: rgba(26, 37, 58, 0.4);
-  border: 1px solid rgba(100, 116, 139, 0.08);
+  background: rgba(17, 17, 24, 0.5);
+  border: 1px solid rgba(201, 149, 44, 0.08);
   border-radius: 12px;
   transition: all 0.3s;
 }
-.step:hover { border-color: var(--emerald-border); }
+.step:hover { border-color: var(--gold-border); }
 .step-num {
   font-family: var(--font-mono);
   font-size: 0.7rem; font-weight: 600;
-  color: var(--emerald);
+  color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin-bottom: 1rem;
@@ -320,7 +331,7 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 .step-num::after {
   content: '';
   flex: 1; height: 1px;
-  background: var(--emerald-border);
+  background: var(--gold-border);
 }
 .step h3 {
   font-family: var(--font-display);
@@ -332,7 +343,7 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   font-size: 0.9rem; color: var(--mist);
   line-height: 1.65;
 }
-.value { padding: 6rem 0; background: var(--navy-90); }
+.value { padding: 6rem 0; background: var(--black-90); }
 .value-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -340,8 +351,8 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   margin-top: 3rem;
 }
 .value-card {
-  background: rgba(19, 27, 46, 0.8);
-  border: 1px solid rgba(100, 116, 139, 0.08);
+  background: rgba(17, 17, 24, 0.7);
+  border: 1px solid rgba(201, 149, 44, 0.1);
   border-radius: 12px;
   padding: 2rem;
   transition: all 0.3s;
@@ -352,16 +363,16 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   content: '';
   position: absolute; top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--emerald), transparent);
+  background: linear-gradient(90deg, var(--gold), transparent);
   opacity: 0;
   transition: opacity 0.3s;
 }
 .value-card:hover::before { opacity: 1; }
-.value-card:hover { border-color: rgba(16, 185, 129, 0.15); transform: translateY(-2px); }
+.value-card:hover { border-color: var(--gold-border); transform: translateY(-2px); }
 .value-icon {
   width: 40px; height: 40px;
-  background: var(--emerald-soft);
-  border: 1px solid var(--emerald-border);
+  background: var(--gold-soft);
+  border: 1px solid var(--gold-border);
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.1rem;
@@ -375,7 +386,7 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 .value-card .impact {
   font-family: var(--font-mono);
   font-size: 0.8rem; font-weight: 500;
-  color: var(--emerald);
+  color: var(--gold);
   margin-bottom: 0.8rem;
   display: block;
 }
@@ -400,9 +411,9 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   font-family: var(--font-body);
 }
 .usecase-tab.active, .usecase-tab:hover {
-  background: var(--emerald-soft);
-  border-color: var(--emerald-border);
-  color: var(--emerald);
+  background: var(--gold-soft);
+  border-color: var(--gold-border);
+  color: var(--gold);
 }
 .usecase-content {
   display: grid;
@@ -429,12 +440,13 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 }
 .usecase-benefits li::before {
   content: '→';
-  color: var(--emerald); font-weight: 600;
+  color: var(--gold); font-weight: 600;
   flex-shrink: 0;
 }
+.usecase-content { align-items: stretch; }
 .usecase-visual {
-  background: rgba(26, 37, 58, 0.5);
-  border: 1px solid rgba(100, 116, 139, 0.1);
+  background: rgba(17, 17, 24, 0.6);
+  border: 1px solid rgba(201, 149, 44, 0.15);
   border-radius: 12px;
   padding: 2rem;
   font-family: var(--font-mono);
@@ -442,10 +454,10 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   color: var(--mist);
   line-height: 1.8;
 }
-.usecase-visual .highlight { color: var(--emerald); font-weight: 600; }
+.usecase-visual .highlight { color: var(--gold); font-weight: 600; }
 .usecase-visual .warn { color: var(--gold); }
 .usecase-visual .critical { color: var(--red-soft); font-weight: 600; }
-.categories { padding: 6rem 0; background: var(--navy-90); }
+.categories { padding: 6rem 0; background: var(--black-90); }
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -454,8 +466,8 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 }
 .cat-pill {
   padding: 0.7rem 1rem;
-  background: rgba(26, 37, 58, 0.6);
-  border: 1px solid rgba(100, 116, 139, 0.08);
+  background: rgba(17, 17, 24, 0.6);
+  border: 1px solid rgba(201, 149, 44, 0.1);
   border-radius: 8px;
   font-size: 0.78rem; font-weight: 500;
   color: var(--cloud);
@@ -463,9 +475,10 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   transition: all 0.2s;
 }
 .cat-pill:hover {
-  border-color: var(--emerald-border);
-  background: var(--emerald-soft);
-  color: var(--emerald);
+  border-color: var(--gold-border);
+  background: var(--gold-soft);
+  color: var(--gold);
+  transform: translateY(-1px);
 }
 .api-section { padding: 6rem 0; }
 .api-grid {
@@ -482,8 +495,8 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 }
 .api-text p { font-size: 0.95rem; color: var(--mist); line-height: 1.7; margin-bottom: 1.5rem; }
 .code-block {
-  background: rgba(12, 18, 34, 0.9);
-  border: 1px solid rgba(100, 116, 139, 0.15);
+  background: rgba(10, 10, 15, 0.95);
+  border: 1px solid rgba(201, 149, 44, 0.2);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -495,7 +508,7 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 .code-dot { width: 10px; height: 10px; border-radius: 50%; }
 .code-dot.r { background: #ef4444; }
 .code-dot.y { background: #f59e0b; }
-.code-dot.g { background: #10b981; }
+.code-dot.g { background: var(--gold); }
 .code-body {
   padding: 1.2rem;
   font-family: var(--font-mono);
@@ -505,9 +518,9 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   overflow-x: auto;
 }
 .code-body .comment { color: var(--steel); }
-.code-body .str { color: var(--emerald); }
+.code-body .str { color: var(--gold); }
 .code-body .key { color: #93c5fd; }
-.pricing { padding: 6rem 0; background: var(--navy-90); }
+.pricing { padding: 6rem 0; background: var(--black-90); }
 .pricing-anchor {
   font-family: var(--font-display);
   font-size: 1.3rem;
@@ -517,7 +530,7 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   margin-bottom: 3rem;
 }
 .pricing-anchor strong {
-  color: var(--emerald); font-weight: 600;
+  color: var(--gold); font-weight: 600;
 }
 .pricing-grid {
   display: grid;
@@ -525,22 +538,22 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   gap: 1rem;
 }
 .price-card {
-  background: rgba(19, 27, 46, 0.6);
-  border: 1px solid rgba(100, 116, 139, 0.1);
+  background: rgba(17, 17, 24, 0.7);
+  border: 1px solid rgba(201, 149, 44, 0.1);
   border-radius: 12px;
   padding: 2rem 1.5rem;
   transition: all 0.3s;
   position: relative;
 }
-.price-card:hover { border-color: rgba(100, 116, 139, 0.25); transform: translateY(-3px); }
+.price-card:hover { border-color: var(--gold-border); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.3); }
 .price-card.featured {
-  border-color: var(--emerald-border);
-  background: rgba(16, 185, 129, 0.04);
+  border-color: var(--gold-border);
+  background: var(--gold-soft);
 }
 .price-card.featured::before {
   content: 'Most Popular';
   position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-  background: var(--emerald);
+  background: var(--gold);
   color: var(--white);
   font-size: 0.7rem; font-weight: 700;
   padding: 0.25rem 0.75rem;
@@ -572,7 +585,7 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 }
 .price-features li::before {
   content: '✓';
-  color: var(--emerald); font-weight: 600;
+  color: var(--gold); font-weight: 600;
   flex-shrink: 0;
 }
 .price-btn {
@@ -594,11 +607,11 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 }
 .price-btn.outline:hover { border-color: var(--mist); color: var(--white); }
 .price-btn.filled {
-  background: var(--emerald);
-  border: 1px solid var(--emerald);
+  background: var(--gold);
+  border: 1px solid var(--gold);
   color: var(--white);
 }
-.price-btn.filled:hover { background: var(--emerald-glow); }
+.price-btn.filled:hover { background: var(--gold-light); }
 .emergency {
   margin: 2rem 0;
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(245, 158, 11, 0.06));
@@ -622,11 +635,13 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   margin-top: 3rem;
 }
 .test-card {
-  background: rgba(26, 37, 58, 0.4);
-  border: 1px solid rgba(100, 116, 139, 0.08);
+  background: rgba(17, 17, 24, 0.6);
+  border: 1px solid rgba(201, 149, 44, 0.1);
   border-radius: 12px;
   padding: 2rem;
+  transition: border-color 0.3s;
 }
+.test-card:hover { border-color: var(--gold-border); }
 .test-stars {
   color: var(--gold);
   font-size: 0.85rem;
@@ -652,15 +667,16 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 .test-role { font-size: 0.78rem; color: var(--steel); }
 .audit-section {
   padding: 6rem 0;
-  background: var(--navy-90);
+  background: var(--black-90);
 }
 .audit-form-box {
   max-width: 480px;
   margin: 2rem auto 0;
-  background: rgba(19, 27, 46, 0.8);
-  border: 1px solid var(--emerald-border);
+  background: rgba(17, 17, 24, 0.8);
+  border: 1px solid var(--gold-border);
   border-radius: 12px;
   padding: 2rem;
+  box-shadow: 0 0 40px rgba(201, 149, 44, 0.05);
 }
 .audit-form-box input {
   width: 100%;
@@ -676,12 +692,12 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 .audit-form-box input::placeholder { color: var(--steel); }
 .audit-form-box input:focus {
   outline: none;
-  border-color: var(--emerald);
+  border-color: var(--gold);
 }
 .audit-form-box button {
   width: 100%;
   padding: 0.9rem;
-  background: var(--emerald);
+  background: var(--gold);
   color: var(--white);
   border: none;
   border-radius: 8px;
@@ -690,7 +706,7 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
   cursor: pointer;
   transition: all 0.2s;
 }
-.audit-form-box button:hover { background: var(--emerald-glow); }
+.audit-form-box button:hover { background: var(--gold-light); }
 .audit-form-box button:disabled { opacity: 0.7; cursor: not-allowed; }
 .audit-limits {
   display: flex; flex-wrap: wrap; gap: 0.5rem;
@@ -716,7 +732,7 @@ nav.scrolled { padding: 0.6rem 0; background: rgba(12, 18, 34, 0.95); }
 }
 .final-cta {
   padding: 6rem 0;
-  background: var(--navy-90);
+  background: var(--black-90);
   text-align: center;
 }
 .final-cta .section-title { max-width: 600px; margin: 0 auto 1rem; }
@@ -855,7 +871,7 @@ footer {
   </div>
 </div>
 
-<section class="problem reveal" id="for-investors">
+<section class="problem reveal section-centered" id="for-investors">
   <div class="container">
     <div class="section-label">The Problem</div>
     <h2 class="section-title">Traditional Tech DD Is Costing You Deals</h2>
@@ -899,7 +915,7 @@ footer {
   </div>
 </section>
 
-<section class="how reveal" id="how-it-works">
+<section class="how reveal section-centered" id="how-it-works">
   <div class="container">
     <div class="section-label">How It Works</div>
     <h2 class="section-title">From Repository to Risk Report in 30 Minutes</h2>
@@ -927,7 +943,7 @@ footer {
   </div>
 </section>
 
-<section class="value reveal" id="platform">
+<section class="value reveal section-centered" id="platform">
   <div class="container">
     <div class="section-label">Protect Every Dollar</div>
     <h2 class="section-title">Six Ways DeepAudit Protects Deal Value</h2>
@@ -976,7 +992,7 @@ footer {
   </div>
 </section>
 
-<section class="usecases reveal" id="use-cases">
+<section class="usecases reveal section-centered" id="use-cases">
   <div class="container">
     <div class="section-label">Built for How PE Firms Work</div>
     <h2 class="section-title">From Screening to Exit, We Protect Deal Value at Every Stage</h2>
@@ -1120,7 +1136,7 @@ footer {
   </div>
 </section>
 
-<section class="categories reveal" id="categories">
+<section class="categories reveal section-centered" id="categories">
   <div class="container">
     <div class="section-label">Comprehensive Coverage</div>
     <h2 class="section-title">40 Audit Categories. Every Risk Surface Covered.</h2>
@@ -1208,7 +1224,7 @@ curl -X POST /api/v1/quick-audit \
   </div>
 </section>
 
-<section class="pricing reveal" id="pricing">
+<section class="pricing reveal section-centered" id="pricing">
   <div class="container">
     <div class="section-label">Transparent Pricing</div>
     <h2 class="section-title">The Average Tech DD Costs $75,000.<br>We Deliver Deeper Coverage for $499/month.</h2>
@@ -1293,7 +1309,7 @@ curl -X POST /api/v1/quick-audit \
   </div>
 </section>
 
-<section class="testimonials reveal">
+<section class="testimonials reveal section-centered">
   <div class="container">
     <div class="section-label">Trusted by Deal Makers</div>
     <h2 class="section-title">PE Firms That Protect Deal Value with DeepAudit</h2>
@@ -1336,7 +1352,7 @@ curl -X POST /api/v1/quick-audit \
 </section>
 
 <!-- QUICK ASSESSMENT -->
-<section class="audit-section reveal" id="audit">
+<section class="audit-section reveal section-centered" id="audit">
   <div class="container">
     <div class="section-label">Try It Now</div>
     <h2 class="section-title">Quick Technical Assessment</h2>
@@ -1359,7 +1375,7 @@ curl -X POST /api/v1/quick-audit \
       <div id="audit-error" class="audit-error"></div>
     </div>
     <p class="section-desc" style="margin-top:1.5rem; text-align:center; font-size:0.85rem;">
-      Public repos only. For private repos or full 40-category assessments, <a href="#contact" style="color:var(--emerald);">contact us</a>.
+      Public repos only. For private repos or full 40-category assessments, <a href="#contact" style="color:var(--gold);">contact us</a>.
     </p>
   </div>
 </section>
