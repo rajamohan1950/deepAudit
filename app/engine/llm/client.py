@@ -3,14 +3,10 @@ import logging
 import time
 from dataclasses import dataclass, field
 
-import httpx
 import anthropic
 import openai
 
 from app.config import settings
-
-# Per-request timeout: 90s total, 10s to connect
-_HTTP_TIMEOUT = httpx.Timeout(90.0, connect=10.0)
 
 logger = logging.getLogger(__name__)
 
@@ -72,12 +68,12 @@ class LLMClient:
         if self.provider == "openai":
             self.openai_client = openai.AsyncOpenAI(
                 api_key=settings.openai_api_key,
-                timeout=_HTTP_TIMEOUT,
+                timeout=90.0,
             )
         elif self.provider == "anthropic":
             self.anthropic_client = anthropic.AsyncAnthropic(
                 api_key=settings.anthropic_api_key,
-                timeout=_HTTP_TIMEOUT,
+                timeout=90.0,
             )
 
     async def generate(

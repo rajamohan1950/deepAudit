@@ -171,7 +171,7 @@ async def admin_test_llm():
 async def admin_audit_debug(audit_id: str):
     """Debug info for a specific audit."""
     from app.database import async_session_factory
-    from sqlalchemy import select, text
+    from sqlalchemy import select, func
     from app.models.audit import Audit, AuditPhase
     from app.models.signal import Signal
     import uuid
@@ -186,10 +186,6 @@ async def admin_audit_debug(audit_id: str):
             select(AuditPhase).where(AuditPhase.audit_id == audit.id)
         )
         phase_list = phases.scalars().all()
-
-        sig_count = await db.execute(
-            select(text("count(*)")).select_from(Signal.__table__).where(Signal.audit_id == audit.id)
-        )
 
         return {
             "audit_id": str(audit.id),
