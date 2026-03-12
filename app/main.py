@@ -126,7 +126,8 @@ async def admin_set_config(request: Request):
     if "default_llm_model" in body:
         settings.default_llm_model = body["default_llm_model"]
         updated["default_llm_model"] = body["default_llm_model"]
-    return {"updated": updated, "current_provider": settings.default_llm_provider, "current_model": settings.default_llm_model}
+    has_key = bool(settings.openai_api_key and len(settings.openai_api_key) > 10)
+    return {"updated": updated, "current_provider": settings.default_llm_provider, "current_model": settings.default_llm_model, "openai_key_set": has_key, "key_prefix": settings.openai_api_key[:12] + "..." if has_key else "EMPTY"}
 
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
