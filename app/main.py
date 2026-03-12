@@ -141,8 +141,8 @@ async def admin_test_llm():
         from app.engine.llm.client import LLMClient
         client = LLMClient()
         resp = await client.generate(
-            system_prompt="You are a test bot.",
-            user_prompt='Respond with exactly: {"status":"ok"}',
+            system_prompt="You are a test bot. Always respond in JSON format.",
+            user_prompt='Respond with a JSON object: {"status":"ok"}',
             max_tokens=20,
             temperature=0,
             json_mode=True,
