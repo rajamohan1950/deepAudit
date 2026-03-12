@@ -133,6 +133,40 @@ async def admin_set_config(request: Request):
     has_key = bool(settings.openai_api_key and len(settings.openai_api_key) > 10)
     return {"updated": updated, "current_provider": settings.default_llm_provider, "current_model": settings.default_llm_model, "openai_key_set": has_key, "key_prefix": settings.openai_api_key[:12] + "..." if has_key else "EMPTY"}
 
+
+@app.get("/_admin/test-llm", include_in_schema=False)
+async def admin_test_llm():
+    """Test LLM connectivity."""
+    try:
+        from app.engine.llm.client import LLMClient
+        client = LLMClient()
+        resp = await client.generate(
+            system_prompt="You are a test bot.",
+            user_prompt='Respond with exactly: {"status":"ok"}',
+            max_tokens=20,
+            temperature=0,
+            json_mode=True,
+        )
+        return {
+            "status": "ok",
+            "provider": client.provider,
+            "model": client.model,
+            "response": resp.content[:100],
+            "tokens": resp.total_tokens,
+            "cost": resp.cost_usd,
+            "key_set": bool(settings.openai_api_key),
+        }
+    except Exception as e:
+        import traceback
+        return JSONResponse(status_code=500, content={
+            "status": "error",
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "key_set": bool(settings.openai_api_key),
+            "key_prefix": settings.openai_api_key[:15] + "..." if settings.openai_api_key else "EMPTY",
+            "traceback": traceback.format_exc()[-1000:],
+        })
+
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
