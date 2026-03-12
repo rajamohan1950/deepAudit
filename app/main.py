@@ -2,9 +2,9 @@ import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.router import api_router
@@ -75,6 +75,25 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.exception(f"Unhandled error on {request.method} {request.url.path}: {exc}")
+    # Map known errors to human-readable messages
+    msg = str(exc)
+    if "UndefinedColumnError" in type(exc).__name__ or "UndefinedColumn" in msg:
+        detail = "Database schema is out of date. The service is updating — please retry in 1 minute."
+    elif "could not connect" in msg or "Connection refused" in msg:
+        detail = "Database is temporarily unavailable. Please retry in a moment."
+    elif "clone" in msg.lower() and ("fatal:" in msg or "failed" in msg.lower()):
+        detail = "Failed to clone the repository. Please check the URL is correct and publicly accessible."
+    else:
+        detail = "An internal error occurred. Our team has been notified."
+    return JSONResponse(
+        status_code=500,
+        content={"detail": detail, "error_type": type(exc).__name__},
+    )
+
 
 app.include_router(api_router, prefix="/api/v1")
 

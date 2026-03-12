@@ -349,7 +349,15 @@ async function loadReport() {
     clearTimeout(timeout);
     if (res.status === 401) { showError("Authentication failed. Check your API key."); return; }
     if (res.status === 404) { document.getElementById("loading-msg").textContent = "Assessment queued. Checking again…"; setTimeout(loadReport, POLL_INTERVAL_MS); return; }
-    if (!res.ok) { showError(`Server error (${res.status}). Please try again later.`); return; }
+    if (!res.ok) {
+      try {
+        const errBody = await res.json();
+        showError(errBody.detail || errBody.error_message || `Server error (${res.status}). Please try again later.`);
+      } catch {
+        showError(`Server error (${res.status}). Please try again later.`);
+      }
+      return;
+    }
 
     reportData = await res.json();
     const status = reportData.audit_status || "unknown";

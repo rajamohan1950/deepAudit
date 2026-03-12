@@ -89,7 +89,7 @@ class AuditOrchestrator:
             except Exception as e:
                 logger.exception(f"Audit {audit_id} failed: {e}")
                 audit.status = "failed"
-                audit.error_message = str(e)[:2000]
+                audit.error_message = _humanize_error(e)
                 await db.commit()
 
             finally:
@@ -429,3 +429,22 @@ class AuditOrchestrator:
             phase.tokens_used = tokens_used
             phase.cost_usd = cost_usd
         await db.commit()
+
+
+def _humanize_error(e: Exception) -> str:
+    """Convert raw exceptions to user-friendly error messages."""
+    msg = str(e)
+    if "clone" in msg.lower() and ("fatal:" in msg or "exit code(128)" in msg):
+        if "No such device or address" in msg or "could not read Username" in msg:
+            return "Failed to clone the repository. The URL may be incorrect or the repo requires authentication."
+        if "not found" in msg.lower() or "does not exist" in msg.lower():
+            return "Repository not found. Please check the URL and try again."
+        return "Failed to clone the repository. Please verify the URL is correct and publicly accessible."
+    if "rate limit" in msg.lower() or "429" in msg:
+        return "AI service rate limit reached. Please try again in a few minutes."
+    if "timeout" in msg.lower() or "timed out" in msg.lower():
+        return "The analysis timed out. The repository may be too large for a quick scan. Try a full PE assessment."
+    if "connect" in msg.lower() and ("refused" in msg.lower() or "error" in msg.lower()):
+        return "Could not connect to a required service. Please try again in a moment."
+    # Fallback: truncate but keep it informative
+    return msg[:500]

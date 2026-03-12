@@ -85,6 +85,19 @@ async def get_full_pe_report(
     if not audit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Audit not found.")
 
+    # Return error info for failed audits instead of trying to generate reports
+    if audit.status == "failed":
+        error_msg = audit.error_message or "Assessment failed."
+        # Make clone errors user-friendly
+        if "clone" in error_msg.lower() and "fatal:" in error_msg:
+            error_msg = "Failed to clone the repository. Please check the URL is correct and the repo is publicly accessible."
+        return {
+            "audit_id": str(audit_id),
+            "audit_status": "failed",
+            "error_message": error_msg,
+            "deliverables": {},
+        }
+
     report = await _generator.generate_full_pe_report(audit_id, db)
     report["audit_status"] = audit.status
     if audit.error_message:
