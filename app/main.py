@@ -21,7 +21,11 @@ async def lifespan(app: FastAPI):
         level=getattr(logging, settings.log_level.upper()),
         format="%(asctime)s %(levelname)s %(name)s %(message)s",
     )
-    logger.info("DeepAudit API starting up")
+    # Ensure OpenAI key is available at startup
+    import os
+    if not settings.openai_api_key and os.environ.get("OPENAI_API_KEY"):
+        settings.openai_api_key = os.environ["OPENAI_API_KEY"]
+    logger.info(f"DeepAudit API starting up (LLM: {settings.default_llm_provider}/{settings.default_llm_model}, key_set={bool(settings.openai_api_key)})")
 
     from app.database import engine
     from app.models import audit, tenant, signal, report, artifact, category
