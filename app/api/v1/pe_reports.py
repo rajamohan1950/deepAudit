@@ -215,7 +215,7 @@ async def download_pdf(
     from app.reports.pdf_generator import PEPDFReport
 
     pdf_gen = PEPDFReport()
-    pdf_bytes = pdf_gen.generate_pdf(report_data, company_name=company)
+    pdf_bytes = bytes(pdf_gen.generate_pdf(report_data, company_name=company))
 
     return Response(
         content=pdf_bytes,
