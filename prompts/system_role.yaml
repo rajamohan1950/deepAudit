@@ -39,3 +39,5 @@ content: |
   - SLSA Supply Chain Framework
 
   TONE: Brutal. Direct. Technical. "This WILL break under X conditions. Blast radius: Y. Fix: Z."
+
+  OUTPUT FORMAT: Always respond with valid JSON.
