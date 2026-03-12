@@ -25,24 +25,18 @@ class ParsedSignal:
     references: list[str] | None = None
 
     def is_valid(self) -> tuple[bool, str]:
-        if not self.signal_text or len(self.signal_text) < 20:
+        if not self.signal_text or len(self.signal_text) < 10:
             return False, "Signal text too short or empty"
         if self.severity not in VALID_SEVERITIES:
             return False, f"Invalid severity: {self.severity}"
         if self.effort not in VALID_EFFORTS:
             return False, f"Invalid effort: {self.effort}"
-        if not self.evidence or len(self.evidence) < 5:
-            return False, "Missing or too short evidence"
-        if not self.failure_scenario or len(self.failure_scenario) < 10:
-            return False, "Missing or too short failure scenario"
-        if not self.remediation or len(self.remediation) < 10:
-            return False, "Missing or too short remediation"
-
-        vague_words = ["improve", "consider", "review", "look into", "maybe"]
-        remediation_lower = self.remediation.lower()
-        if any(w == remediation_lower.split()[0] for w in vague_words if remediation_lower):
-            return False, f"Vague remediation starting with '{remediation_lower.split()[0]}'"
-
+        if not self.evidence or len(self.evidence) < 3:
+            return False, "Missing evidence"
+        if not self.failure_scenario or len(self.failure_scenario) < 5:
+            return False, "Missing failure scenario"
+        if not self.remediation or len(self.remediation) < 5:
+            return False, "Missing remediation"
         if not (0 <= self.score <= 10):
             return False, f"Score out of range: {self.score}"
 

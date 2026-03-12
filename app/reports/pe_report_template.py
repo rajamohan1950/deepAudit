@@ -285,15 +285,21 @@ class PEReportGenerator:
             },
         }
 
-    def generate_risk_heatmap(self, signals: list[Signal]) -> dict:
+    def generate_risk_heatmap(
+        self, signals: list[Signal], evaluated_categories: list[int] | None = None,
+    ) -> dict:
+        evaluated_set = set(evaluated_categories) if evaluated_categories else None
+
         matrix: dict[str, dict] = {}
         for cat_id in range(1, 41):
+            evaluated = evaluated_set is None or cat_id in evaluated_set
             matrix[str(cat_id)] = {
                 "category_name": CATEGORY_NAMES.get(cat_id, f"Category {cat_id}"),
                 "signal_count": 0,
                 "max_severity": "none",
                 "risk_score": 0.0,
-                "color": "green",
+                "color": "tbd" if not evaluated else "green",
+                "evaluated": evaluated,
                 "severity_breakdown": {"P0": 0, "P1": 0, "P2": 0, "P3": 0},
             }
 
@@ -309,11 +315,15 @@ class PEReportGenerator:
             if severity_rank.get(s.severity, 0) > severity_rank.get(entry["max_severity"], 0):
                 entry["max_severity"] = s.severity
 
-        for entry in matrix.values():
+        for cat_key, entry in matrix.items():
+            if not entry["evaluated"]:
+                continue  # keep "tbd"
             bd = entry["severity_breakdown"]
             score = bd["P0"] * 25 + bd["P1"] * 10 + bd["P2"] * 3 + bd["P3"] * 1
             entry["risk_score"] = round(min(score, 100), 1)
-            if bd["P0"] > 0:
+            if entry["signal_count"] == 0:
+                entry["color"] = "red"  # evaluated but 0 signals = suspicious/red
+            elif bd["P0"] > 0:
                 entry["color"] = "red"
             elif bd["P1"] > 2:
                 entry["color"] = "orange"
@@ -337,10 +347,11 @@ class PEReportGenerator:
             "phases": phases,
             "matrix": matrix,
             "color_legend": {
-                "red": "Critical — P0 signals present, immediate remediation required",
+                "red": "Critical — P0 signals present or no data found (needs attention)",
                 "orange": "High — Multiple P1 signals, fix within first sprint",
                 "yellow": "Medium — P1 or clustered P2 signals, fix within one quarter",
                 "green": "Low — Minor or no issues detected",
+                "tbd": "Not Evaluated — category not included in this scan",
             },
         }
 
@@ -807,19 +818,26 @@ class PEReportGenerator:
         compliance_reqs = (audit.system_context or {}).get("compliance_requirements", [])
         frameworks = compliance_reqs if compliance_reqs else ["soc2", "gdpr", "hipaa"]
 
+        evaluated_cats = (audit.audit_config or {}).get("categories", None)
+        if evaluated_cats == "all":
+            evaluated_cats = None
+
         exec_summary = self.generate_executive_summary(str(audit_id), signals, audit_metadata)
-        risk_heatmap = self.generate_risk_heatmap(signals)
+        risk_heatmap = self.generate_risk_heatmap(signals, evaluated_categories=evaluated_cats)
         spof_map = self.generate_spof_map(signals)
         compliance_matrix = self.generate_compliance_gap_matrix(signals, frameworks)
         tech_debt = self.generate_tech_debt_ledger(signals)
         roadmap = self.generate_remediation_roadmap(signals)
         scalability = self.generate_scalability_assessment(signals)
 
+        repo_url = (audit.source_config or {}).get("repo_url", "")
+
         return {
             "report_version": self.VERSION,
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "audit_id": str(audit_id),
             "audit_status": audit.status,
+            "repo_url": repo_url,
             "audit_scope": {
                 "system_context": audit.system_context,
                 "total_signals": len(signals),

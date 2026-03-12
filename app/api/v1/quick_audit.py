@@ -106,12 +106,12 @@ async def quick_audit(
     }
     audit_config = {
         "categories": QUICK_CATEGORIES,
-        "max_signals_per_category": 10,
+        "max_signals_per_category": 25,
         "llm_provider": None,
         "llm_model": None,
         "severity_filter": None,
         "quick_mode": True,
-        "quick_timeout_seconds": 120,
+        "quick_timeout_seconds": 180,
         "max_loc": MAX_LOC_QUICK,
     }
 
@@ -151,6 +151,6 @@ async def quick_audit(
         limits={
             "max_loc": MAX_LOC_QUICK,
             "categories": len(QUICK_CATEGORIES),
-            "timeout_seconds": 120,
+            "timeout_seconds": 180,
         },
     )

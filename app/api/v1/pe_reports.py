@@ -189,6 +189,18 @@ async def download_pdf(
 ):
     """Download the full PE-grade report as a PDF."""
     audit, signals = await _load_audit_signals(db, audit_id, tenant.id)
+
+    if audit.status in ("pending", "running", "ingesting"):
+        raise HTTPException(
+            status_code=status.HTTP_202_ACCEPTED,
+            detail="Assessment still running. PDF will be available once complete.",
+        )
+    if audit.status == "failed":
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=audit.error_message or "Assessment failed.",
+        )
+
     audit_meta = _audit_metadata(audit)
 
     compliance_reqs = (audit.system_context or {}).get("compliance_requirements", [])
