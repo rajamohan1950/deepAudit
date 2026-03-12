@@ -32,6 +32,10 @@ async def run_audit_job(ctx: dict, audit_id: str) -> dict:
         return {"audit_id": audit_id, "status": "failed", "error": str(e)}
 
 
+# Keep strong references so tasks aren't garbage-collected
+_running_tasks: set[asyncio.Task] = set()
+
+
 async def enqueue_audit_job(audit_id: str) -> None:
     """Run audit in-process (no separate worker service needed)."""
 
@@ -43,7 +47,9 @@ async def enqueue_audit_job(audit_id: str) -> None:
         except Exception as e:
             logger.exception(f"In-process audit {aid} failed: {e}")
 
-    asyncio.create_task(_run(audit_id))
+    task = asyncio.create_task(_run(audit_id))
+    _running_tasks.add(task)
+    task.add_done_callback(_running_tasks.discard)
     logger.info(f"Scheduled audit {audit_id} in-process")
 
 
