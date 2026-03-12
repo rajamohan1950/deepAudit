@@ -167,6 +167,60 @@ async def admin_test_llm():
             "traceback": traceback.format_exc()[-1000:],
         })
 
+@app.get("/_admin/audit-debug/{audit_id}", include_in_schema=False)
+async def admin_audit_debug(audit_id: str):
+    """Debug info for a specific audit."""
+    from app.database import async_session_factory
+    from sqlalchemy import select, text
+    from app.models.audit import Audit, AuditPhase
+    from app.models.signal import Signal
+    import uuid
+
+    async with async_session_factory() as db:
+        result = await db.execute(select(Audit).where(Audit.id == uuid.UUID(audit_id)))
+        audit = result.scalar_one_or_none()
+        if not audit:
+            return {"error": "Audit not found"}
+
+        phases = await db.execute(
+            select(AuditPhase).where(AuditPhase.audit_id == audit.id)
+        )
+        phase_list = phases.scalars().all()
+
+        sig_count = await db.execute(
+            select(text("count(*)")).select_from(Signal.__table__).where(Signal.audit_id == audit.id)
+        )
+
+        return {
+            "audit_id": str(audit.id),
+            "status": audit.status,
+            "error_message": audit.error_message,
+            "total_signals": audit.total_signals,
+            "total_tokens": audit.total_tokens_used,
+            "total_cost": audit.total_cost_usd,
+            "started_at": str(audit.started_at) if audit.started_at else None,
+            "completed_at": str(audit.completed_at) if audit.completed_at else None,
+            "audit_config": audit.audit_config,
+            "phases": [
+                {
+                    "phase_number": p.phase_number,
+                    "status": p.status,
+                    "categories": p.categories_included,
+                    "signals_found": p.signals_found,
+                    "tokens_used": p.tokens_used,
+                    "error_message": p.error_message,
+                }
+                for p in phase_list
+            ],
+            "llm_config": {
+                "provider": settings.default_llm_provider,
+                "model": settings.default_llm_model,
+                "key_set": bool(settings.openai_api_key),
+                "key_prefix": settings.openai_api_key[:12] + "..." if settings.openai_api_key else "EMPTY",
+            },
+        }
+
+
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 

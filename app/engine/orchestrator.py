@@ -161,13 +161,20 @@ class AuditOrchestrator:
         # ========== LLM phases ==========
         llm_client = self._create_llm_client(audit.audit_config)
         system_prompt = self.prompt_builder.build_system_prompt()
+        logger.info(
+            f"LLM client: provider={llm_client.provider}, model={llm_client.model}, "
+            f"key_set={bool(getattr(llm_client, 'openai_client', None) or getattr(llm_client, 'anthropic_client', None))}"
+        )
 
         if quick_mode:
             llm_batches = self._build_quick_batches(audit)
+            # Use smaller context for quick mode — faster LLM calls
+            self.context_builder = ContextBuilder(token_budget=30_000)
         else:
             llm_batches = LLM_BATCHES
 
         phases = get_all_phases()
+        logger.info(f"LLM batches: {llm_batches} (quick={quick_mode})")
 
         for batch_num, phase_nums in llm_batches.items():
             batch_tasks = []
@@ -176,11 +183,13 @@ class AuditOrchestrator:
             for phase_num in phase_nums:
                 audit_phase = await self._get_phase(db, audit.id, phase_num)
                 if not audit_phase:
+                    logger.warning(f"Phase {phase_num} not found for audit {audit.id}")
                     continue
 
                 selected_cats = audit_phase.categories_included or []
                 selected_cats = self._filter_categories(selected_cats, audit.audit_config)
                 if not selected_cats:
+                    logger.warning(f"Phase {phase_num}: no categories after filtering")
                     continue
 
                 await self._update_phase(db, audit_phase, "running")
@@ -196,26 +205,35 @@ class AuditOrchestrator:
                     )
 
             if not batch_tasks:
+                logger.warning(f"Batch {batch_num}: no tasks to run")
                 continue
 
             audit.current_phase = phase_nums[-1]
             await db.commit()
+            logger.info(f"Batch {batch_num}: launching {len(batch_tasks)} LLM tasks for phases {phase_nums}")
 
-            results = await asyncio.gather(*batch_tasks)
-
-            phase_signal_map: dict[int, list] = {}
+            # Process results AS THEY COMPLETE — saves signals immediately
+            # so timeout doesn't discard already-finished work
+            phase_signal_count: dict[int, int] = {}
             phase_token_map: dict[int, int] = {}
             phase_cost_map: dict[int, float] = {}
+            completed_count = 0
 
-            for phase_num, cat_signals, cat_tokens, cat_cost in results:
+            for coro in asyncio.as_completed(batch_tasks):
+                try:
+                    phase_num, cat_signals, cat_tokens, cat_cost = await coro
+                    completed_count += 1
+                except Exception as e:
+                    logger.error(f"Unexpected error in as_completed: {e}")
+                    completed_count += 1
+                    continue
+
                 unique = self.deduplicator.deduplicate(cat_signals)
-                phase_signal_map.setdefault(phase_num, []).extend(unique)
+                phase_signal_count[phase_num] = phase_signal_count.get(phase_num, 0) + len(unique)
                 phase_token_map[phase_num] = phase_token_map.get(phase_num, 0) + cat_tokens
                 phase_cost_map[phase_num] = phase_cost_map.get(phase_num, 0.0) + cat_cost
 
-            for phase_num, audit_phase, _ in batch_phases:
-                p_signals = phase_signal_map.get(phase_num, [])
-                for sig_data in p_signals:
+                for sig_data in unique:
                     signal_counter += 1
                     db.add(Signal(
                         audit_id=audit.id,
@@ -234,22 +252,31 @@ class AuditOrchestrator:
                         phase_number=phase_num,
                     ))
 
+                # Commit after each category — survives timeout
+                audit.total_signals = signal_counter
+                audit.total_tokens_used += cat_tokens
+                audit.total_cost_usd += cat_cost
+                await db.commit()
+
+                logger.info(
+                    f"Category done ({completed_count}/{len(batch_tasks)}): "
+                    f"phase={phase_num}, signals={len(unique)}, "
+                    f"tokens={cat_tokens}, total_signals={signal_counter}"
+                )
+
+            # Update phase statuses
+            for phase_num, audit_phase, _ in batch_phases:
                 await self._update_phase(
                     db, audit_phase, "completed",
-                    signals_found=len(p_signals),
+                    signals_found=phase_signal_count.get(phase_num, 0),
                     tokens_used=phase_token_map.get(phase_num, 0),
                     cost_usd=phase_cost_map.get(phase_num, 0.0),
                 )
-                audit.total_tokens_used += phase_token_map.get(phase_num, 0)
-                audit.total_cost_usd += phase_cost_map.get(phase_num, 0.0)
 
-            audit.total_signals = signal_counter
             await db.commit()
-
-            total_batch_sigs = sum(len(v) for v in phase_signal_map.values())
             logger.info(
-                f"Batch {batch_num} (phases {phase_nums}): "
-                f"{total_batch_sigs} signals, total so far: {signal_counter}"
+                f"Batch {batch_num} done: {signal_counter} total signals, "
+                f"{sum(phase_token_map.values())} tokens"
             )
 
         # ========== REPORTS ==========
@@ -291,22 +318,40 @@ class AuditOrchestrator:
         category_id: int,
         phase_number: int,
     ) -> tuple[int, list, int, float]:
+        import time as _time
+        start = _time.monotonic()
+        logger.info(f"Cat {category_id} phase {phase_number}: STARTING LLM call")
         try:
             signals, tokens, cost = await self._run_category(
                 llm_client, system_prompt, system_context,
                 classified_files, git_analysis, category_id,
             )
+            elapsed = _time.monotonic() - start
+            logger.info(
+                f"Cat {category_id} phase {phase_number}: COMPLETED in {elapsed:.1f}s — "
+                f"{len(signals)} signals, {tokens} tokens, ${cost:.4f}"
+            )
             return phase_number, signals, tokens, cost
         except Exception as e:
-            logger.error(f"Category {category_id} phase {phase_number} failed: {e}")
+            import traceback
+            elapsed = _time.monotonic() - start
+            tb = traceback.format_exc()[-800:]
+            logger.error(
+                f"Cat {category_id} phase {phase_number}: FAILED after {elapsed:.1f}s — "
+                f"{type(e).__name__}: {e}\n{tb}"
+            )
+            self._last_category_error = f"Cat {category_id}: {type(e).__name__}: {str(e)[:200]}"
             return phase_number, [], 0, 0.0
 
     async def _ingest(
         self, db: AsyncSession, audit: Audit, source: dict
     ) -> tuple[list[dict], dict, RepoSnapshot]:
+        import time as _time
+        ingest_start = _time.monotonic()
         source_type = source.get("type", "upload")
 
         if source_type in ("github", "gitlab", "bitbucket"):
+            logger.info(f"Cloning repo: {source.get('repo_url')}")
             clone_result = await self.cloner.clone(
                 repo_url=source["repo_url"],
                 branch=source.get("branch"),
@@ -365,7 +410,8 @@ class AuditOrchestrator:
             db.add(artifact)
 
         await db.commit()
-        logger.info(f"Ingestion complete: {len(classified_files)} files classified")
+        elapsed = _time.monotonic() - ingest_start
+        logger.info(f"Ingestion complete in {elapsed:.1f}s: {len(classified_files)} files classified")
         return classified_files, git_analysis, snapshot
 
     async def _run_category(
