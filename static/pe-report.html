@@ -275,7 +275,12 @@ function showError(msg) {
   stopCountdown();
   document.getElementById("loading-state").classList.add("hidden");
   document.getElementById("error-state").classList.remove("hidden");
-  document.getElementById("error-message").textContent = msg;
+  const el = document.getElementById("error-message");
+  el.textContent = msg;
+  el.style.whiteSpace = "pre-wrap";
+  el.style.fontFamily = msg.includes("Traceback") ? "monospace" : "";
+  el.style.fontSize = msg.includes("Traceback") ? "0.7rem" : "";
+  el.style.textAlign = msg.includes("Traceback") ? "left" : "";
 }
 
 function esc(s) {
@@ -364,7 +369,11 @@ async function loadReport() {
     if (!res.ok) {
       try {
         const errBody = await res.json();
-        showError(errBody.detail || errBody.error_message || `Server error (${res.status}). Please try again later.`);
+        let errMsg = errBody.detail || errBody.error_message || `Server error (${res.status}).`;
+        if (errBody.error_type) errMsg += `\n\nType: ${errBody.error_type}`;
+        if (errBody.error_message) errMsg += `\nMessage: ${errBody.error_message}`;
+        if (errBody.traceback) errMsg += `\n\nTraceback:\n${errBody.traceback}`;
+        showError(errMsg);
       } catch {
         showError(`Server error (${res.status}). Please try again later.`);
       }

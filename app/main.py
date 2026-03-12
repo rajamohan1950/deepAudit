@@ -78,6 +78,9 @@ app.add_middleware(
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    tb = traceback.format_exception(type(exc), exc, exc.__traceback__)
+    tb_str = "".join(tb)
     logger.exception(f"Unhandled error on {request.method} {request.url.path}: {exc}")
     # Map known errors to human-readable messages
     msg = str(exc)
@@ -91,7 +94,12 @@ async def global_exception_handler(request: Request, exc: Exception):
         detail = "An internal error occurred. Our team has been notified."
     return JSONResponse(
         status_code=500,
-        content={"detail": detail, "error_type": type(exc).__name__},
+        content={
+            "detail": detail,
+            "error_type": type(exc).__name__,
+            "error_message": str(exc)[:500],
+            "traceback": tb_str[-2000:],
+        },
     )
 
 
