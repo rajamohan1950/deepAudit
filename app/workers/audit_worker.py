@@ -1,9 +1,11 @@
-"""ARQ background worker for async audit execution."""
+"""ARQ background worker for async audit execution.
 
+When running without a separate worker service (e.g. on Render free tier),
+enqueue_audit_job() fires the audit in-process via asyncio.create_task().
+"""
+
+import asyncio
 import logging
-
-from arq import create_pool
-from arq.connections import RedisSettings
 
 from app.config import settings
 from app.engine.orchestrator import AuditOrchestrator
@@ -31,15 +33,24 @@ async def run_audit_job(ctx: dict, audit_id: str) -> dict:
 
 
 async def enqueue_audit_job(audit_id: str) -> None:
-    redis_settings = _parse_redis_url(settings.redis_url)
-    pool = await create_pool(redis_settings)
-    await pool.enqueue_job("run_audit_job", audit_id)
-    logger.info(f"Enqueued audit job: {audit_id}")
-    await pool.close()
+    """Run audit in-process (no separate worker service needed)."""
+
+    async def _run(aid: str) -> None:
+        logger.info(f"Running audit {aid} in-process")
+        try:
+            orch = AuditOrchestrator()
+            await orch.run_audit(aid)
+        except Exception as e:
+            logger.exception(f"In-process audit {aid} failed: {e}")
+
+    asyncio.create_task(_run(audit_id))
+    logger.info(f"Scheduled audit {audit_id} in-process")
 
 
-def _parse_redis_url(url: str) -> RedisSettings:
+def _parse_redis_url(url: str):
+    """Parse Redis URL into ARQ RedisSettings (only when ARQ is available)."""
     from urllib.parse import urlparse
+    from arq.connections import RedisSettings
     parsed = urlparse(url)
     return RedisSettings(
         host=parsed.hostname or "localhost",
@@ -49,11 +60,14 @@ def _parse_redis_url(url: str) -> RedisSettings:
     )
 
 
-class WorkerSettings:
-    """ARQ worker configuration."""
-    on_startup = startup
-    functions = [run_audit_job]
-    redis_settings = _parse_redis_url(settings.redis_url)
-    max_jobs = 3
-    job_timeout = 7200
-    health_check_interval = 30
+try:
+    class WorkerSettings:
+        """ARQ worker configuration (only used when running a dedicated worker)."""
+        on_startup = startup
+        functions = [run_audit_job]
+        redis_settings = _parse_redis_url(settings.redis_url)
+        max_jobs = 3
+        job_timeout = 7200
+        health_check_interval = 30
+except Exception:
+    pass  # ARQ not installed or Redis not configured — in-process mode only
