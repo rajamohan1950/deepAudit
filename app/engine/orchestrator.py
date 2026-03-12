@@ -80,10 +80,23 @@ class AuditOrchestrator:
                     await self._run_audit_inner(db, audit, quick_mode, max_loc)
 
             except asyncio.TimeoutError:
-                logger.warning(f"Quick audit {audit_id} hit {timeout_secs}s timeout — finalizing with signals collected so far")
+                logger.warning(
+                    f"Quick audit {audit_id} hit {timeout_secs}s timeout with "
+                    f"{audit.total_signals} signals — generating reports from collected data"
+                )
+                # Generate reports from whatever signals we collected
+                try:
+                    audit.status = "generating_reports"
+                    await db.commit()
+                    from app.reports.generator import generate_all_reports
+                    await generate_all_reports(db, audit.id)
+                    logger.info(f"Reports generated after timeout for audit {audit_id}")
+                except Exception as report_err:
+                    logger.error(f"Report generation after timeout failed: {report_err}")
+
                 audit.status = "completed"
                 audit.completed_at = datetime.now(timezone.utc)
-                audit.error_message = f"Quick scan completed (hit {timeout_secs}s limit). For full 40-category analysis, request a PE assessment."
+                audit.error_message = f"Quick scan completed ({audit.total_signals} signals found, hit {timeout_secs}s limit). For full 40-category analysis, request a PE assessment."
                 await db.commit()
 
             except Exception as e:
