@@ -3,10 +3,41 @@
 from __future__ import annotations
 
 import io
+import unicodedata
 from datetime import datetime, timezone
 from typing import Any
 
 from fpdf import FPDF
+
+
+def _latin1_safe(text: str) -> str:
+    """Replace Unicode characters that Helvetica/Latin-1 can't encode."""
+    if not text:
+        return ""
+    replacements = {
+        "\u2014": "--",   # em dash
+        "\u2013": "-",    # en dash
+        "\u2018": "'",    # left single quote
+        "\u2019": "'",    # right single quote
+        "\u201c": '"',    # left double quote
+        "\u201d": '"',    # right double quote
+        "\u2026": "...",  # ellipsis
+        "\u2022": "*",    # bullet
+        "\u00a0": " ",    # non-breaking space
+        "\u200b": "",     # zero-width space
+        "\u2003": " ",    # em space
+        "\u2002": " ",    # en space
+        "\u2192": "->",   # right arrow
+        "\u2190": "<-",   # left arrow
+        "\u2265": ">=",   # ≥
+        "\u2264": "<=",   # ≤
+        "\u2260": "!=",   # ≠
+        "\u00b7": ".",    # middle dot
+    }
+    for uchar, replacement in replacements.items():
+        text = text.replace(uchar, replacement)
+    # Fallback: encode to latin-1, replacing anything still unknown
+    return text.encode("latin-1", errors="replace").decode("latin-1")
 
 _DARK = (30, 36, 50)
 _WHITE = (255, 255, 255)
@@ -48,6 +79,14 @@ class PEPDFReport(FPDF):
     _report_id: str = ""
     _generated_at: str = ""
 
+    def cell(self, w=None, h=None, text="", *args, **kwargs):
+        """Override to auto-sanitize Unicode text for Latin-1 Helvetica font."""
+        return super().cell(w, h, _latin1_safe(str(text)) if text else text, *args, **kwargs)
+
+    def multi_cell(self, w, h=None, text="", *args, **kwargs):
+        """Override to auto-sanitize Unicode text for Latin-1 Helvetica font."""
+        return super().multi_cell(w, h, _latin1_safe(str(text)) if text else text, *args, **kwargs)
+
     def header(self):
         if self.page_no() == 1:
             return
@@ -73,7 +112,7 @@ class PEPDFReport(FPDF):
     def _section_title(self, title: str) -> None:
         self.set_font("Helvetica", "B", 16)
         self.set_text_color(*_DARK)
-        self.cell(0, 10, title, new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 10, _latin1_safe(title), new_x="LMARGIN", new_y="NEXT")
         self.set_draw_color(*_BLUE)
         self.set_line_width(0.7)
         self.line(self.l_margin, self.get_y(), self.l_margin + 55, self.get_y())
@@ -82,13 +121,13 @@ class PEPDFReport(FPDF):
     def _sub_heading(self, text: str) -> None:
         self.set_font("Helvetica", "B", 11)
         self.set_text_color(*_DARK)
-        self.cell(0, 7, text, new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 7, _latin1_safe(text), new_x="LMARGIN", new_y="NEXT")
         self.ln(2)
 
     def _body_text(self, text: str) -> None:
         self.set_font("Helvetica", "", 9)
         self.set_text_color(*_TEXT)
-        self.multi_cell(0, 5, text)
+        self.multi_cell(0, 5, _latin1_safe(text))
         self.ln(2)
 
     def _pill(self, text: str, bg: tuple[int, int, int], w: float = 50) -> None:
@@ -98,23 +137,23 @@ class PEPDFReport(FPDF):
         x, y = self.get_x(), self.get_y()
         self.rect(x, y, w, 9, "F")
         self.set_xy(x, y)
-        self.cell(w, 9, text, align="C")
+        self.cell(w, 9, _latin1_safe(text), align="C")
         self.set_text_color(*_TEXT)
 
     def _kv_row(self, label: str, value: str) -> None:
         self.set_font("Helvetica", "B", 9)
         self.set_text_color(*_MEDIUM_GRAY)
-        self.cell(55, 6, label, new_x="END")
+        self.cell(55, 6, _latin1_safe(label), new_x="END")
         self.set_font("Helvetica", "", 9)
         self.set_text_color(*_TEXT)
-        self.cell(0, 6, value, new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 6, _latin1_safe(value), new_x="LMARGIN", new_y="NEXT")
 
     def _table_header(self, widths: list[float], headers: list[str]) -> None:
         self.set_fill_color(*_DARK)
         self.set_text_color(*_WHITE)
         self.set_font("Helvetica", "B", 8)
         for w, h in zip(widths, headers):
-            self.cell(w, 7, h, border=0, align="C", fill=True, new_x="END")
+            self.cell(w, 7, _latin1_safe(h), border=0, align="C", fill=True, new_x="END")
         self.ln()
         self.set_text_color(*_TEXT)
 
@@ -131,7 +170,7 @@ class PEPDFReport(FPDF):
         if aligns is None:
             aligns = ["L"] * len(values)
         for w, v, a in zip(widths, values, aligns):
-            self.cell(w, 6, v[:60], border=0, align=a, fill=fill, new_x="END")
+            self.cell(w, 6, _latin1_safe(v[:60]), border=0, align=a, fill=fill, new_x="END")
         self.ln()
 
     def _ensure_space(self, h: float = 30) -> None:
@@ -163,7 +202,7 @@ class PEPDFReport(FPDF):
         self.set_font("Helvetica", "I", 12)
         self.set_text_color(200, 205, 215)
         self.set_xy(0, 78)
-        self.cell(self.w, 8, f"CONFIDENTIAL  —  Prepared for {company}", align="C")
+        self.cell(self.w, 8, _latin1_safe(f"CONFIDENTIAL -- Prepared for {company}"), align="C")
 
         self.set_font("Helvetica", "", 11)
         self.set_text_color(*_MEDIUM_GRAY)
