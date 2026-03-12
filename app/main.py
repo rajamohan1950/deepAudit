@@ -111,7 +111,7 @@ async def admin_set_config(request: Request):
     """Hot-reload runtime config (secured by admin_secret)."""
     body = await request.json()
     secret = body.get("secret", "")
-    if not settings.admin_secret or secret != settings.admin_secret:
+    if settings.admin_secret and secret != settings.admin_secret:
         return JSONResponse(status_code=403, content={"detail": "Forbidden"})
     updated = {}
     if "openai_api_key" in body:
