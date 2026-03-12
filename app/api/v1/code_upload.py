@@ -150,7 +150,7 @@ async def upload_audit(
             categories_included=phase_map[phase_num],
         ))
 
-    await db.flush()
+    await db.commit()
     await db.refresh(audit)
     await enqueue_audit_job(str(audit.id))
 

@@ -57,7 +57,7 @@ async def create_audit(
         )
         db.add(phase)
 
-    await db.flush()
+    await db.commit()
     await db.refresh(audit)
 
     await enqueue_audit_job(str(audit.id))

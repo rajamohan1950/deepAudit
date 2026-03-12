@@ -449,7 +449,7 @@ function renderCover() {
     metaCard("Audit ID", reportData.audit_id?.substring(0, 8) + "…", "Confidential"),
     metaCard("Status", reportData.audit_status || "—", `Phase ${scope.phases_completed || "—"}`),
     metaCard("Total Signals", String(scope.total_signals || 0), "Across 40 categories"),
-    metaCard("Generated", new Date(reportData.generated_at).toLocaleDateString("en-US", { month: "long", year: "numeric" }), `Report v${reportData.report_version}`),
+    metaCard("Generated", reportData.generated_at ? new Date(reportData.generated_at).toLocaleDateString("en-US", { month: "long", year: "numeric" }) : "Pending", `Report v${reportData.report_version || "—"}`),
   ].join("");
 }
 
@@ -486,7 +486,7 @@ function renderExecSummary(es) {
       <div>
         <p class="text-xs text-white/30 uppercase tracking-wider mb-3">Investment Recommendation</p>
         <p class="text-2xl font-bold ${lc} mb-4">${esc(es.recommendation)}</p>
-        <p class="text-sm text-white/40 leading-relaxed">${es.total_signals} signals analyzed across 40 risk categories.</p>
+        <p class="text-sm text-white/40 leading-relaxed">${es.total_signals || 0} signals analyzed across 40 risk categories.</p>
       </div>
       <div class="mt-6 pt-4 border-t border-white/5">
         <div class="flex gap-3 flex-wrap">
@@ -531,7 +531,7 @@ function renderHeatmap(hm) {
   heatmapData = hm;
   const totalSignals = Object.values(hm.matrix || {}).reduce((s, c) => s + c.signal_count, 0);
   const evaluated = Object.values(hm.matrix || {}).filter(c => c.evaluated !== false).length;
-  document.getElementById("heatmap-subtitle").textContent = `${evaluated} of ${hm.total_categories} categories evaluated. ${totalSignals} total signals.`;
+  document.getElementById("heatmap-subtitle").textContent = `${evaluated} of ${hm.total_categories || 40} categories evaluated. ${totalSignals} total signals.`;
 
   _renderHeatmapBody(hm);
   setupHeatmapFilters();
@@ -600,7 +600,7 @@ function setupHeatmapFilters() {
 }
 
 function renderSpofMap(sm) {
-  document.getElementById("spof-subtitle").textContent = `${sm.total_spofs} SPOFs identified across ${Object.keys(sm.by_type || {}).filter(t => (sm.by_type[t]?.count || 0) > 0).length} dimensions.`;
+  document.getElementById("spof-subtitle").textContent = `${sm.total_spofs || 0} SPOFs identified across ${Object.keys(sm.by_type || {}).filter(t => (sm.by_type[t]?.count || 0) > 0).length} dimensions.`;
 
   const typeIcons = {
     infrastructure: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"/></svg>`,
@@ -670,7 +670,7 @@ function renderCompliance(cm) {
 }
 
 function renderTechDebt(td) {
-  document.getElementById("debt-subtitle").textContent = `${td.total_items} items. ${td.total_estimated_hours?.toLocaleString()} hours. ${usd(td.total_estimated_cost_usd)} total.`;
+  document.getElementById("debt-subtitle").textContent = `${td.total_items || 0} items. ${(td.total_estimated_hours || 0).toLocaleString()} hours. ${usd(td.total_estimated_cost_usd)} total.`;
 
   const summary = td.summary || {};
   document.getElementById("debt-summary").innerHTML = Object.entries(summary).map(([type, s]) => `
@@ -692,7 +692,7 @@ function renderTechDebt(td) {
 
 function renderRoadmap(rm) {
   const res = rm.resource_summary || {};
-  document.getElementById("roadmap-subtitle").textContent = `${rm.total_items} items. ${res.total_engineer_months} engineer-months. ${usd(rm.grand_total_cost_usd)} total.`;
+  document.getElementById("roadmap-subtitle").textContent = `${rm.total_items || 0} items. ${res.total_engineer_months || 0} engineer-months. ${usd(rm.grand_total_cost_usd)} total.`;
 
   const phaseColors = [
     { border: "border-red-500/10", bg: "bg-red-500/10", text: "text-red-400", dot: "bg-red-500/20 border-red-500/50" },
