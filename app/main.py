@@ -33,6 +33,22 @@ async def lifespan(app: FastAPI):
         )
         logger.info("Database tables ensured")
 
+        # Ensure columns added after initial table creation exist
+        await conn.execute(text("""
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM information_schema.columns
+                    WHERE table_name = 'signals' AND column_name = 'category_id'
+                ) THEN
+                    ALTER TABLE signals ADD COLUMN category_id INTEGER REFERENCES categories(id);
+                    CREATE INDEX IF NOT EXISTS ix_signals_category_id ON signals(category_id);
+                    RAISE NOTICE 'Added missing column signals.category_id';
+                END IF;
+            END $$;
+        """))
+        logger.info("Schema migrations ensured")
+
     from app.database import async_session_factory
     async with async_session_factory() as session:
         result = await session.execute(text("SELECT count(*) FROM categories"))
