@@ -11,6 +11,13 @@ from app.engine.orchestrator import AuditOrchestrator
 logger = logging.getLogger(__name__)
 
 
+async def startup(ctx: dict) -> None:
+    """Run schema migrations when the worker starts."""
+    from app.database import ensure_schema
+    await ensure_schema()
+    logger.info("Worker schema migrations ensured")
+
+
 async def run_audit_job(ctx: dict, audit_id: str) -> dict:
     logger.info(f"Worker picked up audit job: {audit_id}")
     orchestrator = AuditOrchestrator()
@@ -44,6 +51,7 @@ def _parse_redis_url(url: str) -> RedisSettings:
 
 class WorkerSettings:
     """ARQ worker configuration."""
+    on_startup = startup
     functions = [run_audit_job]
     redis_settings = _parse_redis_url(settings.redis_url)
     max_jobs = 3

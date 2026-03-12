@@ -28,6 +28,25 @@ class Base(DeclarativeBase):
     pass
 
 
+async def ensure_schema() -> None:
+    """Run idempotent schema migrations — safe to call from any process."""
+    from sqlalchemy import text
+    async with engine.begin() as conn:
+        await conn.execute(text("""
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM information_schema.columns
+                    WHERE table_name = 'signals' AND column_name = 'category_id'
+                ) THEN
+                    ALTER TABLE signals ADD COLUMN category_id INTEGER REFERENCES categories(id);
+                    CREATE INDEX IF NOT EXISTS ix_signals_category_id ON signals(category_id);
+                END IF;
+                UPDATE signals SET category_id = 1 WHERE category_id IS NULL;
+            END $$;
+        """))
+
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_factory() as session:
         try:
