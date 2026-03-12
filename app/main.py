@@ -105,6 +105,29 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 app.include_router(api_router, prefix="/api/v1")
 
+
+@app.post("/_admin/config", include_in_schema=False)
+async def admin_set_config(request: Request):
+    """Hot-reload runtime config (secured by admin_secret)."""
+    body = await request.json()
+    secret = body.get("secret", "")
+    if not settings.admin_secret or secret != settings.admin_secret:
+        return JSONResponse(status_code=403, content={"detail": "Forbidden"})
+    updated = {}
+    if "openai_api_key" in body:
+        settings.openai_api_key = body["openai_api_key"]
+        updated["openai_api_key"] = "***set***"
+    if "anthropic_api_key" in body:
+        settings.anthropic_api_key = body["anthropic_api_key"]
+        updated["anthropic_api_key"] = "***set***"
+    if "default_llm_provider" in body:
+        settings.default_llm_provider = body["default_llm_provider"]
+        updated["default_llm_provider"] = body["default_llm_provider"]
+    if "default_llm_model" in body:
+        settings.default_llm_model = body["default_llm_model"]
+        updated["default_llm_model"] = body["default_llm_model"]
+    return {"updated": updated, "current_provider": settings.default_llm_provider, "current_model": settings.default_llm_model}
+
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
