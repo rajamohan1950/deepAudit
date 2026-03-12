@@ -45,6 +45,8 @@ async def lifespan(app: FastAPI):
                     CREATE INDEX IF NOT EXISTS ix_signals_category_id ON signals(category_id);
                     RAISE NOTICE 'Added missing column signals.category_id';
                 END IF;
+                -- Backfill any signals with NULL category_id
+                UPDATE signals SET category_id = 1 WHERE category_id IS NULL;
             END $$;
         """))
         logger.info("Schema migrations ensured")

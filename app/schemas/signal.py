@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 class SignalResponse(BaseModel):
     id: uuid.UUID
     audit_id: uuid.UUID
-    category_id: int
+    category_id: int | None = None
     category_name: str = ""
     sequence_number: int
     signal_text: str

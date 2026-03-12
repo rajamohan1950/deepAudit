@@ -19,8 +19,8 @@ class Signal(Base):
     audit_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("audits.id"), nullable=False, index=True
     )
-    category_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("categories.id"), nullable=False, index=True
+    category_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("categories.id"), nullable=True, index=True
     )
     sequence_number: Mapped[int] = mapped_column(Integer, nullable=False)
     signal_text: Mapped[str] = mapped_column(Text, nullable=False)
