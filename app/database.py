@@ -29,22 +29,27 @@ class Base(DeclarativeBase):
 
 
 async def ensure_schema() -> None:
-    """Run idempotent schema migrations — safe to call from any process."""
-    from sqlalchemy import text
+    """Drop and recreate tables with wrong schema so create_all() rebuilds them."""
+    from sqlalchemy import text, inspect
+
     async with engine.begin() as conn:
-        await conn.execute(text("""
-            DO $$
-            BEGIN
-                IF NOT EXISTS (
-                    SELECT 1 FROM information_schema.columns
-                    WHERE table_name = 'signals' AND column_name = 'category_id'
-                ) THEN
-                    ALTER TABLE signals ADD COLUMN category_id INTEGER REFERENCES categories(id);
-                    CREATE INDEX IF NOT EXISTS ix_signals_category_id ON signals(category_id);
-                END IF;
-                UPDATE signals SET category_id = 1 WHERE category_id IS NULL;
-            END $$;
-        """))
+        def _check_columns(sync_conn):
+            insp = inspect(sync_conn)
+            if not insp.has_table("signals"):
+                return True  # table doesn't exist, create_all will handle it
+            cols = {c["name"] for c in insp.get_columns("signals")}
+            required = {"id", "audit_id", "category_id", "sequence_number", "signal_text", "severity"}
+            return required.issubset(cols)
+
+        schema_ok = await conn.run_sync(_check_columns)
+
+        if not schema_ok:
+            await conn.execute(text("DROP TABLE IF EXISTS signals CASCADE"))
+
+    # Now let create_all rebuild it with the correct schema
+    async with engine.begin() as conn:
+        from app.database import Base
+        await conn.run_sync(Base.metadata.create_all)
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
